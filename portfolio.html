@@ -3,16 +3,17 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>PDF Viewer</title>
+    <title>Wenoxo Technologies - Portfolio</title>
     <style>
       body,
       html {
         height: 100%;
         margin: 0;
-        overflow-y: hidden;
       }
       #pdf-container {
+        width: 100%;
         height: 100%;
+        overflow: auto;
       }
     </style>
   </head>
@@ -20,21 +21,33 @@
     <div id="pdf-container"></div>
 
     <script>
-      let pdfUrl = "/wenoxo/portfolio.pdf";
-      let pdfObject = document.createElement("object");
+      // Change the URL to your actual PDF file location
+      var pdfUrl = "/wenoxo/assets/portfolio.pdf";
+
+      // Create an <object> element to embed the PDF
+      var pdfObject = document.createElement("object");
       pdfObject.setAttribute("data", pdfUrl);
       pdfObject.setAttribute("type", "application/pdf");
       pdfObject.setAttribute("width", "100%");
+      pdfObject.setAttribute("height", "100%");
 
-      let viewportHeight = window.innerHeight;
-      pdfObject.setAttribute("height", viewportHeight + "px");
-
-      pdfObject.innerHTML =
-        'If you are unable to view the PDF, you can <a href="' +
-        pdfUrl +
-        '">download it here</a>.';
-
-      document.getElementById("pdf-container").appendChild(pdfObject);
+      // Check if the viewport width is less than a certain threshold (adjust as needed)
+      if (window.innerWidth < 600) {
+        // If small screen, initiate the download automatically
+        var downloadLink = document.createElement("a");
+        downloadLink.href = pdfUrl;
+        downloadLink.textContent = "Download PDF";
+        downloadLink.setAttribute("download", "portfolio.pdf");
+        document.getElementById("pdf-container").appendChild(downloadLink);
+      } else {
+        // If larger screen, display a message with a download link
+        pdfObject.innerHTML =
+          'Unable to display PDF on small screens. Please download it using the link below:<br><a href="' +
+          pdfUrl +
+          '" download>Download PDF</a>';
+        // Append the <object> element to the container div
+        document.getElementById("pdf-container").appendChild(pdfObject);
+      }
     </script>
   </body>
 </html>
