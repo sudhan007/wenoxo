@@ -20,13 +20,13 @@
     <div id="pdf-container"></div>
 
     <script>
-      var pdfUrl = "/wenoxo/portfolio.pdf";
-      var pdfObject = document.createElement("object");
+      let pdfUrl = "/wenoxo/portfolio.pdf";
+      let pdfObject = document.createElement("object");
       pdfObject.setAttribute("data", pdfUrl);
       pdfObject.setAttribute("type", "application/pdf");
       pdfObject.setAttribute("width", "100%");
 
-      var viewportHeight = window.innerHeight;
+      let viewportHeight = window.innerHeight;
       pdfObject.setAttribute("height", viewportHeight + "px");
 
       pdfObject.innerHTML =
