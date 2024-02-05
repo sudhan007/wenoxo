@@ -20,16 +20,12 @@
     <div id="pdf-container"></div>
 
     <script>
-      // Change the URL to your actual PDF file location
       var pdfUrl = "/wenoxo/portfolio.pdf";
-
-      // Create an <object> element to embed the PDF
       var pdfObject = document.createElement("object");
       pdfObject.setAttribute("data", pdfUrl);
       pdfObject.setAttribute("type", "application/pdf");
       pdfObject.setAttribute("width", "100%");
 
-      // Calculate the height based on the viewport height
       var viewportHeight = window.innerHeight;
       pdfObject.setAttribute("height", viewportHeight + "px");
 
@@ -38,7 +34,6 @@
         pdfUrl +
         '">download it here</a>.';
 
-      // Append the <object> element to the container div
       document.getElementById("pdf-container").appendChild(pdfObject);
     </script>
   </body>
