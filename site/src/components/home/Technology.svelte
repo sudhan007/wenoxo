@@ -83,7 +83,9 @@
 		<aside class="mt-6 md:mt-14">
 			<div class="grid grid-cols-2 gap-5 md:grid-cols-4 md:gap-10">
 				{#each TOOLS as tool}
-					<div class="flex w-full flex-col items-center justify-center gap-y-5 bg-[#F9F9F9] p-5">
+					<div
+						class="flex w-full flex-col items-center justify-center gap-y-5 bg-[#F9F9F9] p-5 transition-all duration-150 hover:scale-90"
+					>
 						<div>
 							<img src={tool.image} class="h-24 w-24" alt={tool.alt} />
 						</div>

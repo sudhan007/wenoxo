@@ -88,8 +88,7 @@
 		</div>
 	</main>
 	<div
-		style="color: rgba(255, 255, 255, 0.12);"
-		class="font-sharpbold mt-3 flex justify-center text-[60px] uppercase md:mt-10 md:py-5 md:text-[150px]"
+		class="font-sharpbold mt-3 flex justify-center text-[60px] uppercase text-[#FFFFFF]/20 transition-all duration-1000 hover:text-[#FFFFFF] md:mt-10 md:py-5 md:text-[150px]"
 	>
 		<h1>wenoxo</h1>
 	</div>

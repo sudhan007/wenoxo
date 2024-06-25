@@ -12,7 +12,7 @@
 	<section
 		class="container mx-auto flex flex-col-reverse items-center justify-between px-4 sm:px-6 lg:flex-row lg:px-8"
 	>
-		<Motion let:motion animate={{ y: 20 }}>
+		<Motion let:motion animate={{}}>
 			<div use:motion class="text-center lg:text-left">
 				<div
 					class="font-sharpbold text-[2rem] font-bold leading-relaxed text-[#222222] md:text-[4rem] dark:text-white"
