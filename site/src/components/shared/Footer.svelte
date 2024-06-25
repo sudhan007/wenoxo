@@ -14,13 +14,24 @@
 					<img src="/footerlogo.png" class="h-auto w-full" alt="Footer Logo" />
 				</div>
 				<div class="flex items-center gap-4">
-					<Icon icon={'line-md:instagram'} class="cursor-pointer text-4xl" />
-					<Icon icon={'line-md:twitter-x'} class="cursor-pointer text-4xl" />
-					<Icon
-						icon={'simple-line-icons:social-linkedin'}
-						class="cursor-pointer text-2xl md:text-4xl"
-					/>
-					<Icon icon={'icon-park-outline:facebook'} class="cursor-pointer text-4xl" />
+					<a
+						target="_blank"
+						href="https://www.instagram.com/wenoxo_technologies?igsh=MW9jZmUxNG84cDk4eg=="
+					>
+						<Icon icon={'line-md:instagram'} class="cursor-pointer text-4xl" /></a
+					>
+					<a href="https://x.com/WenoxoTech?t=FL6Yut-IF4bkWhCC77cgEA&s=09"
+						><Icon icon={'line-md:twitter-x'} class="cursor-pointer text-4xl" /></a
+					>
+					<a href="https://www.linkedin.com/company/wenoxotechnologies-private-limited/">
+						<Icon
+							icon={'simple-line-icons:social-linkedin'}
+							class="cursor-pointer text-2xl md:text-4xl"
+						/></a
+					>
+					<a href="https://www.facebook.com/share/iUPDGPgNgDpQKdwH/?mibextid=qi2Omg">
+						<Icon icon={'icon-park-outline:facebook'} class="cursor-pointer text-4xl" />
+					</a>
 				</div>
 				<div class="font-sharpmedium flex items-center gap-2">
 					<p>&copy;</p>
