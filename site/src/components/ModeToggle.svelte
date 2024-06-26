@@ -1,4 +1,4 @@
-<script lang="ts">
+<!-- <script lang="ts">
 	import Icon from '@iconify/svelte';
 
 	import { toggleMode } from 'mode-watcher';
@@ -12,4 +12,4 @@
 	/>
 
 	<span class="sr-only">Toggle theme</span>
-</button>
+</button> -->

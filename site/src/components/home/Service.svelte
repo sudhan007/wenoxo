@@ -44,39 +44,57 @@
 	<section class=" mt-4 md:mt-8 md:px-5 lg:mt-20 lg:px-20">
 		<div class="grid grid-cols-2 gap-y-5 md:grid-cols-4">
 			<div class="flex flex-col gap-2 text-center md:gap-6">
-				<h1 class=" font-sharpbold text-[30px] text-[#0E0E0E] md:text-[50px] lg:text-[70px]">
+				<h1
+					class=" font-sharpbold text-[30px] text-[#0E0E0E] md:text-[50px] lg:text-[70px] dark:text-white"
+				>
 					60+
 				</h1>
 				<div class="">
-					<h2 class=" font-sharpmedium text-base text-[#000000] md:text-xl lg:text-2xl">
+					<h2
+						class=" font-sharpmedium text-base text-[#000000] md:text-xl lg:text-2xl dark:text-white"
+					>
 						Finished Project
 					</h2>
 				</div>
 			</div>
 			<div class="flex flex-col gap-2 text-center md:gap-6">
-				<h1 class=" font-sharpbold text-[30px] text-[#0E0E0E] md:text-[50px] lg:text-[70px]">
+				<h1
+					class=" font-sharpbold text-[30px] text-[#0E0E0E] md:text-[50px] lg:text-[70px] dark:text-white"
+				>
 					100%
 				</h1>
 				<div class="">
-					<h2 class=" font-sharpmedium text-base text-[#000000] md:text-xl lg:text-2xl">
+					<h2
+						class=" font-sharpmedium text-base text-[#000000] md:text-xl lg:text-2xl dark:text-white"
+					>
 						Client Satisfication
 					</h2>
 				</div>
 			</div>
 			<div class="flex flex-col gap-2 text-center md:gap-6">
-				<h1 class=" font-sharpbold text-[30px] text-[#0E0E0E] md:text-[50px] lg:text-[70px]">
+				<h1
+					class=" font-sharpbold text-[30px] text-[#0E0E0E] md:text-[50px] lg:text-[70px] dark:text-white"
+				>
 					15+
 				</h1>
 				<div class="">
-					<h2 class=" font-sharpmedium text-base text-[#000000] md:text-xl lg:text-2xl">
+					<h2
+						class=" font-sharpmedium text-base text-[#000000] md:text-xl lg:text-2xl dark:text-white"
+					>
 						Delivered
 					</h2>
 				</div>
 			</div>
 			<div class="flex flex-col gap-2 text-center md:gap-6">
-				<h1 class=" font-sharpbold text-[30px] text-[#0E0E0E] md:text-[50px] lg:text-[70px]">7+</h1>
+				<h1
+					class=" font-sharpbold text-[30px] text-[#0E0E0E] md:text-[50px] lg:text-[70px] dark:text-white"
+				>
+					7+
+				</h1>
 				<div class="">
-					<h2 class=" font-sharpmedium text-base text-[#000000] md:text-xl lg:text-2xl">
+					<h2
+						class=" font-sharpmedium text-base text-[#000000] md:text-xl lg:text-2xl dark:text-white"
+					>
 						Years Experience
 					</h2>
 				</div>

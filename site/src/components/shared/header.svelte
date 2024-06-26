@@ -4,7 +4,7 @@
 </script>
 
 <header
-	class="sticky top-0 z-50 w-full border-b-[1px] border-gray-300 bg-white p-4 dark:border-gray-700"
+	class="sticky top-0 z-50 w-full border-b-[1px] border-gray-300 bg-white p-4 dark:border-gray-700 dark:bg-[#1A1A1A]"
 >
 	<nav class="m-auto flex w-full max-w-7xl items-center justify-center px-4 sm:px-6 lg:px-8">
 		<!-- <div class="flex items-center gap-8">

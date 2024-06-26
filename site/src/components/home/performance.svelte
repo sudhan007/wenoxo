@@ -120,7 +120,9 @@
 		class="container mx-auto flex flex-col items-center justify-between px-4 sm:px-6 lg:flex-row lg:px-8"
 	>
 		<div class="order-1 text-center lg:order-1 lg:text-left">
-			<div class="font-sharpbold text-[2rem] font-bold leading-loose text-[#000000] md:text-[3rem]">
+			<div
+				class="font-sharpbold text-[2rem] font-bold leading-loose text-[#000000] md:text-[3rem] dark:text-white"
+			>
 				<div class="flex items-center gap-5">
 					<span class=" h-6 w-6 rounded-full bg-[#E8505B] md:h-10 md:w-10"> </span>
 					<h1>Security</h1>
@@ -155,7 +157,7 @@
 			{#each ROLES as role}
 				<span
 					style="background-color: {role.color};"
-					class="{`whitespace-nowrap rounded-full border-[1px] border-[#000000] px-2.5 py-2 text-center text-xs transition-all duration-150 hover:scale-110 md:text-base lg:text-lg `}}"
+					class="{`whitespace-nowrap rounded-full border-[1px] border-[#000000] px-2.5 py-2 text-center text-xs transition-all duration-150 hover:scale-110 md:text-base lg:text-lg dark:text-[#000000] `}}"
 				>
 					{role.name}
 				</span>
@@ -179,7 +181,7 @@
 			{#each WORKS as work}
 				<div class="flex flex-col items-center justify-center gap-y-5">
 					<img src={work.img} class="h-16 w-16" style="object-fit: contain;" alt={work.alt} />
-					<h1 class="font-sharpbold text-center text-sm text-[#000000] md:text-lg">
+					<h1 class="font-sharpbold text-center text-sm text-[#000000] md:text-lg dark:text-white">
 						{work.workname}
 					</h1>
 				</div>

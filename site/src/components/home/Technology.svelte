@@ -53,18 +53,14 @@
 	<section
 		class="container mx-auto flex flex-col items-center justify-between px-4 sm:px-6 lg:flex-row lg:px-8"
 	>
-		<div class="order-1 text-center lg:order-1 lg:text-left">
-			<div
-				class="font-sharpbold text-[2rem] font-bold leading-relaxed text-[#000000] md:text-[3rem]"
-			>
+		<div class="order-1 text-center text-[#000000] lg:order-1 lg:text-left dark:text-white">
+			<div class="font-sharpbold text-[2rem] font-bold leading-relaxed md:text-[3rem]">
 				<h1>Technology</h1>
 			</div>
-			<p class="font-sharpsemibold mb-2 mt-4 text-sm text-[#000000] md:text-lg dark:text-gray-300">
+			<p class="font-sharpsemibold mb-2 mt-4 text-sm md:text-lg dark:text-gray-300">
 				Revolutionizing industries with cutting-edge
 			</p>
-			<p class="font-sharpsemibold text-sm text-[#000000] md:text-lg dark:text-gray-300">
-				technology solutions
-			</p>
+			<p class="font-sharpsemibold text-sm md:text-lg dark:text-gray-300">technology solutions</p>
 		</div>
 
 		<img
@@ -103,7 +99,7 @@
 	<div class="flex flex-col gap-y-6">
 		<div class="">
 			<div
-				class="font-sharpbold text-center text-2xl leading-normal text-[#000000] md:text-start md:text-6xl md:leading-snug"
+				class="font-sharpbold text-center text-2xl leading-normal text-[#000000] md:text-start md:text-6xl md:leading-snug dark:text-white"
 			>
 				Let’s create a measurable <br />
 				impact on your business.
@@ -112,7 +108,7 @@
 		<div class=" mt-5 flex justify-center md:mt-20">
 			<div>
 				<h1
-					class="font-sharpbold rounded-full border border-[#000000] px-10 py-5 text-xl text-[#212121] transition-all duration-150 hover:scale-110 md:text-2xl"
+					class="font-sharpbold rounded-full border border-[#000000] px-10 py-5 text-xl text-[#212121] transition-all duration-150 hover:scale-110 md:text-2xl dark:border-[#FFFFFF] dark:text-white"
 				>
 					Design a Quote
 				</h1>
