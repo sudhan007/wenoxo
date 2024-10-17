@@ -67,7 +67,7 @@
 					<h2
 						class=" font-sharpmedium text-base text-[#000000] md:text-xl lg:text-2xl dark:text-white"
 					>
-						Client Satisfication
+						Client satisfaction
 					</h2>
 				</div>
 			</div>

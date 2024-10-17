@@ -46,7 +46,7 @@
 			color: '#C7C7C7'
 		},
 		{
-			name: 'Co Founder',
+			name: 'Co-Founder',
 			color: '#C7C7C7'
 		}
 	];
@@ -133,7 +133,7 @@
 				</div>
 				<div class="flex items-center gap-5">
 					<span class=" h-6 w-6 rounded-full bg-[#F55DCB] md:h-10 md:w-10"> </span>
-					<h1>Performace</h1>
+					<h1>Performance</h1>
 				</div>
 			</div>
 		</div>
