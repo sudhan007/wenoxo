@@ -43,7 +43,6 @@
 	  { id: 'about', label: 'About Us', icon: 'mdi:information' },
 	  { id: 'service', label: 'Services', icon: 'mdi:folder' },
 	  { id: 'howWeWork', label: 'How We Work', icon: 'mdi:cog' },
-	  { id: 'contact', label: 'Contact', icon: 'mdi:email' },
 	];
   </script>
   
@@ -51,8 +50,8 @@
 	<script src="https://code.iconify.design/iconify-icon/1.0.7/iconify-icon.min.js"></script>
   </svelte:head>
   
-  <header class="flex !p-0  justify-center items-center">
-	<section class="lg:rounded-xl lg:max-w-5xl w-screen lg:container border-b flex  shadow-sm shadow-[#061C3D0D] bg-white px-4 md:px-10 h-16 ">
+  <header class="flex !p-0 !m-0 justify-center items-center">
+	<section class="lg:rounded-xl lg:max-w-5xl !w-screen lg:container justify-center border-b flex items-center shadow-sm shadow-[#061C3D0D] bg-white px-4 md:px-10 h-16 ">
 	  <nav class="flex w-full items-center justify-between h-full">
 		<!-- Logo -->
 		<div>
@@ -121,9 +120,9 @@
 				  class:active={$activeSection === item.id}
 				>
 				  <iconify-icon icon={item.icon} width="20" height="20"></iconify-icon>
-				  <span>{item.label}</span>
+				  <p>{item.label}</p>
 				  {#if $activeSection === item.id}
-					<span class="absolute bottom-0 left-0 w-full h-0.3 bg-[#0B63E5] rounded-full -mb-1"></span>
+					<span class="absolute bottom-0 left-0 w-full h-0.1 bg-[#0B63E5] rounded-full "></span>
 				  {/if}
 				</a>
 			  </li>

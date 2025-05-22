@@ -132,12 +132,12 @@
   }
 </style>
 
-<main class="relative pt-16 sm:pt-20">
+<main class="relative  pt-0">
   <div class="hidden lg:block">
     <Cursor />
   </div>
 
-  <div class={`header ${$activeSection==='home' ? 'lg:pt-8' : 'pt-0'} ${$activeSection==='contact'|| $activeSection === 'footer'?'hidden transition-all duration-900':'block transition-all duration-900'} transition-all duration-900`}>
+  <div class={`header ${$activeSection==='home' ? 'lg:pt-8 !pt-0' : 'pt-0'} ${$activeSection==='contact'|| $activeSection === 'footer'?'hidden transition-all duration-900':'block transition-all duration-900'} transition-all duration-900`}>
     <Header />
   </div>
 

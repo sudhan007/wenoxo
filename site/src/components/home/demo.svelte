@@ -98,7 +98,7 @@
     >
 
     <div class="flex container">
-        <section class="!sticky top-0 md:py-20 py-0 lg:py-0 lg:h-screen h-full  flex flex-col items-center justify-center lg:w-[60%] w-full z-10">
+        <section class="!sticky top-0 md:py-20 py-0 lg:py-0 lg:h-screen h-full flex flex-col items-center justify-center lg:w-[60%] w-full z-10">
             <div class="flex flex-col items-center lg:items-start">
                 <h1 class="xl:text-6xl font-sharp-bold lg:text-5xl text-3xl font-bold my-10 text-center lg:text-left !leading-tight">
                     Shape Your Ideas into Boundless Digital Experiences
@@ -113,7 +113,7 @@
                         </span>
                         On Time Delivery
                     </p>
-                    <p class="text-[#2B3029] flex md:gap-2 items-center md:text-xl text-base  font-medium">
+                    <p class="text-[#2B3029] flex md:gap-2 items-center md:text-xl text-base font-medium">
                         <span class="text-[#276F00]">
                             <Icon icon="material-symbols:check-circle-rounded" width="24" height="24" />
                         </span>
@@ -124,59 +124,59 @@
                     Explore
                 </button>
             </div>
-                      <!-- Text carousel with CSS animation -->
-                      <div class="text-carousel-container lg:block hidden">
-                        <div class="text-carousel">
-                            {#each textItems as text, index}
-                                <div class="text-item">
-                                    <p class="md:text-3xl text-[#949494] font-josefin text-2xl">{text}</p>
-                                </div>
-                            {/each}
-                            {#each textItems as text, index}
-                            <div class="text-item">
-                                <p class="md:text-3xl text-[#949494] font-josefin text-2xl">{text}</p>
-                            </div>
-                        {/each}
-    
-                            <!-- Duplicate items for seamless looping -->
-                            {#each textItems as text, index}
-                                <div class="text-item">
-                                    <p class="md:text-3xl text-[#949494] font-josefin text-2xl">{text}</p>
-                                </div>
-                            {/each}
+            <!-- Text carousel with CSS animation -->
+            <div class="text-carousel-container lg:block hidden  overflow-hidden">
+                <div class="text-carousel flex whitespace-nowrap">
+                    {#each textItems as text, index}
+                        <div class="text-item inline-block px-4">
+                            <p class="md:text-3xl text-[#949494] font-josefin text-2xl">{text}</p>
                         </div>
-                    </div>
-            <div class="flex flex-col gap-10 py-5 lg:hidden">
+                    {/each}
+                    {#each textItems as text, index}
+                        <div class="text-item inline-block px-4">
+                            <p class="md:text-3xl text-[#949494] font-josefin text-2xl">{text}</p>
+                        </div>
+                    {/each}
+
+                    <!-- Duplicate items for seamless looping -->
+                    {#each textItems as text, index}
+                        <div class="text-item inline-block px-4">
+                            <p class="md:text-3xl text-[#949494] font-josefin text-2xl">{text}</p>
+                        </div>
+                    {/each}
+                </div>
+            </div>
+            <div class="flex flex-col w-screen gap-10 py-5 lg:hidden">
                 <!-- Image carousel inside bordered wrapper -->
                 <div class="wrapper lg:hidden">
                     {#each imageSources as src, index}
                         <div class="img-item" style="--i: {index + 1}">
-                            <img  loading="eager" src={src} alt={`Image ${index + 1}`} class="h-full w-full object-contain" />
+                            <img loading="eager" src={src} alt={`Image ${index + 1}`} class="h-full w-full object-contain" />
                         </div>
                     {/each}
                     {#each imageSources as src, index}
                     <div class="img-item" style="--i: {index + 1}">
-                        <img  loading="eager" src={src} alt={`Image ${index + 1}`} class="h-full w-full object-contain" />
+                        <img loading="eager" src={src} alt={`Image ${index + 1}`} class="h-full w-full object-contain" />
                     </div>
                 {/each}
                 </div>
                 <!-- Text carousel with CSS animation -->
-                <div class="text-carousel-container">
-                    <div class="text-carousel">
+                <div class="text-carousel-container  overflow-hidden">
+                    <div class="text-carousel flex whitespace-nowrap">
                         {#each textItems as text, index}
-                            <div class="text-item">
+                            <div class="text-item inline-block px-4">
                                 <p class="md:text-3xl text-[#949494] font-josefin text-2xl">{text}</p>
                             </div>
                         {/each}
                         {#each textItems as text, index}
-                        <div class="text-item">
+                        <div class="text-item inline-block px-4">
                             <p class="md:text-3xl text-[#949494] font-josefin text-2xl">{text}</p>
                         </div>
                     {/each}
 
                         <!-- Duplicate items for seamless looping -->
                         {#each textItems as text, index}
-                            <div class="text-item">
+                            <div class="text-item inline-block px-4">
                                 <p class="md:text-3xl text-[#949494] font-josefin text-2xl">{text}</p>
                             </div>
                         {/each}
@@ -200,37 +200,37 @@
 </article>
 
 <style>
-      :root {
-    --duration: 10s; /* Duration for image animation */
-    --totalitems: 5; /* Number of unique image items */
-    --text-duration: 8s; /* Duration for text animation */
-    --totaltextitems: 6; /* Number of unique text items */
-    --image-width: 250px; /* Fixed width for images */
-}
-
-.wrapper {
-    position: relative;
-    display: flex;
-    height: 20vh; /* Fixed height */
-    width: 100vw; /* Fixed width */
-    overflow: hidden;
-    margin: 0 auto; /* Center the wrapper */
-}
-
-.img-item {
-    position: absolute;
-    height: inherit;
-    width: var(--image-width); /* Fixed width */
-    left: 100%; /* Start off-screen to the right */
-    animation: scrollX var(--duration) linear infinite;
-    animation-delay: calc(var(--duration) / var(--totalitems) * var(--i));
-}
-
-@keyframes scrollX {
-    to {
-        left: calc(-100% - var(--image-width)); /* Move to off-screen left */
+    :root {
+        --duration: 10s; /* Duration for image animation */
+        --totalitems: 5; /* Number of unique image items */
+        --text-duration: 8s; /* Duration for text animation */
+        --totaltextitems: 6; /* Number of unique text items */
+        --image-width: 250px; /* Fixed width for images */
     }
-}
+
+    .wrapper {
+        position: relative;
+        display: flex;
+        height: 20vh; /* Fixed height */
+        width: 100vw; /* Fixed width */
+        overflow: hidden;
+        margin: 0 auto; /* Center the wrapper */
+    }
+
+    .img-item {
+        position: absolute;
+        height: inherit;
+        width: var(--image-width); /* Fixed width */
+        left: 100%; /* Start off-screen to the right */
+        animation: scrollX var(--duration) linear infinite;
+        animation-delay: calc(var(--duration) / var(--totalitems) * var(--i));
+    }
+
+    @keyframes scrollX {
+        to {
+            left: calc(-100% - var(--image-width)); /* Move to off-screen left */
+        }
+    }
 
     .text-carousel-container {
         width: 100%;
@@ -241,11 +241,10 @@
 
     .text-carousel {
         display: inline-flex;
-        animation: scrollText 10s linear infinite;
+        animation: scrollText var(--text-duration) linear infinite;
     }
 
     .text-item {
-        padding: 0 40px;
         display: inline-block;
     }
 
@@ -311,6 +310,27 @@
             100% {
                 transform: translateX(-50%);
             }
+        }
+    }
+
+    /* Medium screen adjustments */
+    @media (min-width: 768px) and (max-width: 1023px) {
+        .text-carousel-container {
+            width: 100%;
+            overflow: hidden;
+            white-space: nowrap;
+        }
+
+        .text-carousel {
+            animation: scrollText 12s linear infinite;
+        }
+
+        .text-item {
+            padding: 0 20px;
+        }
+
+        .text-carousel-container.lg\:hidden {
+            display: none !important;
         }
     }
 </style>
