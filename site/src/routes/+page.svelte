@@ -1,58 +1,167 @@
-<script>
-	import { Motion } from 'svelte-motion';
-	import Service from '../components/home/Service.svelte';
-	import Header from '../components/shared/header.svelte';
-	import Footer from '../components/shared/Footer.svelte';
-	import Technology from '../components/home/Technology.svelte';
-	import Performance from '../components/home/performance.svelte';
+<script lang="ts">
+  import { onMount } from 'svelte';
+  import { activeSection } from '$lib/stores';
+	import Milestones from '@/components/home/Milestones.svelte';
+	import Service from '@/components/home/Service.svelte';
+	import HowWeWork from '@/components/home/How_we_work.svelte';
+	import Contact from '@/components/home/contact.svelte';
+	import Demo from '@/components/home/demo.svelte';
+	import Header from '@/components/shared/Header.svelte';
+	import Cursor from '@/components/shared/Cursor.svelte';
+	import Footer from '@/components/shared/Footer.svelte';
+
+  let isHomeSectionInView = true;
+  let isContactSectionInView = false;
+  let isFooterInView = false;
+  let lastScrollY = 0;
+  let scrollDirection = 'down';
+
+  onMount(() => {
+    if (typeof IntersectionObserver !== 'undefined') {
+      // Track scroll direction
+      const handleScroll = () => {
+        const currentScrollY = window.scrollY;
+        scrollDirection = currentScrollY > lastScrollY ? 'down' : 'up';
+        lastScrollY = currentScrollY;
+      };
+      window.addEventListener('scroll', handleScroll, { passive: true });
+
+      const observer = new IntersectionObserver(
+        (entries) => {
+          let mostVisibleSection = null;
+          let maxVisibility = 0;
+          let headerActionTaken = false;
+
+          entries.forEach((entry) => {
+            const visibility = entry.intersectionRatio;
+            const sectionId = entry.target.id;
+
+            // Update header visibility
+            if (!headerActionTaken) {
+              if (sectionId === 'home') {
+                isHomeSectionInView = entry.isIntersecting;
+              } else if (sectionId === 'contact') {
+                isContactSectionInView = entry.isIntersecting;
+              } else if (sectionId === 'footer') {
+                isFooterInView = entry.isIntersecting;
+              }
+
+              // const header = document.querySelector('.header');
+              // if (header) {
+              //   if (isContactSectionInView || isFooterInView) {
+              //     header.classList.add('hidden');
+              //   } else {
+              //     header.classList.remove('hidden');
+              //   }
+              // }
+              headerActionTaken = true;
+            }
+
+            // Special handling for home section when scrolling up
+            if (scrollDirection === 'up' && sectionId === 'home' && visibility > 0.1) {
+              mostVisibleSection = 'home';
+              maxVisibility = 1; // Force home section to be selected
+            }
+            // For other sections, require at least 50% visibility
+            else if (visibility > 0.5 && visibility > maxVisibility) {
+              maxVisibility = visibility;
+              mostVisibleSection = sectionId;
+            }
+          });
+
+          if (mostVisibleSection) {
+            activeSection.set(mostVisibleSection);
+            console.log('Active section:', mostVisibleSection, 'Direction:', scrollDirection);
+          }
+        },
+        {
+          threshold: [0, 0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1],
+          rootMargin: '-100px 0px -20% 0px'
+        }
+      );
+
+      const sections = [
+        document.getElementById('home'),
+        document.getElementById('about'),
+        document.getElementById('service'),
+        document.getElementById('howWeWork'),
+        document.getElementById('contact'),
+        document.getElementById('footer')
+      ];
+
+      sections.forEach((section) => {
+        if (section) observer.observe(section);
+      });
+
+      return () => {
+        sections.forEach((section) => {
+          if (section) observer.unobserve(section);
+        });
+        window.removeEventListener('scroll', handleScroll);
+      };
+    }
+  });
 </script>
 
-<Header />
-<main class="flex h-[90vh] w-full flex-col items-center justify-evenly">
-	<section
-		class="container mx-auto flex flex-col-reverse items-center justify-between px-4 sm:px-6 lg:flex-row lg:px-8"
-	>
-		<Motion let:motion animate={{}}>
-			<div use:motion class="text-center lg:text-left">
-				<div
-					class="font-sharpbold text-[2rem] font-bold leading-relaxed text-[#222222] md:text-[4rem] dark:text-white"
-				>
-					<h1>Creative</h1>
-					<h1>Design</h1>
-					<h1>Technology</h1>
-				</div>
-				<p class="font-sharpmedium my-4 text-base text-[#222222] md:text-lg dark:text-gray-300">
-					Transforming the user experience is at the core of our mission, <br /> leveraging the principles
-					of behavioral science to innovate.
-				</p>
-			</div>
-		</Motion>
+<style>
+  .header {
+    transition: opacity 0.9s ease, transform 0.9s ease, padding-top 0.9s ease;
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    z-index: 50;
+    backdrop-filter: blur(10px);
+    background: rgba(255, 255, 255, 0.1);
+  }
 
-		<img
-			class="mt-8 w-full max-w-md lg:mt-0 lg:max-w-lg"
-			src="/assets/home/greet-image.svg"
-			alt="Greeting that contains a greeting message and a logo"
-		/>
-	</section>
-	<div class="container mx-auto my-5 flex items-center justify-between gap-5">
-		<div>
-			<img src="/assets/home/figgy.png" alt="" />
-		</div>
-		<div>
-			<img src="/assets/home/sundar.png" alt="" />
-		</div>
-		<div>
-			<img src="/assets/home/prathap.png" alt="" />
-		</div>
-		<div>
-			<img src="/assets/home/starex.png" alt="" />
-		</div>
-		<div>
-			<img src="/assets/home/kpjwels.png" alt="" />
-		</div>
-	</div>
+  .header.hidden {
+    opacity: 0;
+    transform: translateY(-100%);
+    pointer-events: none;
+  }
+
+
+  @media (max-width: 639px) {
+    .header {
+      padding-top: 0.5rem;
+    }
+    .header.lg\:pt-8 {
+      padding-top: 1rem;
+    }
+  }
+</style>
+
+<main class="relative pt-16 sm:pt-20">
+  <div class="hidden lg:block">
+    <Cursor />
+  </div>
+
+  <div class={`header ${$activeSection==='home' ? 'lg:pt-8' : 'pt-0'} ${$activeSection==='contact'|| $activeSection === 'footer'?'hidden transition-all duration-900':'block transition-all duration-900'} transition-all duration-900`}>
+    <Header />
+  </div>
+
+  <div id="home">
+    <Demo />
+  </div>
+
+  <div id="about" class="mt-0">
+    <Milestones />
+  </div>
+
+  <div id="service" class="mt-0">
+    <HowWeWork />
+  </div>
+
+  <div id="howWeWork" class="mt-0">
+    <Service />
+  </div>
+
+  <div id="contact" class="mt-0">
+    <Contact />
+  </div>
+
+  <div id="footer" class="mt-0">
+    <Footer />
+  </div>
 </main>
-<Service />
-<Performance />
-<Technology />
-<Footer />

@@ -1,191 +1,352 @@
 <script lang="ts">
-	type ROLES = {
-		name: string;
-		color: string;
-	};
-	type WORKS = {
-		workname: string;
-		img: string;
-		alt: string;
-	};
-	const ROLES: ROLES[] = [
-		{
-			name: 'Graphic Designer',
-			color: '#FFED8F'
-		},
-		{
-			name: 'UI/UX Designer',
-			color: '#FFED8F'
-		},
-		{
-			name: 'Business Analysts',
-			color: '#C5FCAB'
-		},
-		{
-			name: 'Product Designer',
-			color: '#C7C7C7'
-		},
-		{
-			name: 'App Developers',
-			color: '#C7C7C7'
-		},
-		{
-			name: 'Web Developers',
-			color: '#FFED8F'
-		},
-		{
-			name: 'Product Designer',
-			color: '#C5FCAB'
-		},
-		{
-			name: 'Brand Designer',
-			color: '#C5FCAB'
-		},
-		{
-			name: 'Data Analysts',
-			color: '#C7C7C7'
-		},
-		{
-			name: 'Co-Founder',
-			color: '#C7C7C7'
-		}
-	];
-
-	const WORKS: WORKS[] = [
-		{
-			workname: 'E-commerce',
-			img: '/assets/home/ecommerce.svg',
-			alt: 'E-commerce'
-		},
-		{
-			workname: 'Ship',
-			img: '/assets/home/ship.svg',
-			alt: 'Ship'
-		},
-		{
-			workname: 'Industries',
-			img: '/assets/home/industry.svg',
-			alt: 'Industries'
-		},
-		{
-			workname: 'Events',
-			img: '/assets/home/events.svg',
-			alt: 'E-commerce'
-		},
-		{
-			workname: 'Hardware',
-			img: '/assets/home/hardware.svg',
-			alt: 'Hardware'
-		},
-		{
-			workname: 'Automobile',
-			img: '/assets/home/automobiles.svg',
-			alt: 'Automobile'
-		},
-		{
-			workname: 'Health',
-			img: '/assets/home/health.svg',
-			alt: 'Health'
-		},
-		{
-			workname: 'Education',
-			img: '/assets/home/education.svg',
-			alt: 'Education'
-		},
-		{
-			workname: 'Real  Estates',
-			img: '/assets/home/realestate.svg',
-			alt: 'Real  Estates'
-		},
-		{
-			workname: 'Travel',
-			img: '/assets/home/travel.svg',
-			alt: 'Travel'
-		},
-		{
-			workname: 'Hospital',
-			img: '/assets/home/hospital.svg',
-			alt: 'Hospital'
-		},
-		{
-			workname: 'Capital',
-			img: '/assets/home/capital.svg',
-			alt: 'Capital'
-		}
-	];
-</script>
-
-<main class=" flex min-h-[90vh] w-full items-center">
-	<section
-		class="container mx-auto flex flex-col items-center justify-between px-4 sm:px-6 lg:flex-row lg:px-8"
-	>
-		<div class="order-1 text-center lg:order-1 lg:text-left">
-			<div
-				class="font-sharpbold text-[2rem] font-bold leading-loose text-[#000000] md:text-[3rem] dark:text-white"
-			>
-				<div class="flex items-center gap-5">
-					<span class=" h-6 w-6 rounded-full bg-[#E8505B] md:h-10 md:w-10"> </span>
-					<h1>Security</h1>
-				</div>
-				<div class="flex items-center gap-5">
-					<span class=" h-6 w-6 rounded-full bg-[#7F81FF] md:h-10 md:w-10"> </span>
-					<h1>Scalability</h1>
-				</div>
-				<div class="flex items-center gap-5">
-					<span class=" h-6 w-6 rounded-full bg-[#F55DCB] md:h-10 md:w-10"> </span>
-					<h1>Performance</h1>
-				</div>
-			</div>
-		</div>
-
-		<!-- svelte-ignore a11y-img-redundant-alt -->
-		<img
-			class="order-2 mt-8 w-full max-w-md lg:order-2 lg:mt-0 lg:max-w-lg"
-			src="/assets/home/performance.svg"
-			alt="performance image"
-		/>
-	</section>
-</main>
-<div class="container mx-auto mt-8 min-h-[100vh] w-full px-2 md:mt-0">
-	<div class="rounded-3xl border p-1 py-5 shadow-sm md:px-10 md:py-10">
-		<div>
-			<img src="/assets/home/departments.svg" class="h-full w-full" alt="" />
-		</div>
+	import { onMount } from 'svelte';
+	import { Motion } from 'svelte-motion';
+	import { writable } from 'svelte/store';
+  
+	// References to DOM elements
+	let sectionElement: HTMLElement | null = null;
+	let firstRowElement: HTMLElement | null = null;
+	let thirdRowElement: HTMLElement | null = null;
+  
+	// Reactive scroll position
+	const scrollY = writable(0);
+  
+	// Reactive variables for row positions
+	let firstRowTop = 0;
+	let firstRowBottom = 0;
+	let thirdRowTop = 0;
+	let windowHeight = 0;
+  
+	// Debounce utility
+	function debounce<T extends (...args: any[]) => void>(func: T, wait: number): (...args: Parameters<T>) => void {
+	  let timeout: number | undefined;
+	  return (...args: Parameters<T>) => {
+		clearTimeout(timeout);
+		timeout = setTimeout(() => func(...args), wait);
+	  };
+	}
+  
+	onMount(() => {
+	  const updatePositions = () => {
+		if (!firstRowElement || !thirdRowElement || !sectionElement) return;
+  
+		const firstRowRect = firstRowElement.getBoundingClientRect();
+		const thirdRowRect = thirdRowElement.getBoundingClientRect();
+		const scrollPosition = window.scrollY;
+  
+		firstRowTop = firstRowRect.top + scrollPosition - 220;
+		firstRowBottom = firstRowRect.bottom + scrollPosition;
+		thirdRowTop = thirdRowRect.top - 130 + scrollPosition;
+		windowHeight = window.innerHeight;
+	  };
+  
+	  // Initial update
+	  updatePositions();
+  
+	  // Handle scroll with requestAnimationFrame
+	  let rafId: number;
+	  const handleScroll = () => {
+		cancelAnimationFrame(rafId);
+		rafId = requestAnimationFrame(() => {
+		  scrollY.set(window.scrollY);
+		});
+	  };
+  
+	  // Debounced scroll and resize handlers
+	  const debouncedScroll = debounce(handleScroll, 10);
+	  const debouncedResize = debounce(updatePositions, 100);
+  
+	  // Event listeners
+	  window.addEventListener('scroll', debouncedScroll);
+	  window.addEventListener('resize', debouncedResize);
+  
+	  return () => {
+		window.removeEventListener('scroll', debouncedScroll);
+		window.removeEventListener('resize', debouncedResize);
+		cancelAnimationFrame(rafId);
+	  };
+	});
+  
+	// Calculate hand position and style
+	$: handPosition = $scrollY < firstRowTop
+	  ? 90
+	  : $scrollY >= thirdRowTop - windowHeight
+	  ? thirdRowTop - firstRowTop
+	  : windowHeight - 940; // Adjust based on hand height
+  
+	$: positionStyle = $scrollY >= firstRowTop && $scrollY < thirdRowTop - windowHeight
+	  ? { position: 'fixed', bottom: '0px', top: 'auto' }
+	  : { position: 'absolute', bottom: 'auto', top: `${handPosition}px` };
+  
+	// Smooth pulse effect
+	$: pulseEffect = $scrollY >= thirdRowTop - windowHeight ? { scale: 1.05 } : { scale: 1 };
+  </script>
+  
+  <section
+	bind:this={sectionElement}
+	class="relative min-h-screen overflow-hidden pt-24 pb-24"
+  >
+	<!-- Hand and Video Overlay -->
+	<div class="absolute inset-0 flex flex-col z-10 hand-wrapper">
+	  <Motion
+		let:motion
+		animate={{ top: positionStyle.top, bottom: positionStyle.bottom, ...pulseEffect }}
+		transition={{ duration: 0.1, ease: 'easeOut' }}
+	  >
 		<div
-			class="font-sharpsemibold mt-10 grid grid-cols-2 gap-2 md:grid-cols-4 md:gap-5 lg:grid-cols-5"
+		  use:motion
+		  class="mx-auto w-full flex items-center justify-center h-[940px] 2xl:h-[840px] xl:h-[740px] lg:h-[600px] md:h-[500px] sm:h-[380px] xs:h-[350px] overflow-hidden pointer-events-none hand-container"
+		  style="position: {positionStyle.position}; will-change: transform, position, top, bottom;"
 		>
-			{#each ROLES as role}
-				<span
-					style="background-color: {role.color};"
-					class="{`whitespace-nowrap rounded-full border-[1px] border-[#000000] px-2.5 py-2 text-center text-xs transition-all duration-150 hover:scale-110 md:text-base lg:text-lg dark:text-[#000000] `}}"
-				>
-					{role.name}
-				</span>
-			{/each}
+		  <img
+			alt="hand holding phone"
+			src="/hand.png"
+			class="flex-shrink-0 w-[1870px] 2xl:w-[1670px] xl:w-[1589.5px] lg:w-[1300px] md:w-[1028.5px] sm:w-[770px] xs:w-[700px] h-auto object-cover object-center-top relative hand-image"
+		  />
+		  <div class="absolute z-[2] w-[348px] 2xl:w-[320px] xl:w-[297px] lg:w-[240px] md:w-[193px] sm:w-[145px] xs:w-[130px] h-[741px] 2xl:h-[675px] xl:h-[630px] lg:h-[510px] md:h-[405px] sm:h-[305px] xs:h-[275px] top-8 2xl:top-8 xl:top-[48px] lg:top-[40px] md:top-[31px] sm:top-[23px] xs:top-[20px] rounded-[42px] 2xl:rounded-[42px] xl:rounded-[35px] lg:rounded-[30px] md:rounded-[22px] sm:rounded-[18px] xs:rounded-[16px] video-container">
+			<video
+			  src="/phone.mp4"
+			  playsinline
+			  autoplay
+			  muted
+			  loop
+			  class="w-full h-full object-cover object-center rounded-[inherit]"
+			></video>
+		  </div>
 		</div>
+	  </Motion>
 	</div>
-
-	<div class="font-sharpbold mt-5 text-center md:mt-20">
-		<div class="my-4 text-2xl text-[#6D31B9] md:my-8 md:text-3xl">
-			<h1>Expertise</h1>
-		</div>
-		<div class="text-lg leading-normal md:text-4xl">
-			<h1>Industries where our expertise has <br /> been applied.</h1>
-		</div>
-	</div>
-
-	<div class="my-6 md:my-10">
+  
+	<!-- Grid Layout -->
+	<div class="relative z-[1] mt-0 w-full screens-container">
+	  <div class="max-w-full overflow-hidden flex flex-col justify-center">
+		<!-- First Row -->
 		<div
-			class="grid grid-cols-2 items-center justify-center gap-5 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-6"
+		  bind:this={firstRowElement}
+		  class="flex justify-center gap-3.2 px-2.5"
 		>
-			{#each WORKS as work}
-				<div class="flex flex-col items-center justify-center gap-y-5">
-					<img src={work.img} class="h-16 w-16" style="object-fit: contain;" alt={work.alt} />
-					<h1 class="font-sharpbold text-center text-sm text-[#000000] md:text-lg dark:text-white">
-						{work.workname}
-					</h1>
-				</div>
-			{/each}
+		  <div class="m-3.2 flex-shrink-0 relative rounded-[44px] overflow-hidden">
+			<img src="/screen1.png" alt="Health Overview" class="rounded-[inherit] object-cover object-center w-[365px] 2xl:w-[365px] xl:w-[310.25px] lg:w-[260px] md:w-[200.75px] sm:w-[150px] xs:w-[130px] h-[770px] 2xl:h-[770px] xl:h-[654.5px] lg:h-[550px] md:h-[423.5px] sm:h-[310px] xs:h-[275px] screen-image" />
+		  </div>
+		  <div class="m-3.2 flex-shrink-0 relative rounded-[44px] overflow-hidden">
+			<img src="/screen2.png" alt="Smart Hub" class="rounded-[inherit] object-cover object-center w-[365px] 2xl:w-[365px] xl:w-[310.25px] lg:w-[260px] md:w-[200.75px] sm:w-[150px] xs:w-[130px] h-[770px] 2xl:h-[770px] xl:h-[654.5px] lg:h-[550px] md:h-[423.5px] sm:h-[310px] xs:h-[275px] screen-image" />
+		  </div>
+		  <div class="m-3.2 flex-shrink-0 relative min-h-[770px] 2xl:min-h-[770px] xl:min-h-[654.5px] lg:min-h-[550px] md:min-h-[423.5px] sm:min-h-[310px] xs:min-h-[275px] w-[365px] 2xl:w-[365px] xl:w-[310.25px] lg:w-[260px] md:w-[200.75px] sm:w-[150px] xs:w-[130px] z-0 hand-alignment"></div>
+		  <div class="m-3.2 flex-shrink-0 relative rounded-[44px] overflow-hidden">
+			<img src="/screen1.png" alt="Screen 1" class="rounded-[inherit] object-cover object-center w-[365px] 2xl:w-[365px] xl:w-[310.25px] lg:w-[260px] md:w-[200.75px] sm:w-[150px] xs:w-[130px] h-[770px] 2xl:h-[770px] xl:h-[654.5px] lg:h-[550px] md:h-[423.5px] sm:h-[310px] xs:h-[275px] screen-image" />
+		  </div>
+		  <div class="m-3.2 flex-shrink-0 relative rounded-[44px] overflow-hidden">
+			<img src="/screen2.png" alt="Screen 2" class="rounded-[inherit] object-cover object-center w-[365px] 2xl:w-[365px] xl:w-[310.25px] lg:w-[260px] md:w-[200.75px] sm:w-[150px] xs:w-[130px] h-[770px] 2xl:h-[770px] xl:h-[654.5px] lg:h-[550px] md:h-[423.5px] sm:h-[310px] xs:h-[275px] screen-image" />
+		  </div>
 		</div>
+  
+		<!-- Second Row -->
+		<div class="flex justify-center gap-3.2 px-2.5">
+		  <div class="m-3.2 flex-shrink-0 relative rounded-[44px] overflow-hidden">
+			<img src="/screen1.png" alt="Screen 3" class="rounded-[inherit] object-cover object-center w-[365px] 2xl:w-[365px] xl:w-[310.25px] lg:w-[260px] md:w-[200.75px] sm:w-[150px] xs:w-[130px] h-[770px] 2xl:h-[770px] xl:h-[654.5px] lg:h-[550px] md:h-[423.5px] sm:h-[310px] xs:h-[275px] screen-image" />
+		  </div>
+		  <div class="m-3.2 flex-shrink-0 relative rounded-[44px] overflow-hidden">
+			<img src="/screen2.png" alt="Screen 4" class="rounded-[inherit] object-cover object-center w-[365px] 2xl:w-[365px] xl:w-[310.25px] lg:w-[260px] md:w-[200.75px] sm:w-[150px] xs:w-[130px] h-[770px] 2xl:h-[770px] xl:h-[654.5px] lg:h-[550px] md:h-[423.5px] sm:h-[310px] xs:h-[275px] screen-image" />
+		  </div>
+		  <div class="m-3.2 flex-shrink-0 relative min-h-[770px] 2xl:min-h-[770px] xl:min-h-[654.5px] lg:min-h-[550px] md:min-h-[423.5px] sm:min-h-[310px] xs:min-h-[275px] w-[365px] 2xl:w-[365px] xl:w-[310.25px] lg:w-[260px] md:w-[200.75px] sm:w-[150px] xs:w-[130px] z-0 hand-alignment"></div>
+		  <div class="m-3.2 flex-shrink-0 relative rounded-[44px] overflow-hidden">
+			<img src="/screen1.png" alt="Screen 5" class="rounded-[inherit] object-cover object-center w-[365px] 2xl:w-[365px] xl:w-[310.25px] lg:w-[260px] md:w-[200.75px] sm:w-[150px] xs:w-[130px] h-[770px] 2xl:h-[770px] xl:h-[654.5px] lg:h-[550px] md:h-[423.5px] sm:h-[310px] xs:h-[275px] screen-image" />
+		  </div>
+		  <div class="m-3.2 flex-shrink-0 relative rounded-[44px] overflow-hidden">
+			<img src="/screen2.png" alt="Screen 6" class="rounded-[inherit] object-cover object-center w-[365px] 2xl:w-[365px] xl:w-[310.25px] lg:w-[260px] md:w-[200.75px] sm:w-[150px] xs:w-[130px] h-[770px] 2xl:h-[770px] xl:h-[654.5px] lg:h-[550px] md:h-[423.5px] sm:h-[310px] xs:h-[275px] screen-image" />
+		  </div>
+		</div>
+  
+		<!-- Third Row -->
+		<div
+		  bind:this={thirdRowElement}
+		  class="flex justify-center gap-3.2 px-2.5"
+		>
+		  <div class="m-3.2 flex-shrink-0 relative rounded-[44px] overflow-hidden">
+			<img src="/screen1.png" alt="Screen 7" class="rounded-[inherit] object-cover object-center w-[365px] 2xl:w-[365px] xl:w-[310.25px] lg:w-[260px] md:w-[200.75px] sm:w-[150px] xs:w-[130px] h-[770px] 2xl:h-[770px] xl:h-[654.5px] lg:h-[550px] md:h-[423.5px] sm:h-[310px] xs:h-[275px] screen-image" />
+		  </div>
+		  <div class="m-3.2 flex-shrink-0 relative rounded-[44px] overflow-hidden">
+			<img src="/screen2.png" alt="Screen 8" class="rounded-[inherit] object-cover object-center w-[365px] 2xl:w-[365px] xl:w-[310.25px] lg:w-[260px] md:w-[200.75px] sm:w-[150px] xs:w-[130px] h-[770px] 2xl:h-[770px] xl:h-[654.5px] lg:h-[550px] md:h-[423.5px] sm:h-[310px] xs:h-[275px] screen-image" />
+		  </div>
+		  <div class="m-3.2 flex-shrink-0 relative min-h-[770px] 2xl:min-h-[770px] xl:min-h-[654.5px] lg:min-h-[550px] md:min-h-[423.5px] sm:min-h-[310px] xs:min-h-[275px] w-[365px] 2xl:w-[365px] xl:w-[310.25px] lg:w-[260px] md:w-[200.75px] sm:w-[150px] xs:w-[130px] z-0 hand-alignment"></div>
+		  <div class="m-3.2 flex-shrink-0 relative rounded-[44px] overflow-hidden">
+			<img src="/screen1.png" alt="Screen 9" class="rounded-[inherit] object-cover object-center w-[365px] 2xl:w-[365px] xl:w-[310.25px] lg:w-[260px] md:w-[200.75px] sm:w-[150px] xs:w-[130px] h-[770px] 2xl:h-[770px] xl:h-[654.5px] lg:h-[550px] md:h-[423.5px] sm:h-[310px] xs:h-[275px] screen-image" />
+		  </div>
+		  <div class="m-3.2 flex-shrink-0 relative rounded-[44px] overflow-hidden">
+			<img src="/screen2.png" alt="Screen 10" class="rounded-[inherit] object-cover object-center w-[365px] 2xl:w-[365px] xl:w-[310.25px] lg:w-[260px] md:w-[200.75px] sm:w-[150px] xs:w-[130px] h-[770px] 2xl:h-[770px] xl:h-[654.5px] lg:h-[550px] md:h-[423.5px] sm:h-[310px] xs:h-[275px] screen-image" />
+		  </div>
+		</div>
+	  </div>
 	</div>
-</div>
+  
+	<!-- Content Beyond -->
+	<div class="p-5 bg-transparent"></div>
+  </section>
+  
+  <style>
+	:global(body) {
+	  margin: 0;
+	  padding: 0;
+	  overflow-x: hidden;
+	}
+  
+	/* Custom spacing for Tailwind's gap-3.2 */
+	.gap-3\.2 {
+	  gap: 12.8px;
+	}
+  
+	.m-3\.2 {
+	  margin: 12.8px;
+	}
+  
+	.px-2\.5 {
+	  padding-left: 10px;
+	  padding-right: 10px;
+	}
+  
+	/* Responsive overrides for precise pixel values */
+	@media (max-width: 1536px) {
+	  .hand-container {
+		height: 840px !important;
+	  }
+	  .hand-image {
+		width: 1670px !important;
+	  }
+	  .video-container {
+		width: 320px !important;
+		height: 675px !important;
+		top: 8px !important;
+		border-radius: 42px !important;
+	  }
+	  .screen-image {
+		width: 365px !important;
+		height: 770px !important;
+	  }
+	  .hand-alignment {
+		min-height: 770px !important;
+		width: 365px !important;
+	  }
+	}
+  
+	@media (max-width: 1280px) {
+	  .hand-container {
+		height: 740px !important;
+	  }
+	  .hand-image {
+		width: 1589.5px !important;
+	  }
+	  .video-container {
+		width: 297px !important;
+		height: 630px !important;
+		top: 48px !important;
+		border-radius: 35px !important;
+	  }
+	  .screen-image {
+		width: 310.25px !important;
+		height: 654.5px !important;
+	  }
+	  .hand-alignment {
+		min-height: 654.5px !important;
+		width: 310.25px !important;
+	  }
+	}
+  
+	@media (max-width: 1024px) {
+	  .hand-container {
+		height: 600px !important;
+	  }
+	  .hand-image {
+		width: 1300px !important;
+	  }
+	  .video-container {
+		width: 240px !important;
+		height: 510px !important;
+		top: 40px !important;
+		border-radius: 30px !important;
+	  }
+	  .screen-image {
+		width: 260px !important;
+		height: 550px !important;
+	  }
+	  .hand-alignment {
+		min-height: 550px !important;
+		width: 260px !important;
+	  }
+	}
+  
+	@media (max-width: 768px) {
+	  .hand-container {
+		height: 500px !important;
+	  }
+	  .hand-wrapper {
+		top: -15px !important;
+		height: calc(100% + 15px) !important;
+	  }
+	  .hand-image {
+		width: 1028.5px !important;
+	  }
+	  .video-container {
+		width: 193px !important;
+		height: 405px !important;
+		top: 31px !important;
+		border-radius: 22px !important;
+	  }
+	  .screen-image {
+		width: 200.75px !important;
+		height: 423.5px !important;
+	  }
+	  .hand-alignment {
+		min-height: 423.5px !important;
+		width: 200.75px !important;
+	  }
+	  .screens-container {
+		margin-top: 150px !important;
+	  }
+	}
+  
+	@media (max-width: 640px) {
+	  .hand-container {
+		height: 380px !important;
+	  }
+	  .hand-image {
+		width: 770px !important;
+	  }
+	  .video-container {
+		width: 145px !important;
+		height: 305px !important;
+		top: 23px !important;
+		border-radius: 18px !important;
+	  }
+	  .screen-image {
+		width: 150px !important;
+		height: 310px !important;
+	  }
+	  .hand-alignment {
+		min-height: 310px !important;
+		width: 150px !important;
+	  }
+	}
+  
+	@media (max-width: 360px) {
+	  .hand-container {
+		height: 350px !important;
+	  }
+	  .hand-image {
+		width: 700px !important;
+	  }
+	  .video-container {
+		width: 130px !important;
+		height: 275px !important;
+		top: 20px !important;
+		border-radius: 16px !important;
+	  }
+	  .screen-image {
+		width: 130px !important;
+		height: 275px !important;
+	  }
+	  .hand-alignment {
+		min-height: 275px !important;
+		width: 130px !important;
+	  }
+	}
+  </style>
