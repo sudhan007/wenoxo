@@ -11,42 +11,53 @@
     const circleData = [
         {
             points: [
+                { label: "", isMain: false },
                 { label: "Deployment", isMain: false },
                 { label: "Monitoring", isMain: false },
                 { label: "Launch", isMain: true },
+                  { label: "", isMain: false },
                 { label: "Support", isMain: false },
                 { label: "", isMain: false },
+                { label: "", isMain: false },
 
             ]
         },
         {
             points: [
-                { label: "Front-End Development,", isMain: false },
+                
                 { label: "", isMain: false },
-                { label: "Backend Development", isMain: false },
-                { label: "Build", isMain: true },
-                { label: "", isMain: false },
-                { label: "Testing", isMain: false },
                 { label: "Quality Assurance", isMain: false },
-
+                { label: "Build", isMain: true },
+                { label: "Testing", isMain: false },
+                { label: "Front-End Development", isMain: false }, 
+                { label: "", isMain: false },
+                     { label: "Backend Development", isMain: false },
+                     
             ]
         },
         {
             points: [
-                { label: "Information Architecture", isMain: false },
+                { label: "", isMain: false },
+                { label: "Prototype", isMain: false },
+                { label: "Design", isMain: true },
+
+                { label: "Visual Design", isMain: false },
+                { label: "", isMain: false },
                 { label: "Wireframe", isMain: false },
                 { label: "", isMain: false },
-                { label: "Design", isMain: true },
-                { label: "Visual Design", isMain: false },
-                { label: "Prototype", isMain: false },
-                { label: "Test", isMain: false },
+                { label: "Information Architecture", isMain: false },
+                
  
             ]
         },
         {
             points: [
+                { label: "", isMain: false },
                 { label: "Discover", isMain: true },
+                
                 { label: "Business Goals", isMain: false },
+                { label: "", isMain: false },
+                { label: "", isMain: false },
                 { label: "User Requirements", isMain: false },
                 { label: "", isMain: false },
                 { label: "Market Research", isMain: false },
@@ -120,7 +131,7 @@
                                     point.isMain ? 'bg-blue-500 animate-pulse' : 
                                     point.label === "" ? 'bg-transparent' : 'bg-black'
                                 }`}></div>
-                                <span class={`${$hoveredCircle===circleIndex?'text-black':'text-gray-500'} absolute z-50 whitespace-nowrap  text-sm font-semibold text-black left-4 top-1/2 transform -translate-y-1/2`}>
+                                <span class={`${$hoveredCircle===circleIndex?'text-black':'text-gray-500'} absolute z-50   text-sm font-semibold text-black left-4 top-1/2 transform -translate-y-1/2`}>
                                     {point.label}
                                 </span>
                             </div>

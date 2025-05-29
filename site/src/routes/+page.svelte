@@ -121,25 +121,38 @@
     pointer-events: none;
   }
 
-
+  html {
+      scroll-padding-top: 100px;
+    }
+    
+    #home, #about, #service, #howWeWork, #contact, #footer {
+      scroll-margin-top: 100px;
+    }
   @media (max-width: 639px) {
-    .header {
+    /* .header {
       padding-top: 0.5rem;
     }
     .header.lg\:pt-8 {
       padding-top: 1rem;
+    } */
+    html {
+      scroll-padding-top: 100px;
+    }
+    
+    #home, #about, #service, #howWeWork, #contact, #footer {
+      scroll-margin-top: 100px;
     }
   }
 </style>
 
-<main class="relative  pt-0">
-  <div class="hidden lg:block">
+<main class="relative">
+  <!-- <div class="hidden lg:block">
     <Cursor />
   </div>
 
-  <div class={`header ${$activeSection==='home' ? 'lg:pt-8 !pt-0' : 'pt-0'} ${$activeSection==='contact'|| $activeSection === 'footer'?'hidden transition-all duration-900':'block transition-all duration-900'} transition-all duration-900`}>
+  <div class={`header ${$activeSection==='home' ? 'lg:pt-8' : 'pt-0'} ${$activeSection==='contact'|| $activeSection === 'footer'?'hidden transition-all duration-900':'block transition-all duration-900'} transition-all duration-900`}>
     <Header />
-  </div>
+  </div> -->
 
   <div id="home">
     <Demo />
@@ -161,7 +174,4 @@
     <Contact />
   </div>
 
-  <div id="footer" class="mt-0">
-    <Footer />
-  </div>
 </main>

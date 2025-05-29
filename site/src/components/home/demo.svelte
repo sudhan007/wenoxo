@@ -4,12 +4,27 @@
     import { goto } from '$app/navigation';
     import { ArrowRight } from 'lucide-svelte';
     import Icon from '@iconify/svelte';
+    import Autoplay from "embla-carousel-autoplay";
+    import * as Carousel from "$lib/components/ui/carousel/index.js";
 
     let items: NodeListOf<HTMLElement>;
     let imgGroupContainer: HTMLElement;
     let homeSection: HTMLElement;
     let glassmorphismImage: HTMLImageElement;
 
+    // Carousel options with autoplay plugin
+    const carouselOpts = {
+        align: "start",
+        loop: true,
+    };
+
+    const autoplayPlugin = Autoplay({
+        delay: 2000,
+        stopOnInteraction: false,
+        stopOnMouseEnter: false,
+        stopOnFocusIn: false,
+    });
+ 
     // Text items for the text carousel
     const textItems = [
         'E-commerce',
@@ -89,16 +104,16 @@
     });
 </script>
 
-<article class="home-section relative" bind:this={homeSection}>
+<article class=" relative" bind:this={homeSection}>
     <img
         src="/images/glassmorphism.png"
-        class="glassmorphism-bg fixed transition-all duration-900 lg:w-full h-screen object-cover -z-10"
+        class="absolute object-cover py-10 md:py-0"
         alt=""
         loading="lazy"
     >
 
     <div class="flex container">
-        <section class="!sticky top-0 md:py-20 py-0 lg:py-0 lg:h-screen h-full flex flex-col items-center justify-center lg:w-[60%] w-full z-10">
+        <section class="!sticky top-0 py-20  lg:py-32  h-full flex flex-col items-center justify-center lg:w-[60%] w-full z-10">
             <div class="flex flex-col items-center lg:items-start">
                 <h1 class="xl:text-6xl font-sharp-bold lg:text-5xl text-3xl font-bold my-10 text-center lg:text-left !leading-tight">
                     Shape Your Ideas into Boundless Digital Experiences
@@ -120,12 +135,12 @@
                         Client Centric
                     </p>
                 </div>
-                <button on:click={() => goto('/#howWeWork')} class="bg-[#0B63E5] mb-6 font-medium rounded-lg px-8 py-3 text-white">
+                <button on:click={() => goto('/#howWeWork')} class="bg-[#0B63E5] mb-6 lg:my-10  font-medium rounded-lg px-8 py-3 text-white">
                     Explore
                 </button>
             </div>
             <!-- Text carousel with CSS animation -->
-            <div class="text-carousel-container lg:block hidden  overflow-hidden">
+            <div class="text-carousel-container lg:pt-14 lg:block hidden  overflow-hidden">
                 <div class="text-carousel flex whitespace-nowrap">
                     {#each textItems as text, index}
                         <div class="text-item inline-block px-4">
@@ -185,7 +200,28 @@
             </div>
         </section>
 
-        <section class="img-group-container hidden lg:block z-30 py-32 relative w-[40%]" bind:this={imgGroupContainer}>
+        <section class=" hidden lg:block z-30 pb-32 relative w-[40%]">
+            <Carousel.Root 
+                orientation="vertical"
+                opts={carouselOpts}
+                plugins={[autoplayPlugin]}
+                class="w-full"
+            >
+                <Carousel.Content class="h-screen">
+                    {#each Array(5) as _, i}
+                        <Carousel.Item class="flex items-center justify-center">
+                            <img 
+                                src={`/pictures/d${i + 1}.png`} 
+                                class="w-full max-h-[600px] object-contain" 
+                                alt={`Design ${i + 1}`}
+                                loading="lazy"
+                            />
+                        </Carousel.Item>
+                    {/each}
+                </Carousel.Content>
+            </Carousel.Root>
+        </section>
+        <!-- <section class="img-group-container hidden lg:block z-30 py-32 relative w-[40%]" bind:this={imgGroupContainer}>
             <div class="sticky top-0 overflow-hidden h-[100vh]">
                 <ul class="img-group flex flex-col items-center justify-center gap-10">
                     {#each Array(5) as _, i}
@@ -195,7 +231,7 @@
                     {/each}
                 </ul>
             </div>
-        </section>
+        </section> -->
     </div>
 </article>
 

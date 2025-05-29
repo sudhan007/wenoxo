@@ -2,6 +2,7 @@
 	import { goto } from '$app/navigation';
 	import { onMount } from 'svelte';
 	import { activeSection } from '$lib/stores';
+	import { page } from '$app/stores';
   
 	let isMenuOpen = false;
 	/**
@@ -43,15 +44,36 @@
 	  { id: 'about', label: 'About Us', icon: 'mdi:information' },
 	  { id: 'service', label: 'Services', icon: 'mdi:folder' },
 	  { id: 'howWeWork', label: 'How We Work', icon: 'mdi:cog' },
+	  { id: 'projects', label: 'Our Projects', icon: 'material-symbols:web-stories' },
 	];
+
+	// Function to check if a nav item should be active
+	const isActive = (itemId) => {
+		// If we're on the projects page, only projects should be active
+		if ($page.url.pathname === '/projects'|| $page.url.pathname.startsWith('/projects/')) {
+			return itemId === 'projects';
+		}
+		// If we're on the home page, check activeSection
+		return $activeSection === itemId;
+	};
+
+	// Function to handle navigation
+	const handleNavigation = (itemId) => {
+		if (itemId === 'projects') {
+			goto('/projects');
+		} else {
+			goto(`/#${itemId}`);
+		}
+		closeMenu();
+	};
   </script>
   
   <svelte:head>
 	<script src="https://code.iconify.design/iconify-icon/1.0.7/iconify-icon.min.js"></script>
   </svelte:head>
   
-  <header class="flex !p-0 !m-0 justify-center items-center">
-	<section class="lg:rounded-xl lg:max-w-5xl !w-screen lg:container justify-center border-b flex items-center shadow-sm shadow-[#061C3D0D] bg-white px-4 md:px-10 h-16 ">
+  <header class="flex z-50 !p-0 !m-0 justify-center items-center">
+	<section class="lg:rounded-xl lg:max-w-6xl !w-screen lg:container justify-center border-b flex items-center shadow-sm shadow-[#061C3D0D] bg-white px-4 md:px-10 h-16">
 	  <nav class="flex w-full items-center justify-between h-full">
 		<!-- Logo -->
 		<div>
@@ -66,13 +88,13 @@
 			{#each navItems as item}
 			  <li>
 				<a
-				  href={`/#${item.id}`}
-				  on:click={() => { goto(`/#${item.id}`); closeMenu(); }}
+				  href={`${item.id==='projects' ? '/projects' : `/#${item.id}`}`}
+				  on:click|preventDefault={() => handleNavigation(item.id)}
 				  class="relative text-sm md:text-base lg:text-lg font-medium text-[#838E9E] hover:text-[#0B63E5] transition-colors duration-300 cursor-pointer px-2 py-1"
-				  class:active={$activeSection === item.id}
+				  class:active={isActive(item.id)}
 				>
 				  {item.label}
-				  {#if $activeSection === item.id}
+				  {#if isActive(item.id)}
 					<span class="absolute bottom-0 left-0 w-full h-0.5 bg-[#0B63E5] rounded-full -mb-1 transition-all duration-300"></span>
 				  {/if}
 				</a>
@@ -97,7 +119,7 @@
 			icon={isMenuOpen ? 'line-md:menu-to-close-transition' : 'line-md:close-to-menu-transition'}
 			width="28"
 			height="28"
-			class="text-[#0B63E5]"
+			class="text-[#0B63E5] z-50"
 		  ></iconify-icon>
 		</div>
 	  </nav>
@@ -107,21 +129,32 @@
 	{#if isMenuOpen}
 	  <div
 		bind:this={menuRef}
-		class="fixed top-16 right-0 w-64 bg-white shadow-lg h-[calc(100vh-4rem)] z-50 transition-transform duration-300 md:hidden"
+		class="fixed top-0 right-0 w-64 bg-white shadow-lg h-[calc(100vh)] z-40 transition-transform duration-300 md:hidden"
 	  >
-		<div class="p-6">
+		<div class="p-6 mt-[3rem]">
+		  <!-- Close Icon -->
+		  <div class="absolute top-4 right-4 z-50">
+			<iconify-icon
+			  icon="line-md:close"
+			  width="24"
+			  height="24"
+			  class="text-[#0B63E5] cursor-pointer"
+			  on:click={closeMenu}
+			></iconify-icon>
+		  </div>
+  
 		  <ul class="flex flex-col gap-6">
 			{#each navItems as item}
 			  <li>
 				<a
-				  href={`/#${item.id}`}
-				  on:click={() => { goto(`/#${item.id}`); closeMenu(); }}
+				  href={`${item.id==='projects' ? '/projects' : `/#${item.id}`}`}
+				  on:click|preventDefault={() => handleNavigation(item.id)}
 				  class="relative text-base font-medium text-[#838E9E] hover:text-[#0B63E5] transition-colors duration-300 flex items-center gap-3"
-				  class:active={$activeSection === item.id}
+				  class:active={isActive(item.id)}
 				>
 				  <iconify-icon icon={item.icon} width="20" height="20"></iconify-icon>
 				  <p>{item.label}</p>
-				  {#if $activeSection === item.id}
+				  {#if isActive(item.id)}
 					<span class="absolute bottom-0 left-0 w-full h-0.1 bg-[#0B63E5] rounded-full "></span>
 				  {/if}
 				</a>
@@ -139,7 +172,7 @@
 		</div>
 	  </div>
 	  <div
-		class="fixed inset-0 bg-black bg-opacity-50 z-40 md:hidden"
+		class="fixed inset-0 h-screen bg-black bg-opacity-50 z-30 md:hidden"
 		on:click={closeMenu}
 	  ></div>
 	{/if}
