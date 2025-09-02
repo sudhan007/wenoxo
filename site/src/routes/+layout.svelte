@@ -7,6 +7,7 @@
 	import Cursor from '@/components/shared/Cursor.svelte';
 	import { onMount } from 'svelte';
 	import Footer from '@/components/shared/Footer.svelte';
+	import Contact from '@/components/home/contact.svelte';
 
   let isHomeSectionInView = true;
   let isContactSectionInView = false;
@@ -100,6 +101,11 @@
     }
   });
   $: isProjectsPage = $page.url.pathname.startsWith('/projects');
+  $: isCareersPage = $page.url.pathname.startsWith('/careers');
+  $: isAboutPage = $page.url.pathname.startsWith('/about_us');
+  $:isServicePage = $page.url.pathname.startsWith('/our_services');
+  $:isHowWeWorkPage = $page.url.pathname.startsWith('/how_we_work');
+
 </script>
 
 <title>Wenoxo Technologies</title>
@@ -152,8 +158,8 @@
 	</div>
   
 	<div
-	  class={`header ${$activeSection === 'home'||isProjectsPage ? 'lg:pt-8' : 'pt-0'}  ${
-		($activeSection === 'contact' || $activeSection === 'footer') && !isProjectsPage
+	  class={`header ${$activeSection === 'home'||isProjectsPage||isCareersPage||isAboutPage||isServicePage||isHowWeWorkPage  ? 'lg:pt-8 ' : 'pt-0'}  ${
+		($activeSection === 'contact' || $activeSection === 'footer') && !isProjectsPage && !isCareersPage && !isAboutPage && !isServicePage && !isHowWeWorkPage
 		  ? 'hidden transition-all duration-900'
 		  : 'block transition-all duration-900'
 	  } transition-all duration-900`}
@@ -161,6 +167,10 @@
 	  <Header />
 	</div>
   
+  <div id="contact" class="mt-0">
+    <Contact />
+  </div>
+
 	<div id="footer" class="mt-0">
 	  <Footer />
 	</div>

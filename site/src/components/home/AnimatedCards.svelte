@@ -138,7 +138,7 @@
                 <p
                     class="text-3xl sm:text-4xl md:text-5xl lg:text-6xl mt-6 sm:mt-8 font-bold text-gray-900"
                 >
-                    {i === 0 ? '300' : i === 1 ? '12+' : i === 2 ? '10+' : '150'}
+                    {i === 0 ? '52+' : i === 1 ? '7+' : i === 2 ? '15+' : '23+'}
                 </p>
                 <p class="text-sm sm:text-base md:text-lg pt-6 sm:pt-8 md:pt-10 text-gray-600">
                     {i === 0

@@ -1,6 +1,6 @@
 <script lang="ts">
     import { onMount } from 'svelte';
-    import { animate, scroll } from 'https://cdn.jsdelivr.net/npm/motion@12.12.0/+esm';
+    // import { animate, scroll } from 'https://cdn.jsdelivr.net/npm/motion@12.12.0/+esm';
     import { goto } from '$app/navigation';
     import { ArrowRight } from 'lucide-svelte';
     import Icon from '@iconify/svelte';
@@ -35,82 +35,94 @@
         'Logistics'
     ];
     const imageSources = [
-        '/pictures/d1.png',
-        '/pictures/d2.png',
-        '/pictures/d3.png',
-        '/pictures/d4.png',
-        '/pictures/d5.png',
+        '/pictures/d1.webp',
+        '/pictures/d2.webp',
+        '/pictures/d3.webp',
+        '/pictures/d4.webp',
+        '/pictures/d5.webp',
     ];
 
-    onMount(() => {
-        items = document.querySelectorAll('.img-container');
-        imgGroupContainer = document.querySelector('.img-group-container');
-        glassmorphismImage = document.querySelector('.glassmorphism-bg');
-        homeSection = document.querySelector('.home-section');
+    // onMount(() => {
+    //     items = document.querySelectorAll('.img-container');
+    //     imgGroupContainer = document.querySelector('.img-group-container');
+    //     glassmorphismImage = document.querySelector('.glassmorphism-bg');
+    //     homeSection = document.querySelector('.home-section');
 
-        if (items.length && imgGroupContainer) {
-            // Constants for image height and gap
-            const imageHeight = 600; // Matches max-h-[600px] in pixels
-            const gap = 40; // Gap between images in pixels
-            const totalHeight = items.length * imageHeight + (items.length - 1) * gap; // Total height including gaps
+    //     if (items.length && imgGroupContainer) {
+    //         // Constants for image height and gap
+    //         const imageHeight = 600; // Matches max-h-[600px] in pixels
+    //         const gap = 40; // Gap between images in pixels
+    //         const totalHeight = items.length * imageHeight + (items.length - 1) * gap; // Total height including gaps
 
-            // Set the container height to match images + gaps
-            imgGroupContainer.style.height = `${totalHeight}px`;
+    //         // Set the container height to match images + gaps
+    //         imgGroupContainer.style.height = `${totalHeight}px`;
 
-            // Animate gallery vertically during vertical scroll
-            scroll(
-                animate('.img-group', {
-                    transform: ['none', `translateY(-${totalHeight - window.innerHeight}px)`],
-                }),
-                { target: imgGroupContainer }
-            );
+    //         // Animate gallery vertically during vertical scroll
+    //         // scroll(
+    //         //     animate('.img-group', {
+    //         //         transform: ['none', `translateY(-${totalHeight - window.innerHeight}px)`],
+    //         //     }),
+    //         //     { target: imgGroupContainer }
+    //         // );
 
-            // Progress bar representing gallery scroll
-            scroll(
-                animate('.progress', { scaleX: [0, 1] }),
-                { target: imgGroupContainer }
-            );
+    //         // Progress bar representing gallery scroll
+    //         // scroll(
+    //         //     animate('.progress', { scaleX: [0, 1] }),
+    //         //     { target: imgGroupContainer }
+    //         // );
 
-            // Handle background image visibility based on scroll position
-            const handleBackgroundVisibility = () => {
-                const homeSectionRect = homeSection.getBoundingClientRect();
-                const homeBottom = homeSectionRect.bottom;
+    //         // Handle background image visibility based on scroll position
+    //         const handleBackgroundVisibility = () => {
+    //             const homeSectionRect = homeSection.getBoundingClientRect();
+    //             const homeBottom = homeSectionRect.bottom;
 
-                // If we've scrolled past the home section
-                if (homeBottom <= 590) {
-                    glassmorphismImage.classList.remove('fixed');
-                    glassmorphismImage.classList.add('absolute')
-                    glassmorphismImage.classList.remove('transition-all');
-                    glassmorphismImage.classList.remove('duration-900');
-                } else {
-                    glassmorphismImage.classList.add('fixed');
-                    glassmorphismImage.classList.remove('absolute')
-                    glassmorphismImage.classList.add('transition-all');
-                    glassmorphismImage.classList.add('duration-900');
-                }
-            };
+    //             // If we've scrolled past the home section
+    //             if (homeBottom <= 590) {
+    //                 glassmorphismImage.classList.remove('fixed');
+    //                 glassmorphismImage.classList.add('absolute')
+    //                 glassmorphismImage.classList.remove('transition-all');
+    //                 glassmorphismImage.classList.remove('duration-900');
+    //             } else {
+    //                 glassmorphismImage.classList.add('fixed');
+    //                 glassmorphismImage.classList.remove('absolute')
+    //                 glassmorphismImage.classList.add('transition-all');
+    //                 glassmorphismImage.classList.add('duration-900');
+    //             }
+    //         };
 
-            // Listen for scroll events to handle background visibility
-            window.addEventListener('scroll', handleBackgroundVisibility);
+    //         // Listen for scroll events to handle background visibility
+    //         window.addEventListener('scroll', handleBackgroundVisibility);
 
-            // Initial check
-            handleBackgroundVisibility();
+    //         // Initial check
+    //         handleBackgroundVisibility();
 
-            // Cleanup
-            return () => {
-                window.removeEventListener('scroll', handleBackgroundVisibility);
-            };
-        }
-    });
+    //         // Cleanup
+    //         return () => {
+    //             window.removeEventListener('scroll', handleBackgroundVisibility);
+    //         };
+    //     }
+    // });
 </script>
 
 <article class=" relative" bind:this={homeSection}>
-    <img
-        src="/images/glassmorphism.png"
+    <!-- <img
+        src="/images/glassmorphism.webp"
         class="absolute object-cover py-10 md:py-0"
         alt=""
         loading="lazy"
-    >
+    > -->
+    <div class="absolute w-full h-screen overflow-hidden">
+        <div class="absolute top-[0%] left-0 w-full h-[60%] flex">
+          <div class="w-1/4" style="background: radial-gradient(ellipse at top, rgba(96, 165, 250, 0.2), transparent 85%);"></div>
+          <div class="w-1/4" style="background: radial-gradient(ellipse at top, rgba(255, 165, 0, 0.2), transparent 87%);"></div>
+          <div class="w-1/4" style="background: radial-gradient(ellipse at top, rgba(255, 105, 180, 0.2), transparent 89%);"></div>
+          <div class="w-1/4" style="background: radial-gradient(ellipse at top, rgba(147, 112, 219, 0.2), transparent 90%);"></div>
+        </div>
+      </div>
+      
+    
+
+
 
     <div class="flex container">
         <section class="!sticky top-0 py-20  lg:py-32  h-full flex flex-col items-center justify-center lg:w-[60%] w-full z-10">
@@ -211,9 +223,9 @@
                     {#each Array(5) as _, i}
                         <Carousel.Item class="flex items-center justify-center">
                             <img 
-                                src={`/pictures/d${i + 1}.png`} 
+                                src={`/pictures/d${i + 1}.webp`} 
                                 class="w-full max-h-[600px] object-contain" 
-                                alt={`Design ${i + 1}`}
+                                alt={`project ${i + 1}`}
                                 loading="lazy"
                             />
                         </Carousel.Item>

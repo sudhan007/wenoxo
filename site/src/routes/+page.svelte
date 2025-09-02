@@ -158,20 +158,20 @@
     <Demo />
   </div>
 
-  <div id="about" class="mt-0">
+  <div  class="mt-0">
     <Milestones />
   </div>
 
-  <div id="service" class="mt-0">
+  <div  class="mt-0">
     <HowWeWork />
   </div>
 
-  <div id="howWeWork" class="mt-0">
+  <div  class="mt-0">
     <Service />
   </div>
 
-  <div id="contact" class="mt-0">
+  <!-- <div id="contact" class="mt-0">
     <Contact />
-  </div>
+  </div> -->
 
 </main>

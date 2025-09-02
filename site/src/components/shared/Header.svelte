@@ -21,7 +21,51 @@
 	const closeMenu = () => {
 	  isMenuOpen = false;
 	};
-  
+	const handleContactNavigation = async () => {
+    closeMenu();
+    
+    // Check if we're on the home page
+    if ($page.url.pathname !== '/') {
+        // We're on a different page, navigate to home first
+        await goto('/');
+        
+        // Wait for the DOM to be ready after navigation
+        await new Promise(resolve => setTimeout(resolve, 100));
+        
+        // Try to scroll multiple times with delays to ensure the element exists
+        const scrollToContact = () => {
+            const contactElement = document.getElementById('contact');
+            if (contactElement) {
+                contactElement.scrollIntoView({ 
+                    behavior: 'smooth',
+                    block: 'start' 
+                });
+                return true;
+            }
+            return false;
+        };
+        
+        // Try immediately first
+        if (!scrollToContact()) {
+            // If not found, try again after a short delay
+            setTimeout(() => {
+                if (!scrollToContact()) {
+                    // Try one more time with a longer delay
+                    setTimeout(scrollToContact, 500);
+                }
+            }, 200);
+        }
+    } else {
+        // We're already on the home page, just scroll
+        const contactElement = document.getElementById('contact');
+        if (contactElement) {
+            contactElement.scrollIntoView({ 
+                behavior: 'smooth',
+                block: 'start' 
+            });
+        }
+    }
+};
 	onMount(() => {
 	  const handleClickOutside = (event) => {
 		if (
@@ -45,23 +89,45 @@
 	  { id: 'service', label: 'Services', icon: 'mdi:folder' },
 	  { id: 'howWeWork', label: 'How We Work', icon: 'mdi:cog' },
 	  { id: 'projects', label: 'Our Projects', icon: 'material-symbols:web-stories' },
+	//   { id: 'careers', label: 'Careers', icon: 'material-symbols:web-stories' },
 	];
 
 	// Function to check if a nav item should be active
-	const isActive = (itemId) => {
+	const isActive = (/** @type {string} */ itemId) => {
 		// If we're on the projects page, only projects should be active
 		if ($page.url.pathname === '/projects'|| $page.url.pathname.startsWith('/projects/')) {
 			return itemId === 'projects';
+		}
+		else if ($page.url.pathname === '/about_us'|| $page.url.pathname.startsWith('/about_us/')) {
+			return itemId === 'about';
+		}
+		else if ($page.url.pathname === '/our_services'|| $page.url.pathname.startsWith('/our_services/')) {
+			return itemId === 'service';
+		}
+		else if ($page.url.pathname === '/how_we_work'|| $page.url.pathname.startsWith('/how_we_work/')) {
+			return itemId === 'howWeWork';
 		}
 		// If we're on the home page, check activeSection
 		return $activeSection === itemId;
 	};
 
 	// Function to handle navigation
-	const handleNavigation = (itemId) => {
+	const handleNavigation = (/** @type {string} */ itemId) => {
 		if (itemId === 'projects') {
 			goto('/projects');
-		} else {
+		} 
+		else if(itemId==="careers"){
+			goto('/careers');
+		}
+		else if(itemId==="about"){
+			goto('/about_us');
+		}
+		else if(itemId==="service"){
+			goto('/our_services');
+		}
+		else if(itemId==="howWeWork"){
+			goto('/how_we_work');
+		}else {
 			goto(`/#${itemId}`);
 		}
 		closeMenu();
@@ -78,7 +144,7 @@
 		<!-- Logo -->
 		<div>
 		  <a href="/">
-			<img width={150} height={150} src={'/logo.png'} alt="Logo" />
+			<img width={150} height={150} src={'/logo.webp'} alt="Logo" />
 		  </a>
 		</div>
   
@@ -88,7 +154,7 @@
 			{#each navItems as item}
 			  <li>
 				<a
-				  href={`${item.id==='projects' ? '/projects' : `/#${item.id}`}`}
+				  href={`${item.id==='projects' ? '/projects' : item.id==='careers' ? '/careers' : `/#${item.id}`}`}
 				  on:click|preventDefault={() => handleNavigation(item.id)}
 				  class="relative text-sm md:text-base lg:text-lg font-medium text-[#838E9E] hover:text-[#0B63E5] transition-colors duration-300 cursor-pointer px-2 py-1"
 				  class:active={isActive(item.id)}
@@ -106,7 +172,7 @@
 		<!-- Contact Us Button - Desktop -->
 		<div class="hidden md:block">
 		  <button
-			on:click={() => { goto('/#contact'); closeMenu(); }}
+			on:click={() => { handleContactNavigation(); closeMenu(); }}
 			class="bg-[#0B63E5] whitespace-nowrap py-2 lg:py-3 rounded-lg px-4 lg:px-6 text-sm lg:text-base font-semibold text-white hover:bg-[#0950c1] transition-colors duration-300"
 		  >
 			Contact Us
@@ -147,7 +213,7 @@
 			{#each navItems as item}
 			  <li>
 				<a
-				  href={`${item.id==='projects' ? '/projects' : `/#${item.id}`}`}
+				  href={`${item.id==='projects' ? '/projects' : item.id==='careers' ? '/careers' : `/#${item.id}`}`}
 				  on:click|preventDefault={() => handleNavigation(item.id)}
 				  class="relative text-base font-medium text-[#838E9E] hover:text-[#0B63E5] transition-colors duration-300 flex items-center gap-3"
 				  class:active={isActive(item.id)}

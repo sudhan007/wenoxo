@@ -1,5 +1,6 @@
 <script lang="ts">
 	import { writable } from 'svelte/store';
+	import { toast } from 'svelte-sonner';
 
 	// Track focus state for each input
 	const focused = writable([false, false, false, false]); // [name, phone, email, message]
@@ -21,7 +22,7 @@
 	let servicesError = '';
 	let sectorsError = '';
 	let formMessage = '';
-	let formMessageType = ''; // 'success' or 'error'
+	let formMessageType = ''; 
 	const isSubmitting = writable(false);
 	
 	// List of available services
@@ -88,9 +89,10 @@
 	function validateName() {
 		if (!name.trim()) {
 			nameError = 'Please enter your name';
-		} else {
-			nameError = '';
+			return false;
 		}
+		nameError = '';
+		return true;
 	}
 
 	// Validate phone number (allow only digits)
@@ -101,11 +103,13 @@
 		
 		if (!numericValue) {
 			phoneError = 'Please enter your phone number';
+			return false;
 		} else if (numericValue.length < 10) {
 			phoneError = 'Please enter a valid phone number (at least 10 digits)';
-		} else {
-			phoneError = '';
+			return false;
 		}
+		phoneError = '';
+		return true;
 	}
 
 	// Validate email
@@ -113,55 +117,31 @@
 		const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 		if (!email.trim()) {
 			emailError = 'Please enter your email address';
+			return false;
 		} else if (!emailRegex.test(email)) {
 			emailError = 'Please enter a valid email address';
-		} else {
-			emailError = '';
+			return false;
 		}
+		emailError = '';
+		return true;
 	}
 
 	// Validate all fields
 	function validateAllFields() {
-		let isValid = true;
+		const isNameValid = validateName();
+		const isPhoneValid = validatePhone({ target: { value: phone } } as Event);
+		const isEmailValid = validateEmail();
+		const isServicesValid = $selectedServices.length > 0;
+		const isSectorsValid = $selectedSectors.length > 0;
 
-		// Validate name
-		if (!name.trim()) {
-			nameError = 'Please enter your name';
-			isValid = false;
-		}
-
-		// Validate phone
-		if (!phone) {
-			phoneError = 'Please enter your phone number';
-			isValid = false;
-		} else if (phone.length < 10) {
-			phoneError = 'Please enter a valid phone number (at least 10 digits)';
-			isValid = false;
-		}
-
-		// Validate email
-		const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-		if (!email.trim()) {
-			emailError = 'Please enter your email address';
-			isValid = false;
-		} else if (!emailRegex.test(email)) {
-			emailError = 'Please enter a valid email address';
-			isValid = false;
-		}
-
-		// Validate sectors
-		if ($selectedSectors.length === 0) {
-			sectorsError = 'Please select at least one business sector';
-			isValid = false;
-		}
-
-		// Validate services
-		if ($selectedServices.length === 0) {
+		if (!isServicesValid) {
 			servicesError = 'Please select at least one digital service';
-			isValid = false;
+		}
+		if (!isSectorsValid) {
+			sectorsError = 'Please select at least one business sector';
 		}
 
-		return isValid;
+		return isNameValid && isPhoneValid && isEmailValid && isServicesValid && isSectorsValid;
 	}
 
 	// Handle form submission
@@ -174,57 +154,49 @@
 
 		// Validate all fields
 		if (!validateAllFields()) {
-			formMessage = 'Please fill in all required fields correctly.';
-			formMessageType = 'error';
+			toast.error('Please fill in all required fields correctly.');
 			return;
 		}
 
 		isSubmitting.set(true);
 
-		const payload = {
-			service_id: 'service_70nfi2e',
-			template_id: 'template_hxj6cst',
-			user_id: '4neAUe9l0jy_Tyrus',
-			template_params: {
-				name: name,
-				phone: phone,
-				email: email,
-				message: message || 'No additional message provided',
-				services: $selectedServices.join(', '),
-				sectors: $selectedSectors.join(', ')
-			}
-		};
+		const formData = new FormData();
+		formData.append('name', name);
+		formData.append('phone', phone);
+		formData.append('email', email);
+		formData.append('message', message || 'No additional message provided');
+		formData.append('services', $selectedServices.join(', '));
+		formData.append('sectors', $selectedSectors.join(', '));
 
 		try {
-			// Send email using EmailJS
-			const response = await fetch('https://api.emailjs.com/api/v1.0/email/send', {
+			const response = await fetch('/api/send-email', {
 				method: 'POST',
-				headers: {
-					'Content-Type': 'application/json',
-				},
-				body: JSON.stringify(payload),
+				body: formData,
 			});
 
-			if (response.status === 200) {
-				formMessage = 'Your message has been sent successfully!';
-				formMessageType = 'success';
+			const responseData = await response.json();
+
+			if (response.ok) {
+				toast.success('Your message has been sent successfully! You will receive a confirmation email shortly.');
 				form.reset();
 				name = phone = email = message = '';
 				selectedServices.set([]);
 				selectedSectors.set([]);
-				// Clear all error messages
 				nameError = phoneError = emailError = servicesError = sectorsError = '';
+				formMessage = 'Your message has been sent successfully!';
+				formMessageType = 'success';
 			} else {
+				console.error('Server response:', responseData);
+				toast.error(responseData.error || 'Failed to send email. Please check console for details.');
 				formMessage = 'Failed to send message. Please try again.';
 				formMessageType = 'error';
 			}
 		} catch (error) {
 			console.error('Submission error:', error);
+			toast.error('An error occurred while sending the email.');
 			formMessage = 'An error occurred. Please try again later.';
 			formMessageType = 'error';
-		}
-		finally {
-			// Reset submitting state
+		} finally {
 			isSubmitting.set(false);
 		}
 	}
@@ -253,6 +225,7 @@
 								type="button"
 								class="py-2 px-4 rounded-full transition-colors duration-300 {$selectedSectors.includes(sector) ? 'bg-white text-black' : 'bg-gray-600/50 text-gray-400 hover:bg-gray-500/50 hover:text-white'}"
 								on:click={() => toggleSector(sector)}
+								disabled={$isSubmitting}
 							>
 								{sector}
 							</button>
@@ -273,6 +246,7 @@
 								type="button"
 								class="py-2 px-4 rounded-full transition-colors duration-300 {$selectedServices.includes(service) ? 'bg-white text-black' : 'bg-gray-600/50 text-gray-400 hover:bg-gray-500/50 hover:text-white'}"
 								on:click={() => toggleService(service)}
+								disabled={$isSubmitting}
 							>
 								{service}
 							</button>
@@ -283,13 +257,12 @@
 					{/if}
 				</div>
 				
-				<!-- Hidden input to store selected services -->
+				<!-- Hidden inputs to store selected services and sectors -->
 				<input
 					type="hidden"
 					name="services"
 					value={$selectedServices.join(',')}
 				/>
-				<!-- Hidden input to store selected sectors -->
 				<input
 					type="hidden"
 					name="sectors"
@@ -309,6 +282,7 @@
 							on:blur={() => { handleBlur(0); validateName(); }}
 							placeholder=" "
 							required
+							disabled={$isSubmitting}
 						/>
 						<label
 							for="name"
@@ -334,6 +308,7 @@
 							on:blur={() => handleBlur(1)}
 							placeholder=" "
 							required
+							disabled={$isSubmitting}
 						/>
 						<label
 							for="phone"
@@ -358,6 +333,7 @@
 							on:blur={() => { handleBlur(2); validateEmail(); }}
 							placeholder=" "
 							required
+							disabled={$isSubmitting}
 						/>
 						<label
 							for="email"
@@ -380,6 +356,7 @@
 							on:focus={() => handleFocus(3)}
 							on:blur={() => handleBlur(3)}
 							placeholder=" "
+							disabled={$isSubmitting}
 						></textarea>
 						<label
 							for="message"
