@@ -5,8 +5,8 @@ config();
 
 const VITE_RESEND_API_KEY = import.meta.env.VITE_RESEND_API_KEY;
 
-console.log('API Key loaded:', VITE_RESEND_API_KEY ? 'Yes' : 'No');
-console.log('API Key starts with:', VITE_RESEND_API_KEY?.substring(0, 10));
+console.log('API Key loaded111:', VITE_RESEND_API_KEY ? 'Yes' : 'No');
+console.log('API Key starts with:', VITE_RESEND_API_KEY);
 
 export async function POST({ request }: { request: Request }) {
   try {
@@ -55,13 +55,13 @@ export async function POST({ request }: { request: Request }) {
       } catch {
         errorData = { message: errorText };
       }
-      
+
       throw new Error(`Resend API error (admin email): Status ${adminRes.status} - ${JSON.stringify(errorData)}`);
     }
 
-   
+
     return json(
-      { success: true, data: { admin: adminData }},
+      { ok: true },
       { status: 200 }
     );
   } catch (error: any) {
