@@ -1,12 +1,12 @@
 import { json } from '@sveltejs/kit';
 import { config } from 'dotenv';
-import { VITE_RESEND_API_KEY } from '$env/static/private';
+import { RESEND_API_KEY } from '$env/static/private';
 config();
 
 // const VITE_RESEND_API_KEY = import.meta.env.VITE_RESEND_API_KEY;
 
-console.log('API Key loaded111:', VITE_RESEND_API_KEY ? 'Yes' : 'No');
-console.log('API Key starts with:', VITE_RESEND_API_KEY);
+console.log('API Key loaded111:', RESEND_API_KEY ? 'Yes' : 'No');
+console.log('API Key starts with:', RESEND_API_KEY);
 
 export async function POST({ request }: { request: Request }) {
   try {
@@ -36,7 +36,7 @@ export async function POST({ request }: { request: Request }) {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
-        Authorization: `Bearer ${VITE_RESEND_API_KEY}`,
+        Authorization: `Bearer ${RESEND_API_KEY}`,
       },
       body: JSON.stringify({
         from: 'Enquiry Form Submitted <onboarding@resend.dev>',
