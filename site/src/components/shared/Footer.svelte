@@ -74,7 +74,7 @@ let isHovered = $state(false);
   
 		<!-- Policy links -->
 		<div class="flex  gap-2 md:gap-4 text-center items-center md:text-left">
-		  <a href="#" class="text-sm md:text-lg text-white/60 hover:text-white transition-colors hover:underline">Privacy policy</a>
+		  <a href="/privacypolicy" class="text-sm md:text-lg text-white/60 hover:text-white transition-colors hover:underline">Privacy policy</a>
 		  <a href="#" class="text-sm md:text-lg text-white/60 hover:text-white transition-colors hover:underline">License agreement</a>
 		</div>
   
