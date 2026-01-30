@@ -328,7 +328,7 @@
 						<!-- <div class="absolute inset-0 bg-blue-600/10 group-hover:bg-transparent"></div> -->
 					</div>
 					<div class="px-6">
-						<h3 class="mb-2 text-3xl font-extrabold uppercase tracking-tighter">Bible</h3>
+						<h3 class="mb-2 text-3xl font-extrabold uppercase tracking-tighter">Bible Website</h3>
 						<!-- <p class="mb-4 text-xs font-bold uppercase tracking-widest text-slate-400">
 							Biodegradable Bag Distribution Management
 						</p>
