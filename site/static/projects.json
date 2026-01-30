@@ -1,63 +1,78 @@
 [
-    {
-      "id": "1",
-      "name": "Pratap",
-      "image": "/pictures/d4.png",
-      "overview": "Custom Web portal & Mobile Application for Construction & Infrastructure",
-      "description": "The Eco-Friendly Smart City project aims to revolutionize urban living by integrating IoT technologies to manage resources like water, energy, and waste efficiently. The city features solar-powered infrastructure, smart traffic systems, and green spaces to promote sustainability.",
-      "gallery": [
-        "/pictures/pratap/Home Page.png",
-        "/pictures/pratap/Stocks.png",
-        "/pictures/pratap/To do - Create sub task.png",
-        "/pictures/pratap/Daily report.png",
-        "/pictures/pratap/Attendance Report.png",
-        "/pictures/pratap/MR.png"
-      ]
-    },
-    {
-        "id": "2",
-        "name": "Green Tech",
-        "image":"/pictures/d5.png",
-        "overview": "Custom B2B Mobile Application (Manufacturer–Distributor–Dealer Management)",
-        "description": "The Renewable Energy Grid project focuses on providing clean energy to rural areas through a scalable microgrid system powered by solar and wind energy. It includes energy storage solutions to ensure a stable power supply during off-peak hours.",
-        "gallery": [
-          "/pictures/greenTech/Profile.png",
-          "/pictures/greenTech/Dealer Product Page.png",
-          "/pictures/greenTech/Distibutor Home page.png",
-          "/pictures/greenTech/Distibutor Product Page.png",
-          "/pictures/greenTech/Basket screen.png",
-          "/pictures/greenTech/Order History.png",
-          "/pictures/greenTech/View Order History.png"
-        ]
-      },
-      {
-        "id": "3",
-        "name": "PressUp",
-        "image": "/pictures/d1.png",
-        "overview": "Custom Mobile Application for Ironing App",
-        "description": "This project develops a fleet of autonomous drones designed for last-mile delivery, reducing carbon emissions and improving delivery efficiency. The drones use advanced navigation systems and AI to optimize routes and avoid obstacles.",
-        "gallery": [
-          "/pictures/pressup/Home Screen.png",
-          "/pictures/pressup/Bookings.png",
-          "/pictures/pressup/Pickups.png",
-          "/pictures/pressup/Profile.png",
-          "/pictures/pressup/Order History.png",
-          "/pictures/pressup/Order Summary-Details.png"
-        ]
-      },
-    {
-      "id": "4",
-      "name": "Kings Chic",
-      "image": "/pictures/d3.png",
-      "overview": "Custom mobile application for Food & Beverage",
-      "description": "This platform leverages artificial intelligence to provide personalized healthcare solutions, including predictive diagnostics, remote patient monitoring, and automated treatment plans. It integrates with wearable devices to track patient health in real-time.",
-      "gallery": [
-        "/pictures/kingsChic/Home Screen.png",
-        "/pictures/kingsChic/Menu.png",
-        "/pictures/kingsChic/Product Screen.png",
-        "/pictures/kingsChic/Search.png",
-        "/pictures/kingsChic/Favourites.png"
-      ]
-    }
-
-  ]
+	{
+		"id": "1",
+		"name": "Pratap",
+		"image": "/pictures/d4.png",
+		"overview": "Custom Web portal & Mobile Application for Construction & Infrastructure",
+		"description": "The Eco-Friendly Smart City project aims to revolutionize urban living by integrating IoT technologies to manage resources like water, energy, and waste efficiently. The city features solar-powered infrastructure, smart traffic systems, and green spaces to promote sustainability.",
+		"gallery": [
+			"/pictures/pratap/Home Page.png",
+			"/pictures/pratap/Stocks.png",
+			"/pictures/pratap/To do - Create sub task.png",
+			"/pictures/pratap/Daily report.png",
+			"/pictures/pratap/Attendance Report.png",
+			"/pictures/pratap/MR.png"
+		]
+	},
+	{
+		"id": "2",
+		"name": "Green Tech",
+		"image": "/pictures/d5.png",
+		"overview": "Custom B2B Mobile Application (Manufacturer–Distributor–Dealer Management)",
+		"description": "The Renewable Energy Grid project focuses on providing clean energy to rural areas through a scalable microgrid system powered by solar and wind energy. It includes energy storage solutions to ensure a stable power supply during off-peak hours.",
+		"gallery": [
+			"/pictures/greenTech/Profile.png",
+			"/pictures/greenTech/Dealer Product Page.png",
+			"/pictures/greenTech/Distibutor Home page.png",
+			"/pictures/greenTech/Distibutor Product Page.png",
+			"/pictures/greenTech/Basket screen.png",
+			"/pictures/greenTech/Order History.png",
+			"/pictures/greenTech/View Order History.png"
+		]
+	},
+	{
+		"id": "3",
+		"name": "PressUp",
+		"image": "/pictures/d1.png",
+		"overview": "Custom Mobile Application for Ironing App",
+		"description": "This project develops a fleet of autonomous drones designed for last-mile delivery, reducing carbon emissions and improving delivery efficiency. The drones use advanced navigation systems and AI to optimize routes and avoid obstacles.",
+		"gallery": [
+			"/pictures/pressup/Home Screen.png",
+			"/pictures/pressup/Bookings.png",
+			"/pictures/pressup/Pickups.png",
+			"/pictures/pressup/Profile.png",
+			"/pictures/pressup/Order History.png",
+			"/pictures/pressup/Order Summary-Details.png"
+		]
+	},
+	{
+		"id": "4",
+		"name": "Kings Chic",
+		"image": "/pictures/d3.png",
+		"overview": "Custom mobile application for Food & Beverage",
+		"description": "This platform leverages artificial intelligence to provide personalized healthcare solutions, including predictive diagnostics, remote patient monitoring, and automated treatment plans. It integrates with wearable devices to track patient health in real-time.",
+		"gallery": [
+			"/pictures/kingsChic/Home Screen.png",
+			"/pictures/kingsChic/Menu.png",
+			"/pictures/kingsChic/Product Screen.png",
+			"/pictures/kingsChic/Search.png",
+			"/pictures/kingsChic/Favourites.png"
+		]
+	},
+	{
+		"id": "5",
+		"name": "KPJ",
+		"image": "/pictures/d8.png",
+		"overview": "Gold Saving Scheme Mobile App Development",
+		"description": "This mobile app helps jewellery customers save gold easily over 11 months through Fixed and Flexible saving schemes.Customers can track payments, view scheme benefits, and manage multiple schemes in one place.The app also streamlines admin operations with real-time user, payment, and gold liability tracking.It enhances customer loyalty while improving efficiency for jewellery businesses.",
+		"gallery": [
+			"/pictures/kpj/Home.png",
+			"/pictures/kpj/Schemes.png",
+			"/pictures/kpj/Fixed_Scheme.png",
+			"/pictures/kpj/Refer.png",
+			"/pictures/kpj/Refer&Earn.png",
+			"/pictures/kpj/Refer_myreferrals.png",
+			"/pictures/kpj/Reward_Point.png"
+		]
+	}
+]

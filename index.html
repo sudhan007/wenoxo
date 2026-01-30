@@ -1,0 +1,487 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Wenoxo | Technology Solutions & Digital Innovation</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Plus+Jakarta+Sans:wght@400;600;700;800&display=swap" rel="stylesheet">
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <style>
+        :root { --brand-blue: #2563eb; --brand-slate: #1e293b; }
+        body { font-family: 'Inter', sans-serif; color: var(--brand-slate); scroll-behavior: smooth; background-color: #fcfcfd; }
+        h1, h2, h3, .font-heading { font-family: 'Plus Jakarta Sans', sans-serif; }
+        .page-content { display: none; }
+        .page-content.active { display: block; animation: fadeIn 0.4s ease-in-out; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+        .nav-link.active { color: var(--brand-blue); font-weight: 700; border-bottom: 2px solid var(--brand-blue); }
+        .glass-card { background: rgba(255, 255, 255, 0.8); backdrop-filter: blur(10px); border: 1px solid rgba(226, 232, 240, 0.8); }
+        .tech-tag { background: #eff6ff; color: #1e40af; padding: 4px 12px; border-radius: 9999px; font-size: 0.75rem; font-weight: 600; border: 1px solid #dbeafe; }
+    </style>
+</head>
+<body>
+
+    <!-- NAVIGATION -->
+    <nav class="fixed w-full z-50 bg-white/90 backdrop-blur-md border-b border-gray-100">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between h-20 items-center">
+                <div class="flex items-center space-x-2 cursor-pointer" onclick="showPage('about')">
+                    <div class="w-10 h-10 bg-blue-600 rounded-xl flex items-center justify-center text-white font-black text-xl italic">W</div>
+                    <span class="text-2xl font-extrabold tracking-tighter text-slate-900">WENOXO</span>
+                </div>
+                <div class="hidden md:flex space-x-8">
+                    <a href="javascript:void(0)" onclick="showPage('about')" id="nav-about" class="nav-link text-sm uppercase tracking-wider text-gray-500 hover:text-blue-600 transition-all active">About Us</a>
+                    <a href="javascript:void(0)" onclick="showPage('services')" id="nav-services" class="nav-link text-sm uppercase tracking-wider text-gray-500 hover:text-blue-600 transition-all">Services</a>
+                    <a href="javascript:void(0)" onclick="showPage('projects')" id="nav-projects" class="nav-link text-sm uppercase tracking-wider text-gray-500 hover:text-blue-600 transition-all">Projects</a>
+                    <a href="javascript:void(0)" onclick="showPage('careers')" id="nav-careers" class="nav-link text-sm uppercase tracking-wider text-gray-500 hover:text-blue-600 transition-all">Careers</a>
+                    <a href="javascript:void(0)" onclick="showPage('contact')" id="nav-contact" class="nav-link text-sm uppercase tracking-wider text-gray-500 hover:text-blue-600 transition-all">Contact</a>
+                </div>
+                <button onclick="showPage('contact')" class="bg-blue-600 text-white px-6 py-2.5 rounded-full font-bold text-sm shadow-lg shadow-blue-200 hover:bg-blue-700 transition-all">Let's Talk</button>
+            </div>
+        </div>
+    </nav>
+
+    <!-- PAGE 1: ABOUT US -->
+    <main id="about-page" class="page-content active pt-20">
+        <!-- Hero Section -->
+        <section class="relative py-20 lg:py-32 overflow-hidden bg-white">
+            <div class="max-w-7xl mx-auto px-6 lg:px-8 grid lg:grid-cols-2 gap-16 items-center">
+                <div>
+                    <h1 class="text-5xl lg:text-7xl font-extrabold text-slate-900 leading-[1.1] mb-8">
+                        Empowering Businesses Through <span class="text-blue-600">Digital Innovation</span>
+                    </h1>
+                    <p class="text-lg text-slate-600 leading-relaxed mb-8">
+                        Wenoxo is a technology-driven company delivering high-quality websites, mobile applications, and end-to-end digital solutions that help businesses grow and compete in an evolving digital landscape. With a strong focus on innovation, performance, scalability, and user experience, Wenoxo transforms ideas into secure, reliable, and impactful digital products.
+                    </p>
+                    <div class="p-6 bg-slate-50 border-l-4 border-blue-600 rounded-r-xl">
+                        <p class="text-slate-700 italic font-medium">
+                            "By combining deep technology expertise with strategic thinking, Wenoxo enables businesses to enhance operational efficiency, strengthen their digital presence, and achieve long-term success."
+                        </p>
+                    </div>
+                </div>
+                <div class="relative">
+                    <img src="https://images.unsplash.com/photo-1522071820081-009f0129c71c?auto=format&fit=crop&w=800&q=80" alt="Team Innovation" class="rounded-[2rem] shadow-2xl relative z-10">
+                    <div class="absolute -bottom-6 -left-6 bg-white p-8 rounded-2xl shadow-xl z-20 border border-gray-100">
+                        <div class="flex items-center space-x-4">
+                            <div class="bg-blue-100 p-3 rounded-full text-blue-600"><i data-lucide="globe"></i></div>
+                            <div>
+                                <p class="text-sm text-gray-500 font-bold uppercase">Partners Worldwide</p>
+                                <p class="text-xl font-extrabold">Global Reach</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Stats Section -->
+        <section class="bg-slate-900 py-16">
+            <div class="max-w-7xl mx-auto px-6 grid grid-cols-2 md:grid-cols-4 gap-12 text-center">
+                <div><h3 class="text-4xl font-extrabold text-white mb-2">100+</h3><p class="text-blue-400 text-sm font-bold uppercase tracking-widest">Projects Completed</p></div>
+                <div><h3 class="text-4xl font-extrabold text-white mb-2">10+ Years</h3><p class="text-blue-400 text-sm font-bold uppercase tracking-widest">Team Experience</p></div>
+                <div><h3 class="text-4xl font-extrabold text-white mb-2">25+</h3><p class="text-blue-400 text-sm font-bold uppercase tracking-widest">Industries Served</p></div>
+                <div><h3 class="text-4xl font-extrabold text-white mb-2">40+</h3><p class="text-blue-400 text-sm font-bold uppercase tracking-widest">Global Clients</p></div>
+            </div>
+        </section>
+
+        <!-- Company Overview -->
+        <section class="py-24 bg-gray-50">
+            <div class="max-w-7xl mx-auto px-6">
+                <div class="grid lg:grid-cols-2 gap-20">
+                    <div>
+                        <h2 class="text-3xl font-extrabold mb-6">Company Overview</h2>
+                        <div class="space-y-6 text-slate-600 leading-relaxed">
+                            <p>Wenoxo is a professional technology solutions company specializing in website development, mobile application development, e-commerce platforms, digital marketing, and IT staffing solutions. The team works closely with clients to understand business objectives, technical requirements, and long-term vision, ensuring that every solution aligns with defined goals.</p>
+                            <p>A multidisciplinary team of designers, developers, strategists, and project managers collaborates to build scalable, secure, and high-performing digital products. Wenoxo is committed to quality, transparency, timely delivery, and long-term partnerships that support continuous growth and innovation.</p>
+                        </div>
+                    </div>
+                    <div class="space-y-8">
+                        <div class="bg-white p-8 rounded-2xl shadow-sm border border-gray-100">
+                            <div class="flex items-center space-x-4 mb-4">
+                                <i data-lucide="target" class="text-blue-600 w-8 h-8"></i>
+                                <h3 class="text-xl font-bold">Our Mission</h3>
+                            </div>
+                            <p class="text-slate-600">To design and deliver innovative, reliable, and user-centric digital solutions that help businesses grow, streamline operations, and achieve sustainable success through technology.</p>
+                        </div>
+                        <div class="bg-white p-8 rounded-2xl shadow-sm border border-gray-100">
+                            <div class="flex items-center space-x-4 mb-4">
+                                <i data-lucide="eye" class="text-blue-600 w-8 h-8"></i>
+                                <h3 class="text-xl font-bold">Our Vision</h3>
+                            </div>
+                            <p class="text-slate-600">To establish Wenoxo as a trusted global technology partner known for delivering powerful digital experiences, enabling business transformation, and shaping the future of digital innovation.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- PAGE 2: SERVICES -->
+    <main id="services-page" class="page-content pt-20">
+        <section class="py-20 bg-white">
+            <div class="max-w-7xl mx-auto px-6">
+                <div class="text-center mb-16">
+                    <h2 class="text-4xl font-extrabold mb-4">Our Service Categories</h2>
+                    <p class="text-gray-500 max-w-2xl mx-auto">We provide a comprehensive suite of digital services designed to scale your business.</p>
+                </div>
+
+                <!-- Web Development -->
+                <div class="grid lg:grid-cols-2 gap-16 items-center mb-32" id="web-dev">
+                    <div>
+                        <img src="https://images.unsplash.com/photo-1498050108023-c5249f4df085?auto=format&fit=crop&w=800&q=80" class="rounded-3xl shadow-xl mb-8 lg:mb-0">
+                    </div>
+                    <div>
+                        <span class="text-blue-600 font-bold uppercase tracking-widest text-sm">Service 01</span>
+                        <h2 class="text-3xl font-extrabold mt-2 mb-4">Website Development: Transforming Ideas into Digital Experiences</h2>
+                        <p class="text-slate-600 mb-6">Wenoxo creates meaningful web experiences that inspire, engage, and convert users, going beyond basic site delivery. Each website is crafted to reflect the brand identity while ensuring high performance, security, and scalability, following international quality standards and modern design principles.</p>
+                        
+                        <div class="grid md:grid-cols-2 gap-6 mb-8">
+                            <div>
+                                <h4 class="font-bold mb-3 flex items-center"><i data-lucide="check-circle" class="w-4 h-4 mr-2 text-green-500"></i> Why Work With Us?</h4>
+                                <ul class="text-sm text-slate-500 space-y-2">
+                                    <li>• Global quality standards in performance</li>
+                                    <li>• Innovative modern frameworks</li>
+                                    <li>• Client-centric approach</li>
+                                    <li>• Transparent milestone-based process</li>
+                                    <li>• Ongoing support & optimization</li>
+                                </ul>
+                            </div>
+                            <div>
+                                <h4 class="font-bold mb-3 flex items-center"><i data-lucide="layers" class="w-4 h-4 mr-2 text-blue-500"></i> Expertise</h4>
+                                <ul class="text-sm text-slate-500 space-y-2">
+                                    <li>• Custom & E-commerce websites</li>
+                                    <li>• Web applications & portals</li>
+                                    <li>• UI/UX design & prototyping</li>
+                                    <li>• CMS (WP, Shopify, Magento)</li>
+                                    <li>• Security & Performance</li>
+                                </ul>
+                            </div>
+                        </div>
+
+                        <div class="bg-slate-50 p-6 rounded-xl border border-slate-100">
+                            <h4 class="text-sm font-bold uppercase text-slate-400 mb-3">Technology Stack</h4>
+                            <div class="flex flex-wrap gap-2">
+                                <span class="tech-tag">HTML5/CSS3</span><span class="tech-tag">JavaScript</span><span class="tech-tag">React</span><span class="tech-tag">Angular</span><span class="tech-tag">Vue.js</span><span class="tech-tag">Node.js</span><span class="tech-tag">PHP</span><span class="tech-tag">Django</span><span class="tech-tag">Laravel</span>
+                            </div>
+                        </div>
+                        <p class="mt-6 font-bold text-blue-600">Industries: Healthcare, E-commerce, Education, Finance, Real Estate, Travel.</p>
+                    </div>
+                </div>
+
+                <!-- Mobile Apps -->
+                <div class="grid lg:grid-cols-2 gap-16 items-center mb-32">
+                    <div class="lg:order-2">
+                        <img src="https://images.unsplash.com/photo-1512941937669-90a1b58e7e9c?auto=format&fit=crop&w=800&q=80" class="rounded-3xl shadow-xl">
+                    </div>
+                    <div class="lg:order-1">
+                        <span class="text-blue-600 font-bold uppercase tracking-widest text-sm">Service 02</span>
+                        <h2 class="text-3xl font-extrabold mt-2 mb-4">Mobile App Development: Building Smart Apps for a Mobile-First World</h2>
+                        <p class="text-slate-600 mb-6">Wenoxo designs and develops intelligent, scalable, and secure mobile applications that help businesses connect with customers and optimize internal processes. Every mobile solution is built with a focus on performance, usability, and long-term scalability to support business growth.</p>
+                        
+                        <div class="grid md:grid-cols-2 gap-6 mb-8">
+                            <div>
+                                <h4 class="font-bold mb-3 flex items-center"><i data-lucide="check-circle" class="w-4 h-4 mr-2 text-green-500"></i> Why Work With Us?</h4>
+                                <ul class="text-sm text-slate-500 space-y-2">
+                                    <li>• International development standards</li>
+                                    <li>• Future-ready architectures</li>
+                                    <li>• Business-oriented design</li>
+                                    <li>• Defined workflows & tracking</li>
+                                    <li>• Continuous updates & enhancements</li>
+                                </ul>
+                            </div>
+                            <div>
+                                <h4 class="font-bold mb-3 flex items-center"><i data-lucide="smartphone" class="w-4 h-4 mr-2 text-blue-500"></i> Expertise</h4>
+                                <ul class="text-sm text-slate-500 space-y-2">
+                                    <li>• Native Android & iOS</li>
+                                    <li>• Cross-platform (Flutter/React Native)</li>
+                                    <li>• Process automation apps</li>
+                                    <li>• Mobile UI/UX Research</li>
+                                    <li>• App Modernization</li>
+                                </ul>
+                            </div>
+                        </div>
+
+                        <div class="bg-slate-50 p-6 rounded-xl border border-slate-100">
+                            <h4 class="text-sm font-bold uppercase text-slate-400 mb-3">Mobile Stack</h4>
+                            <div class="flex flex-wrap gap-2">
+                                <span class="tech-tag">Flutter</span><span class="tech-tag">React Native</span><span class="tech-tag">Swift</span><span class="tech-tag">Kotlin</span><span class="tech-tag">Firebase</span><span class="tech-tag">AWS</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- E-Commerce -->
+                <div class="grid lg:grid-cols-2 gap-16 items-center mb-32">
+                    <div>
+                        <img src="https://images.unsplash.com/photo-1557821552-17105176677c?auto=format&fit=crop&w=800&q=80" class="rounded-3xl shadow-xl">
+                    </div>
+                    <div>
+                        <span class="text-blue-600 font-bold uppercase tracking-widest text-sm">Service 03</span>
+                        <h2 class="text-3xl font-extrabold mt-2 mb-4">E-Commerce Solutions: Powering Online Stores That Scale</h2>
+                        <p class="text-slate-600 mb-6">Wenoxo builds secure, high-performing, and conversion-focused e-commerce platforms designed for seamless shopping experiences. Every solution is crafted to support long-term business expansion in competitive digital markets.</p>
+                        
+                        <div class="grid md:grid-cols-2 gap-6 mb-8">
+                            <div>
+                                <h4 class="font-bold mb-3 flex items-center"><i data-lucide="shopping-cart" class="w-4 h-4 mr-2 text-blue-500"></i> Specialized Features</h4>
+                                <ul class="text-sm text-slate-500 space-y-2">
+                                    <li>• Marketplace & multi-vendor</li>
+                                    <li>• Checkout optimization</li>
+                                    <li>• Payment gateway integration</li>
+                                    <li>• Inventory & order management</li>
+                                    <li>• Secure payment systems</li>
+                                </ul>
+                            </div>
+                            <div class="bg-slate-50 p-4 rounded-xl">
+                                <h4 class="font-bold mb-2">E-comm Platforms</h4>
+                                <p class="text-sm text-slate-500">Shopify, WooCommerce, Magento, Custom Node/React Frameworks, Laravel.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Digital Marketing & Staffing -->
+                <div class="grid lg:grid-cols-2 gap-8">
+                    <div class="p-10 bg-blue-600 text-white rounded-[2rem] shadow-xl">
+                        <i data-lucide="megaphone" class="w-12 h-12 mb-6"></i>
+                        <h3 class="text-2xl font-bold mb-4">Social Media Marketing</h3>
+                        <p class="text-blue-100 text-sm mb-6">Campaigns designed to increase brand visibility and engagement. Expertise in content creation, branding (reels/posts), paid advertising (Meta, Google, LinkedIn), and lead generation campaigns for diverse industries like retail, real estate, and finance.</p>
+                        <ul class="text-xs font-bold flex flex-wrap gap-2 uppercase">
+                            <li class="bg-white/10 p-2 rounded">Meta Ads</li>
+                            <li class="bg-white/10 p-2 rounded">Content Strategy</li>
+                            <li class="bg-white/10 p-2 rounded">Lead Gen</li>
+                        </ul>
+                    </div>
+                    <div class="p-10 bg-slate-900 text-white rounded-[2rem] shadow-xl">
+                        <i data-lucide="users" class="w-12 h-12 mb-6"></i>
+                        <h3 class="text-2xl font-bold mb-4">IT Staffing Solutions</h3>
+                        <p class="text-slate-400 text-sm mb-6">Empowering businesses with the right talent. We offer Permanent staffing, Contract staffing, and Executive search across Software Development, Cloud Infrastructure, and AI/ML domains with a streamlined recruitment process.</p>
+                        <button class="bg-blue-600 text-white px-6 py-2 rounded-full text-xs font-bold">HIRING SOLUTIONS</button>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- PAGE 3: PROJECTS -->
+    <main id="projects-page" class="page-content pt-20">
+        <section class="py-20">
+            <div class="max-w-7xl mx-auto px-6">
+                <h2 class="text-4xl font-extrabold mb-12 text-center">Our Featured Projects</h2>
+                
+                <div class="space-y-24">
+                    <!-- Project 1 -->
+                    <div class="grid lg:grid-cols-2 gap-12 items-center">
+                        <div class="bg-blue-50 p-8 rounded-[3rem] border border-blue-100 shadow-inner">
+                            <img src="https://images.unsplash.com/photo-1541888946425-d81bb19240f5?auto=format&fit=crop&w=800&q=80" class="rounded-[2rem] shadow-2xl">
+                        </div>
+                        <div>
+                            <h3 class="text-3xl font-bold mb-2">Construction Management Application</h3>
+                            <p class="text-blue-600 font-bold mb-4">Pratap Construction</p>
+                            <p class="text-slate-600 mb-6">A comprehensive solution with a web portal for management and a mobile app for site engineers to centralize project tracking and on-site operations.</p>
+                            <div class="grid md:grid-cols-2 gap-6 mb-6">
+                                <div>
+                                    <h4 class="font-bold text-sm uppercase text-gray-400 mb-2">Features</h4>
+                                    <ul class="text-xs space-y-1 text-slate-500">
+                                        <li>• Project timelines & task management</li>
+                                        <li>• Material and labour requests</li>
+                                        <li>• Attendance & daily site reporting</li>
+                                    </ul>
+                                </div>
+                                <div>
+                                    <h4 class="font-bold text-sm uppercase text-gray-400 mb-2">Impact</h4>
+                                    <p class="text-xs text-slate-500">Improved operational efficiency, reduced manual reporting, and enhanced transparency.</p>
+                                </div>
+                            </div>
+                            <div class="flex flex-wrap gap-2">
+                                <span class="tech-tag">MongoDB Atlas</span><span class="tech-tag">Bun (Elysia JS)</span><span class="tech-tag">Flutter</span><span class="tech-tag">AWS S3</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Project 2 -->
+                    <div class="grid lg:grid-cols-2 gap-12 items-center">
+                        <div class="lg:order-2 bg-green-50 p-8 rounded-[3rem] border border-green-100 shadow-inner">
+                            <img src="https://images.unsplash.com/photo-1532938911079-1b06ac7ceec7?auto=format&fit=crop&w=800&q=80" class="rounded-[2rem] shadow-2xl">
+                        </div>
+                        <div class="lg:order-1">
+                            <h3 class="text-3xl font-bold mb-2">Online Hospital Appointment System</h3>
+                            <p class="text-green-600 font-bold mb-4">Doctor Healix</p>
+                            <p class="text-slate-600 mb-6">A scalable SaaS-based appointment management system for clinics and multi-specialty hospitals designed to reduce waiting times.</p>
+                            <div class="grid md:grid-cols-2 gap-6 mb-6">
+                                <div>
+                                    <h4 class="font-bold text-sm uppercase text-gray-400 mb-2">Features</h4>
+                                    <ul class="text-xs space-y-1 text-slate-500">
+                                        <li>• Smart token management</li>
+                                        <li>• Upcoming token reminders</li>
+                                        <li>• Doctor search & discovery</li>
+                                    </ul>
+                                </div>
+                                <div>
+                                    <h4 class="font-bold text-sm uppercase text-gray-400 mb-2">Impact</h4>
+                                    <p class="text-xs text-slate-500">Streamlined workflows, improved patient visibility, and better overall experience.</p>
+                                </div>
+                            </div>
+                            <div class="flex flex-wrap gap-2">
+                                <span class="tech-tag">Flutter</span><span class="tech-tag">Bun.js</span><span class="tech-tag">Firebase Notifications</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- More Projects Mini Grid -->
+                    <div class="grid md:grid-cols-3 gap-8">
+                        <div class="bg-white p-6 rounded-2xl shadow-sm border border-gray-100">
+                            <h4 class="font-bold mb-2">Green Tech B2B App</h4>
+                            <p class="text-xs text-gray-500 mb-4">Connecting manufacturers & distributors for biodegradable bag distribution. Better order accuracy & coordination.</p>
+                            <span class="text-[10px] font-bold bg-gray-100 px-2 py-1 rounded">FLUTTER + MONGO</span>
+                        </div>
+                        <div class="bg-white p-6 rounded-2xl shadow-sm border border-gray-100">
+                            <h4 class="font-bold mb-2">King’s Chic Food Delivery</h4>
+                            <p class="text-xs text-gray-500 mb-4">Custom restaurant app with real-time tracking. Increased online orders and reduced processing time.</p>
+                            <span class="text-[10px] font-bold bg-gray-100 px-2 py-1 rounded">ELYSIA JS + FLUTTER</span>
+                        </div>
+                        <div class="bg-white p-6 rounded-2xl shadow-sm border border-gray-100">
+                            <h4 class="font-bold mb-2">Press Up Ironing App</h4>
+                            <p class="text-xs text-gray-500 mb-4">On-demand multi-user platform for ironing services. Optimized delivery and reduced turnaround time.</p>
+                            <span class="text-[10px] font-bold bg-gray-100 px-2 py-1 rounded">AWS S3 + FLUTTER</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- PAGE 4: CAREERS -->
+    <main id="careers-page" class="page-content pt-20">
+        <section class="py-20">
+            <div class="max-w-5xl mx-auto px-6">
+                <div class="text-center mb-16">
+                    <h2 class="text-4xl font-extrabold mb-4">Build Your Future with Wenoxo</h2>
+                    <p class="text-slate-600">Join our team and work on exciting projects in a dynamic and growth-oriented environment.</p>
+                </div>
+
+                <div class="grid md:grid-cols-3 gap-8 mb-16">
+                    <div class="p-8 bg-white border border-gray-100 rounded-2xl shadow-sm">
+                        <h3 class="text-xl font-bold mb-4">Flutter Developer</h3>
+                        <p class="text-sm text-slate-500 mb-4">Building high-performance mobile apps across platforms.</p>
+                        <p class="text-xs font-bold text-blue-600">Full Time • Remote/In-office</p>
+                    </div>
+                    <div class="p-8 bg-white border border-gray-100 rounded-2xl shadow-sm">
+                        <h3 class="text-xl font-bold mb-4">MERN Stack Developer</h3>
+                        <p class="text-sm text-slate-500 mb-4">Architecting scalable web solutions with modern stacks.</p>
+                        <p class="text-xs font-bold text-blue-600">Full Time • In-office</p>
+                    </div>
+                    <div class="p-8 bg-white border border-gray-100 rounded-2xl shadow-sm">
+                        <h3 class="text-xl font-bold mb-4">BDE</h3>
+                        <p class="text-sm text-slate-500 mb-4">Driving business growth and client relationships.</p>
+                        <p class="text-xs font-bold text-blue-600">Full Time • Hybrid</p>
+                    </div>
+                </div>
+
+                <div class="bg-slate-900 text-white p-12 rounded-[3rem] relative overflow-hidden">
+                    <div class="relative z-10 grid lg:grid-cols-2 gap-12 items-center">
+                        <div>
+                            <h3 class="text-3xl font-bold mb-6">Why Join Us?</h3>
+                            <ul class="space-y-4">
+                                <li class="flex items-start"><i data-lucide="star" class="w-5 h-5 text-blue-400 mr-3 mt-1"></i> <span>Growth-oriented work culture</span></li>
+                                <li class="flex items-start"><i data-lucide="star" class="w-5 h-5 text-blue-400 mr-3 mt-1"></i> <span>Opportunity to work on global projects</span></li>
+                                <li class="flex items-start"><i data-lucide="star" class="w-5 h-5 text-blue-400 mr-3 mt-1"></i> <span>Learning and skill development support</span></li>
+                                <li class="flex items-start"><i data-lucide="star" class="w-5 h-5 text-blue-400 mr-3 mt-1"></i> <span>Supportive, collaborative team environment</span></li>
+                            </ul>
+                        </div>
+                        <div class="text-center bg-white/5 p-8 rounded-3xl backdrop-blur-md">
+                            <h4 class="text-2xl font-bold mb-4">Apply Now</h4>
+                            <p class="text-slate-400 mb-6">Currently there are no active openings; candidates can submit their resume to be considered for future opportunities.</p>
+                            <button class="bg-blue-600 text-white px-8 py-3 rounded-full font-bold">Submit Resume</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- PAGE 5: CONTACT US -->
+    <main id="contact-page" class="page-content pt-20">
+        <section class="py-20">
+            <div class="max-w-7xl mx-auto px-6 grid lg:grid-cols-2 gap-16">
+                <div>
+                    <h2 class="text-5xl font-extrabold mb-6">Let’s Build Something <span class="text-blue-600">Extraordinary</span></h2>
+                    <p class="text-slate-600 text-lg mb-10">Your ideas deserve world-class design, advanced technology, and a partner committed to excellence. Get in touch with Wenoxo to discuss your project and start your digital journey with a solution that drives real business growth.</p>
+                    
+                    <div class="space-y-6">
+                        <div class="flex items-center space-x-4">
+                            <div class="bg-blue-100 p-4 rounded-2xl text-blue-600"><i data-lucide="mail"></i></div>
+                            <div>
+                                <p class="text-sm text-gray-400 font-bold uppercase">Email Us</p>
+                                <p class="text-xl font-bold">contact@wenoxo.in</p>
+                            </div>
+                        </div>
+                        <div class="flex items-center space-x-4">
+                            <div class="bg-blue-100 p-4 rounded-2xl text-blue-600"><i data-lucide="map-pin"></i></div>
+                            <div>
+                                <p class="text-sm text-gray-400 font-bold uppercase">Our Presence</p>
+                                <p class="text-xl font-bold">Global Digital Partner</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="bg-white p-10 rounded-[3rem] shadow-2xl border border-gray-100">
+                    <form class="space-y-6">
+                        <div class="grid md:grid-cols-2 gap-6">
+                            <div class="space-y-2">
+                                <label class="text-xs font-bold uppercase text-gray-400">Full Name</label>
+                                <input type="text" class="w-full bg-gray-50 border border-gray-200 p-4 rounded-xl outline-none focus:ring-2 focus:ring-blue-500">
+                            </div>
+                            <div class="space-y-2">
+                                <label class="text-xs font-bold uppercase text-gray-400">Email Address</label>
+                                <input type="email" class="w-full bg-gray-50 border border-gray-200 p-4 rounded-xl outline-none focus:ring-2 focus:ring-blue-500">
+                            </div>
+                        </div>
+                        <div class="space-y-2">
+                            <label class="text-xs font-bold uppercase text-gray-400">Subject</label>
+                            <select class="w-full bg-gray-50 border border-gray-200 p-4 rounded-xl outline-none focus:ring-2 focus:ring-blue-500">
+                                <option>Website Development</option>
+                                <option>Mobile Application</option>
+                                <option>E-Commerce Solution</option>
+                                <option>IT Staffing</option>
+                            </select>
+                        </div>
+                        <div class="space-y-2">
+                            <label class="text-xs font-bold uppercase text-gray-400">Message</label>
+                            <textarea rows="4" class="w-full bg-gray-50 border border-gray-200 p-4 rounded-xl outline-none focus:ring-2 focus:ring-blue-500"></textarea>
+                        </div>
+                        <button class="w-full bg-blue-600 text-white py-5 rounded-xl font-black shadow-xl shadow-blue-200 hover:bg-blue-700 transition-all">SEND MESSAGE</button>
+                    </form>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <footer class="py-12 border-t border-gray-100 text-center text-gray-400 text-xs font-bold uppercase tracking-widest">
+        &copy; 2024 Wenoxo Technologies. Delivering Excellence.
+    </footer>
+
+    <script>
+        lucide.createIcons();
+
+        function showPage(pageId) {
+            // Hide all pages
+            document.querySelectorAll('.page-content').forEach(page => {
+                page.classList.remove('active');
+            });
+            // Show selected page
+            document.getElementById(pageId + '-page').classList.add('active');
+            
+            // Update Navigation links
+            document.querySelectorAll('.nav-link').forEach(link => {
+                link.classList.remove('active');
+            });
+            document.getElementById('nav-' + pageId).classList.add('active');
+
+            // Scroll to top
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+    </script>
+</body>
+</html>
+

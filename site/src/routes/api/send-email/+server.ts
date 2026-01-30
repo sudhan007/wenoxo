@@ -59,7 +59,7 @@ export async function POST({ request }: { request: Request }) {
       throw new Error(`Resend API error (admin email): Status ${adminRes.status} - ${JSON.stringify(errorData)}`);
     }
 
-
+    ""
     return json(
       { ok: true },
       { status: 200 }

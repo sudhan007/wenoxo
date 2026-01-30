@@ -1,239 +1,269 @@
 <script lang="ts">
-    import { onMount } from 'svelte';
-    // import { animate, scroll } from 'https://cdn.jsdelivr.net/npm/motion@12.12.0/+esm';
-    import { goto } from '$app/navigation';
-    import { ArrowRight } from 'lucide-svelte';
-    import Icon from '@iconify/svelte';
-    import Autoplay from "embla-carousel-autoplay";
-    import * as Carousel from "$lib/components/ui/carousel/index.js";
+	import { onMount } from 'svelte';
+	// import { animate, scroll } from 'https://cdn.jsdelivr.net/npm/motion@12.12.0/+esm';
+	import { goto } from '$app/navigation';
+	import { ArrowRight } from 'lucide-svelte';
+	import Icon from '@iconify/svelte';
+	import Autoplay from 'embla-carousel-autoplay';
+	import * as Carousel from '$lib/components/ui/carousel/index.js';
 
-    let items: NodeListOf<HTMLElement>;
-    let imgGroupContainer: HTMLElement;
-    let homeSection: HTMLElement;
-    let glassmorphismImage: HTMLImageElement;
+	let items: NodeListOf<HTMLElement>;
+	let imgGroupContainer: HTMLElement;
+	let homeSection: HTMLElement;
+	let glassmorphismImage: HTMLImageElement;
 
-    // Carousel options with autoplay plugin
-    const carouselOpts = {
-        align: "start",
-        loop: true,
-    };
+	// Carousel options with autoplay plugin
+	const carouselOpts = {
+		align: 'start',
+		loop: true
+	};
 
-    const autoplayPlugin = Autoplay({
-        delay: 2000,
-        stopOnInteraction: false,
-        stopOnMouseEnter: false,
-        stopOnFocusIn: false,
-    });
- 
-    // Text items for the text carousel
-    const textItems = [
-        'E-commerce',
-        'Healthcare',
-        'Finance',
-        'Education',
-        'Real Estate',
-        'Logistics'
-    ];
-    const imageSources = [
-        '/pictures/d1.webp',
-        '/pictures/d2.webp',
-        '/pictures/d3.webp',
-        '/pictures/d4.webp',
-        '/pictures/d5.webp',
-    ];
+	const autoplayPlugin = Autoplay({
+		delay: 2000,
+		stopOnInteraction: false,
+		stopOnMouseEnter: false,
+		stopOnFocusIn: false
+	});
 
-    // onMount(() => {
-    //     items = document.querySelectorAll('.img-container');
-    //     imgGroupContainer = document.querySelector('.img-group-container');
-    //     glassmorphismImage = document.querySelector('.glassmorphism-bg');
-    //     homeSection = document.querySelector('.home-section');
+	// Text items for the text carousel
+	const textItems = [
+		'E-commerce',
+		'Healthcare',
+		'Finance',
+		'Education',
+		'Real Estate',
+		'Logistics'
+	];
+	const imageSources = [
+		'/pictures/d1.webp',
+		'/pictures/d2.webp',
+		'/pictures/d3.webp',
+		'/pictures/d4.webp',
+		'/pictures/d5.webp'
+	];
 
-    //     if (items.length && imgGroupContainer) {
-    //         // Constants for image height and gap
-    //         const imageHeight = 600; // Matches max-h-[600px] in pixels
-    //         const gap = 40; // Gap between images in pixels
-    //         const totalHeight = items.length * imageHeight + (items.length - 1) * gap; // Total height including gaps
+	// onMount(() => {
+	//     items = document.querySelectorAll('.img-container');
+	//     imgGroupContainer = document.querySelector('.img-group-container');
+	//     glassmorphismImage = document.querySelector('.glassmorphism-bg');
+	//     homeSection = document.querySelector('.home-section');
 
-    //         // Set the container height to match images + gaps
-    //         imgGroupContainer.style.height = `${totalHeight}px`;
+	//     if (items.length && imgGroupContainer) {
+	//         // Constants for image height and gap
+	//         const imageHeight = 600; // Matches max-h-[600px] in pixels
+	//         const gap = 40; // Gap between images in pixels
+	//         const totalHeight = items.length * imageHeight + (items.length - 1) * gap; // Total height including gaps
 
-    //         // Animate gallery vertically during vertical scroll
-    //         // scroll(
-    //         //     animate('.img-group', {
-    //         //         transform: ['none', `translateY(-${totalHeight - window.innerHeight}px)`],
-    //         //     }),
-    //         //     { target: imgGroupContainer }
-    //         // );
+	//         // Set the container height to match images + gaps
+	//         imgGroupContainer.style.height = `${totalHeight}px`;
 
-    //         // Progress bar representing gallery scroll
-    //         // scroll(
-    //         //     animate('.progress', { scaleX: [0, 1] }),
-    //         //     { target: imgGroupContainer }
-    //         // );
+	//         // Animate gallery vertically during vertical scroll
+	//         // scroll(
+	//         //     animate('.img-group', {
+	//         //         transform: ['none', `translateY(-${totalHeight - window.innerHeight}px)`],
+	//         //     }),
+	//         //     { target: imgGroupContainer }
+	//         // );
 
-    //         // Handle background image visibility based on scroll position
-    //         const handleBackgroundVisibility = () => {
-    //             const homeSectionRect = homeSection.getBoundingClientRect();
-    //             const homeBottom = homeSectionRect.bottom;
+	//         // Progress bar representing gallery scroll
+	//         // scroll(
+	//         //     animate('.progress', { scaleX: [0, 1] }),
+	//         //     { target: imgGroupContainer }
+	//         // );
 
-    //             // If we've scrolled past the home section
-    //             if (homeBottom <= 590) {
-    //                 glassmorphismImage.classList.remove('fixed');
-    //                 glassmorphismImage.classList.add('absolute')
-    //                 glassmorphismImage.classList.remove('transition-all');
-    //                 glassmorphismImage.classList.remove('duration-900');
-    //             } else {
-    //                 glassmorphismImage.classList.add('fixed');
-    //                 glassmorphismImage.classList.remove('absolute')
-    //                 glassmorphismImage.classList.add('transition-all');
-    //                 glassmorphismImage.classList.add('duration-900');
-    //             }
-    //         };
+	//         // Handle background image visibility based on scroll position
+	//         const handleBackgroundVisibility = () => {
+	//             const homeSectionRect = homeSection.getBoundingClientRect();
+	//             const homeBottom = homeSectionRect.bottom;
 
-    //         // Listen for scroll events to handle background visibility
-    //         window.addEventListener('scroll', handleBackgroundVisibility);
+	//             // If we've scrolled past the home section
+	//             if (homeBottom <= 590) {
+	//                 glassmorphismImage.classList.remove('fixed');
+	//                 glassmorphismImage.classList.add('absolute')
+	//                 glassmorphismImage.classList.remove('transition-all');
+	//                 glassmorphismImage.classList.remove('duration-900');
+	//             } else {
+	//                 glassmorphismImage.classList.add('fixed');
+	//                 glassmorphismImage.classList.remove('absolute')
+	//                 glassmorphismImage.classList.add('transition-all');
+	//                 glassmorphismImage.classList.add('duration-900');
+	//             }
+	//         };
 
-    //         // Initial check
-    //         handleBackgroundVisibility();
+	//         // Listen for scroll events to handle background visibility
+	//         window.addEventListener('scroll', handleBackgroundVisibility);
 
-    //         // Cleanup
-    //         return () => {
-    //             window.removeEventListener('scroll', handleBackgroundVisibility);
-    //         };
-    //     }
-    // });
+	//         // Initial check
+	//         handleBackgroundVisibility();
+
+	//         // Cleanup
+	//         return () => {
+	//             window.removeEventListener('scroll', handleBackgroundVisibility);
+	//         };
+	//     }
+	// });
 </script>
 
 <article class=" relative" bind:this={homeSection}>
-    <!-- <img
+	<!-- <img
         src="/images/glassmorphism.webp"
         class="absolute object-cover py-10 md:py-0"
         alt=""
         loading="lazy"
     > -->
-    <div class="absolute w-full h-screen overflow-hidden">
-        <div class="absolute top-[0%] left-0 w-full h-[60%] flex">
-          <div class="w-1/4" style="background: radial-gradient(ellipse at top, rgba(96, 165, 250, 0.2), transparent 85%);"></div>
-          <div class="w-1/4" style="background: radial-gradient(ellipse at top, rgba(255, 165, 0, 0.2), transparent 87%);"></div>
-          <div class="w-1/4" style="background: radial-gradient(ellipse at top, rgba(255, 105, 180, 0.2), transparent 89%);"></div>
-          <div class="w-1/4" style="background: radial-gradient(ellipse at top, rgba(147, 112, 219, 0.2), transparent 90%);"></div>
-        </div>
-      </div>
-      
-    
+	<div class="absolute h-screen w-full overflow-hidden">
+		<div class="absolute left-0 top-[0%] flex h-[60%] w-full">
+			<div
+				class="w-1/4"
+				style="background: radial-gradient(ellipse at top, rgba(96, 165, 250, 0.2), transparent 85%);"
+			></div>
+			<div
+				class="w-1/4"
+				style="background: radial-gradient(ellipse at top, rgba(255, 165, 0, 0.2), transparent 87%);"
+			></div>
+			<div
+				class="w-1/4"
+				style="background: radial-gradient(ellipse at top, rgba(255, 105, 180, 0.2), transparent 89%);"
+			></div>
+			<div
+				class="w-1/4"
+				style="background: radial-gradient(ellipse at top, rgba(147, 112, 219, 0.2), transparent 90%);"
+			></div>
+		</div>
+	</div>
 
+	<div class="container flex">
+		<section
+			class="!sticky top-0 z-10 flex h-full w-full flex-col items-center justify-center py-20 lg:w-[60%] lg:py-32"
+		>
+			<div class="flex flex-col items-center lg:items-start">
+				<h1
+					class="my-10 text-center font-sharp-bold text-3xl font-bold !leading-tight lg:text-left lg:text-5xl xl:text-6xl"
+				>
+					Shape Your Ideas into Boundless Digital Experiences
+				</h1>
+				<p
+					class="w-full px-5 pb-10 text-center font-sharp-semibold text-sm md:text-lg lg:w-[90%] lg:px-0 lg:text-left"
+				>
+					We specialize in building dynamic, high-performing websites and mobile applications that
+					are not only responsive but also user-friendly and strategically aligned with your
+					business goals. We focus on creating digital platforms that enhance user engagement,
+					streamline operations, and support your long-term business objectives.
+				</p>
+				<div class="flex gap-4 pb-10 md:gap-10">
+					<p class="flex items-center text-base font-medium text-[#2B3029] md:gap-2 md:text-xl">
+						<span class="text-[#276F00]">
+							<Icon icon="material-symbols:check-circle-rounded" width="24" height="24" />
+						</span>
+						On Time Delivery
+					</p>
+					<p class="flex items-center text-base font-medium text-[#2B3029] md:gap-2 md:text-xl">
+						<span class="text-[#276F00]">
+							<Icon icon="material-symbols:check-circle-rounded" width="24" height="24" />
+						</span>
+						Client Centric
+					</p>
+				</div>
+				<button
+					on:click={() => goto('/our_services')}
+					class="mb-6 rounded-lg bg-[#0B63E5] px-8 py-3 font-medium text-white lg:my-10"
+				>
+					Explore
+				</button>
+			</div>
+			<!-- Text carousel with CSS animation -->
+			<div class="text-carousel-container hidden overflow-hidden lg:block lg:pt-14">
+				<div class="text-carousel flex whitespace-nowrap">
+					{#each textItems as text, index}
+						<div class="text-item inline-block px-4">
+							<p class="font-josefin text-2xl text-[#949494] md:text-3xl">{text}</p>
+						</div>
+					{/each}
+					{#each textItems as text, index}
+						<div class="text-item inline-block px-4">
+							<p class="font-josefin text-2xl text-[#949494] md:text-3xl">{text}</p>
+						</div>
+					{/each}
 
+					<!-- Duplicate items for seamless looping -->
+					{#each textItems as text, index}
+						<div class="text-item inline-block px-4">
+							<p class="font-josefin text-2xl text-[#949494] md:text-3xl">{text}</p>
+						</div>
+					{/each}
+				</div>
+			</div>
+			<div class="flex w-screen flex-col gap-10 py-5 lg:hidden">
+				<!-- Image carousel inside bordered wrapper -->
+				<div class="wrapper lg:hidden">
+					{#each imageSources as src, index}
+						<div class="img-item" style="--i: {index + 1}">
+							<img
+								loading="eager"
+								{src}
+								alt={`Image ${index + 1}`}
+								class="h-full w-full object-contain"
+							/>
+						</div>
+					{/each}
+					{#each imageSources as src, index}
+						<div class="img-item" style="--i: {index + 1}">
+							<img
+								loading="eager"
+								{src}
+								alt={`Image ${index + 1}`}
+								class="h-full w-full object-contain"
+							/>
+						</div>
+					{/each}
+				</div>
+				<!-- Text carousel with CSS animation -->
+				<div class="text-carousel-container overflow-hidden">
+					<div class="text-carousel flex whitespace-nowrap">
+						{#each textItems as text, index}
+							<div class="text-item inline-block px-4">
+								<p class="font-josefin text-2xl text-[#949494] md:text-3xl">{text}</p>
+							</div>
+						{/each}
+						{#each textItems as text, index}
+							<div class="text-item inline-block px-4">
+								<p class="font-josefin text-2xl text-[#949494] md:text-3xl">{text}</p>
+							</div>
+						{/each}
 
-    <div class="flex container">
-        <section class="!sticky top-0 py-20  lg:py-32  h-full flex flex-col items-center justify-center lg:w-[60%] w-full z-10">
-            <div class="flex flex-col items-center lg:items-start">
-                <h1 class="xl:text-6xl font-sharp-bold lg:text-5xl text-3xl font-bold my-10 text-center lg:text-left !leading-tight">
-                    Shape Your Ideas into Boundless Digital Experiences
-                </h1>
-                <p class="md:text-lg lg:w-[90%] w-full px-5 font-sharp-semibold lg:px-0 text-center lg:text-left text-sm pb-10">
-                    We specialize in building dynamic, high-performing websites and mobile applications that are not only responsive but also user-friendly and strategically aligned with your business goals. We focus on creating digital platforms that enhance user engagement, streamline operations, and support your long-term business objectives.
-                </p>
-                <div class="flex gap-4 md:gap-10 pb-10">
-                    <p class="text-[#2B3029] flex md:gap-2 items-center md:text-xl text-base font-medium">
-                        <span class="text-[#276F00]">
-                            <Icon icon="material-symbols:check-circle-rounded" width="24" height="24" />
-                        </span>
-                        On Time Delivery
-                    </p>
-                    <p class="text-[#2B3029] flex md:gap-2 items-center md:text-xl text-base font-medium">
-                        <span class="text-[#276F00]">
-                            <Icon icon="material-symbols:check-circle-rounded" width="24" height="24" />
-                        </span>
-                        Client Centric
-                    </p>
-                </div>
-                <button on:click={() => goto('/#howWeWork')} class="bg-[#0B63E5] mb-6 lg:my-10  font-medium rounded-lg px-8 py-3 text-white">
-                    Explore
-                </button>
-            </div>
-            <!-- Text carousel with CSS animation -->
-            <div class="text-carousel-container lg:pt-14 lg:block hidden  overflow-hidden">
-                <div class="text-carousel flex whitespace-nowrap">
-                    {#each textItems as text, index}
-                        <div class="text-item inline-block px-4">
-                            <p class="md:text-3xl text-[#949494] font-josefin text-2xl">{text}</p>
-                        </div>
-                    {/each}
-                    {#each textItems as text, index}
-                        <div class="text-item inline-block px-4">
-                            <p class="md:text-3xl text-[#949494] font-josefin text-2xl">{text}</p>
-                        </div>
-                    {/each}
+						<!-- Duplicate items for seamless looping -->
+						{#each textItems as text, index}
+							<div class="text-item inline-block px-4">
+								<p class="font-josefin text-2xl text-[#949494] md:text-3xl">{text}</p>
+							</div>
+						{/each}
+					</div>
+				</div>
+			</div>
+		</section>
 
-                    <!-- Duplicate items for seamless looping -->
-                    {#each textItems as text, index}
-                        <div class="text-item inline-block px-4">
-                            <p class="md:text-3xl text-[#949494] font-josefin text-2xl">{text}</p>
-                        </div>
-                    {/each}
-                </div>
-            </div>
-            <div class="flex flex-col w-screen gap-10 py-5 lg:hidden">
-                <!-- Image carousel inside bordered wrapper -->
-                <div class="wrapper lg:hidden">
-                    {#each imageSources as src, index}
-                        <div class="img-item" style="--i: {index + 1}">
-                            <img loading="eager" src={src} alt={`Image ${index + 1}`} class="h-full w-full object-contain" />
-                        </div>
-                    {/each}
-                    {#each imageSources as src, index}
-                    <div class="img-item" style="--i: {index + 1}">
-                        <img loading="eager" src={src} alt={`Image ${index + 1}`} class="h-full w-full object-contain" />
-                    </div>
-                {/each}
-                </div>
-                <!-- Text carousel with CSS animation -->
-                <div class="text-carousel-container  overflow-hidden">
-                    <div class="text-carousel flex whitespace-nowrap">
-                        {#each textItems as text, index}
-                            <div class="text-item inline-block px-4">
-                                <p class="md:text-3xl text-[#949494] font-josefin text-2xl">{text}</p>
-                            </div>
-                        {/each}
-                        {#each textItems as text, index}
-                        <div class="text-item inline-block px-4">
-                            <p class="md:text-3xl text-[#949494] font-josefin text-2xl">{text}</p>
-                        </div>
-                    {/each}
-
-                        <!-- Duplicate items for seamless looping -->
-                        {#each textItems as text, index}
-                            <div class="text-item inline-block px-4">
-                                <p class="md:text-3xl text-[#949494] font-josefin text-2xl">{text}</p>
-                            </div>
-                        {/each}
-                    </div>
-                </div>
-            </div>
-        </section>
-
-        <section class=" hidden lg:block z-30 pb-32 relative w-[40%]">
-            <Carousel.Root 
-                orientation="vertical"
-                opts={carouselOpts}
-                plugins={[autoplayPlugin]}
-                class="w-full"
-            >
-                <Carousel.Content class="h-screen">
-                    {#each Array(5) as _, i}
-                        <Carousel.Item class="flex items-center justify-center">
-                            <img 
-                                src={`/pictures/d${i + 1}.webp`} 
-                                class="w-full max-h-[600px] object-contain" 
-                                alt={`project ${i + 1}`}
-                                loading="lazy"
-                            />
-                        </Carousel.Item>
-                    {/each}
-                </Carousel.Content>
-            </Carousel.Root>
-        </section>
-        <!-- <section class="img-group-container hidden lg:block z-30 py-32 relative w-[40%]" bind:this={imgGroupContainer}>
+		<section class=" relative z-30 hidden w-[40%] pb-32 lg:block">
+			<Carousel.Root
+				orientation="vertical"
+				opts={carouselOpts}
+				plugins={[autoplayPlugin]}
+				class="w-full"
+			>
+				<Carousel.Content class="h-screen">
+					{#each Array(5) as _, i}
+						<Carousel.Item class="flex items-center justify-center">
+							<img
+								src={`/pictures/d${i + 1}.webp`}
+								class="max-h-[600px] w-full object-contain"
+								alt={`project ${i + 1}`}
+								loading="lazy"
+							/>
+						</Carousel.Item>
+					{/each}
+				</Carousel.Content>
+			</Carousel.Root>
+		</section>
+		<!-- <section class="img-group-container hidden lg:block z-30 py-32 relative w-[40%]" bind:this={imgGroupContainer}>
             <div class="sticky top-0 overflow-hidden h-[100vh]">
                 <ul class="img-group flex flex-col items-center justify-center gap-10">
                     {#each Array(5) as _, i}
@@ -244,141 +274,143 @@
                 </ul>
             </div>
         </section> -->
-    </div>
+	</div>
 </article>
 
 <style>
-    :root {
-        --duration: 10s; /* Duration for image animation */
-        --totalitems: 5; /* Number of unique image items */
-        --text-duration: 8s; /* Duration for text animation */
-        --totaltextitems: 6; /* Number of unique text items */
-        --image-width: 250px; /* Fixed width for images */
-    }
+	:root {
+		--duration: 10s; /* Duration for image animation */
+		--totalitems: 5; /* Number of unique image items */
+		--text-duration: 8s; /* Duration for text animation */
+		--totaltextitems: 6; /* Number of unique text items */
+		--image-width: 250px; /* Fixed width for images */
+	}
 
-    .wrapper {
-        position: relative;
-        display: flex;
-        height: 20vh; /* Fixed height */
-        width: 100vw; /* Fixed width */
-        overflow: hidden;
-        margin: 0 auto; /* Center the wrapper */
-    }
+	.wrapper {
+		position: relative;
+		display: flex;
+		height: 20vh; /* Fixed height */
+		width: 100vw; /* Fixed width */
+		overflow: hidden;
+		margin: 0 auto; /* Center the wrapper */
+	}
 
-    .img-item {
-        position: absolute;
-        height: inherit;
-        width: var(--image-width); /* Fixed width */
-        left: 100%; /* Start off-screen to the right */
-        animation: scrollX var(--duration) linear infinite;
-        animation-delay: calc(var(--duration) / var(--totalitems) * var(--i));
-    }
+	.img-item {
+		position: absolute;
+		height: inherit;
+		width: var(--image-width); /* Fixed width */
+		left: 100%; /* Start off-screen to the right */
+		animation: scrollX var(--duration) linear infinite;
+		animation-delay: calc(var(--duration) / var(--totalitems) * var(--i));
+	}
 
-    @keyframes scrollX {
-        to {
-            left: calc(-100% - var(--image-width)); /* Move to off-screen left */
-        }
-    }
+	@keyframes scrollX {
+		to {
+			left: calc(-100% - var(--image-width)); /* Move to off-screen left */
+		}
+	}
 
-    .text-carousel-container {
-        width: 100%;
-        overflow: hidden;
-        white-space: nowrap;
-        margin-top: 20px;
-    }
+	.text-carousel-container {
+		width: 100%;
+		overflow: hidden;
+		white-space: nowrap;
+		margin-top: 20px;
+	}
 
-    .text-carousel {
-        display: inline-flex;
-        animation: scrollText var(--text-duration) linear infinite;
-    }
+	.text-carousel {
+		display: inline-flex;
+		animation: scrollText var(--text-duration) linear infinite;
+	}
 
-    .text-item {
-        display: inline-block;
-    }
+	.text-item {
+		display: inline-block;
+	}
 
-    @keyframes scrollText {
-        0% {
-            transform: translateX(0);
-        }
-        100% {
-            transform: translateX(-50%);
-        }
-    }
+	@keyframes scrollText {
+		0% {
+			transform: translateX(0);
+		}
+		100% {
+			transform: translateX(-50%);
+		}
+	}
 
-    .glassmorphism-bg {
-        transition: opacity 3s ease, transform 3s ease; /* Increased duration */
-        position: absolute;
-        top: 0;
-        left: 0;
-    }
+	.glassmorphism-bg {
+		transition:
+			opacity 3s ease,
+			transform 3s ease; /* Increased duration */
+		position: absolute;
+		top: 0;
+		left: 0;
+	}
 
-    .glassmorphism-bg.fixed {
-        position: fixed;
-    }
+	.glassmorphism-bg.fixed {
+		position: fixed;
+	}
 
-    .img-group {
-        gap: 40px; /* Matches the gap constant in the script */
-    }
+	.img-group {
+		gap: 40px; /* Matches the gap constant in the script */
+	}
 
-    .img-container {
-        height: 600px; /* Matches max-h-[600px] of images */
-    }
+	.img-container {
+		height: 600px; /* Matches max-h-[600px] of images */
+	}
 
-    @media (max-width: 767px) {
-        .home-section {
-            padding-top: 80px; /* Adjust based on your header height */
-        }
+	@media (max-width: 767px) {
+		.home-section {
+			padding-top: 80px; /* Adjust based on your header height */
+		}
 
-        .text-carousel-container {
-            width: 90vw; /* Adjust width for mobile screens */
-            margin: 0 auto; /* Center the container */
-        }
+		.text-carousel-container {
+			width: 90vw; /* Adjust width for mobile screens */
+			margin: 0 auto; /* Center the container */
+		}
 
-        .text-item {
-            padding: 0 10px; /* Further adjust padding for smaller screens */
-        }
+		.text-item {
+			padding: 0 10px; /* Further adjust padding for smaller screens */
+		}
 
-        .wrapper {
-            height: 15vh; /* Adjust height for mobile screens */
-            width: 100vw; /* Ensure full width */
-        }
+		.wrapper {
+			height: 15vh; /* Adjust height for mobile screens */
+			width: 100vw; /* Ensure full width */
+		}
 
-        .img-item {
-            width: 200px; /* Adjust width for mobile screens */
-        }
+		.img-item {
+			width: 200px; /* Adjust width for mobile screens */
+		}
 
-        .text-carousel {
-            animation: scrollText 15s linear infinite; /* Adjust animation duration for mobile screens */
-        }
+		.text-carousel {
+			animation: scrollText 15s linear infinite; /* Adjust animation duration for mobile screens */
+		}
 
-        @keyframes scrollText {
-            0% {
-                transform: translateX(0);
-            }
-            100% {
-                transform: translateX(-50%);
-            }
-        }
-    }
+		@keyframes scrollText {
+			0% {
+				transform: translateX(0);
+			}
+			100% {
+				transform: translateX(-50%);
+			}
+		}
+	}
 
-    /* Medium screen adjustments */
-    @media (min-width: 768px) and (max-width: 1023px) {
-        .text-carousel-container {
-            width: 100%;
-            overflow: hidden;
-            white-space: nowrap;
-        }
+	/* Medium screen adjustments */
+	@media (min-width: 768px) and (max-width: 1023px) {
+		.text-carousel-container {
+			width: 100%;
+			overflow: hidden;
+			white-space: nowrap;
+		}
 
-        .text-carousel {
-            animation: scrollText 12s linear infinite;
-        }
+		.text-carousel {
+			animation: scrollText 12s linear infinite;
+		}
 
-        .text-item {
-            padding: 0 20px;
-        }
+		.text-item {
+			padding: 0 20px;
+		}
 
-        .text-carousel-container.lg\:hidden {
-            display: none !important;
-        }
-    }
+		.text-carousel-container.lg\:hidden {
+			display: none !important;
+		}
+	}
 </style>
