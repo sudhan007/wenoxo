@@ -5,6 +5,8 @@
 	let showWelcome = true;
 	let isGeneratingPDF = false;
 
+	let classic = true;
+
 	// Form data
 	let formData = {
 		speaker: 'Merin Paramanantham',
@@ -27,6 +29,8 @@
 	};
 
 	let previewElement;
+	let html2canvasLoaded = false;
+	let jsPdfLoaded = false;
 
 	function startBuilder() {
 		showWelcome = false;
@@ -58,49 +62,93 @@
 	}
 
 	async function downloadPDF() {
-		if (!previewElement) return;
+		if (!previewElement || !html2canvasLoaded || !jsPdfLoaded) {
+			alert('Libraries not loaded yet. Please wait a moment and try again.');
+			return;
+		}
 
 		isGeneratingPDF = true;
-		const filename = `BNI_Bio_Sheet_${formData.speaker.replace(/\s+/g, '_')}.pdf`;
-
-		const pdfWidth = 180;
-		const pdfHeight = 270;
-
-		const opt = {
-			margin: [10, 10, 10, 10],
-			filename: filename,
-			image: { type: 'jpeg', quality: 0.98 },
-			html2canvas: {
-				scale: 2,
-				useCORS: true,
-				letterRendering: true,
-				logging: false
-			},
-			jsPDF: {
-				unit: 'mm',
-				format: [pdfWidth, pdfHeight],
-				orientation: 'portrait',
-				compress: true
-			},
-			pagebreak: { mode: ['avoid-all', 'css', 'legacy'] }
-		};
 
 		try {
-			await window.html2pdf().set(opt).from(previewElement).save();
-			setTimeout(() => {
-				isGeneratingPDF = false;
-			}, 2000);
+			const filename = `BNI_Bio_Sheet_${formData.speaker.replace(/\s+/g, '_')}.pdf`;
+
+			// Get the canvas directly from html2canvas
+			const canvas = await window.html2canvas(previewElement, { 
+				scale: 1,
+				useCORS: true,
+				backgroundColor: '#ffffff',
+				logging: false,
+				allowTaint: true,
+				windowHeight: previewElement.scrollHeight,
+				windowWidth: previewElement.scrollWidth
+			});
+
+			// Get dimensions
+			const imgData = canvas.toDataURL('image/jpeg', 0.98);
+			const imgWidth = 210; // A4 width in mm
+			const pageHeight = 297; // A4 height in mm
+			const imgHeight = (canvas.height * imgWidth) / canvas.width;
+
+			// Create PDF
+			const jsPDF = window.jspdf.jsPDF;
+			const pdf = new jsPDF('p', 'mm', 'a4');
+
+			let heightLeft = imgHeight;
+			let position = 0;
+
+			// Add image(s) to PDF
+			pdf.addImage(imgData, 'JPEG', 0, position, imgWidth, imgHeight);
+			heightLeft -= pageHeight;
+
+			while (heightLeft > 0) {
+				position = heightLeft - imgHeight;
+				pdf.addPage();
+				pdf.addImage(imgData, 'JPEG', 0, position, imgWidth, imgHeight);
+				heightLeft -= pageHeight;
+			}
+
+			// Save the PDF
+			pdf.save(filename);
+			isGeneratingPDF = false;
 		} catch (error) {
-			console.error('PDF generation error:', error);
+			console.error('PDF Generation Error:', error);
+			alert('Error generating PDF: ' + error.message);
 			isGeneratingPDF = false;
 		}
 	}
 
 	onMount(() => {
-		// Load html2pdf library
-		const script = document.createElement('script');
-		script.src = 'https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js';
-		document.head.appendChild(script);
+		// Load html2canvas library
+		const html2canvasScript = document.createElement('script');
+		html2canvasScript.src =
+			'https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js';
+		html2canvasScript.onload = () => {
+			html2canvasLoaded = true;
+			console.log('html2canvas loaded successfully');
+		};
+		html2canvasScript.onerror = () => {
+			console.error('Failed to load html2canvas library');
+		};
+		document.head.appendChild(html2canvasScript);
+
+		// Load jsPDF library
+		const jsPdfScript = document.createElement('script');
+		jsPdfScript.src = 'https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js';
+		jsPdfScript.onload = () => {
+			jsPdfLoaded = true;
+			console.log('jsPDF loaded successfully');
+		};
+		jsPdfScript.onerror = () => {
+			console.error('Failed to load jsPDF library');
+		};
+		document.head.appendChild(jsPdfScript);
+
+		// Preload fonts
+		if (document.fonts) {
+			document.fonts.ready.then(() => {
+				console.log('Fonts loaded');
+			});
+		}
 	});
 </script>
 
@@ -328,13 +376,37 @@
 					<textarea id="successKey" bind:value={formData.successKey}></textarea>
 				</div>
 
+				<div style="display: flex; gap: 10px;">
+					<button
+						type="button"
+						class="download-btn"
+						on:click={() => {
+							classic = true;
+						}}
+					>
+						Classic View
+					</button>
+
+					<button
+						type="button"
+						class="download-btn"
+						on:click={() => {
+							classic = false;
+						}}
+					>
+						Modern View
+					</button>
+				</div>
+
 				<button
 					type="button"
 					class="download-btn"
 					on:click={downloadPDF}
-					disabled={isGeneratingPDF}
+					disabled={isGeneratingPDF || !html2canvasLoaded || !jsPdfLoaded}
 				>
-					{#if isGeneratingPDF}
+					{#if !html2canvasLoaded || !jsPdfLoaded}
+						⏳ Loading PDF Libraries...
+					{:else if isGeneratingPDF}
 						⏳ Generating PDF...
 					{:else}
 						📄 Download as PDF
@@ -346,59 +418,154 @@
 		<!-- Preview Section -->
 		<div class="preview-section">
 			<h2 class="preview-title">📄 Live Preview</h2>
-			<div class="preview-container" bind:this={previewElement}>
-				<div class="preview-header">
-					<h2>BNI Member Bio Sheet</h2>
-				</div>
 
-				<div class="preview-top">
-					<div><strong>Our Speaker:</strong> {formData.speaker}</div>
-					<div><strong>Date:</strong> {formatDate(formData.date)}</div>
-				</div>
+			{#if classic}
+				<div class="preview-wrapper">
+					<div class="classic-container" bind:this={previewElement}>
+						<div class="classic-header">
+							<h2>BNI Member Bio Sheet</h2>
+						</div>
 
-				<div class="preview-section-header">Business Information</div>
-				<div class="preview-field"><strong>Business Name:</strong> {formData.businessName}</div>
-				<div class="preview-field"><strong>Profession:</strong> {formData.profession}</div>
-				<div class="preview-field"><strong>Location:</strong> {formData.location}</div>
-				<div class="preview-field">
-					<strong>Years in Business:</strong>
-					{formData.yearsInBusiness}
-				</div>
-				<div class="preview-field">
-					<strong>Previous Types of Jobs:</strong>
-					{formData.previousJobs}
-				</div>
+						<div class="classic-top">
+							<div>
+								Our <u>Speaker</u>: <strong>{formData.speaker}</strong>
+							</div>
+							<div style="text-align: right;">
+								Date: <u>{formatDate(formData.date)}</u>
+							</div>
+						</div>
 
-				<div class="preview-section-header">Personal Information</div>
-				<div class="preview-field">Family Information:</div>
-				<div class="preview-field preview-indent">A. Spouse: {formData.spouse}</div>
-				<div class="preview-field preview-indent">B. Children: {formData.children}</div>
-				<div class="preview-field preview-indent">C. Animals: {formData.animals}</div>
-				<div class="preview-field"><strong>Hobbies:</strong> {formData.hobbies}</div>
-				<div class="preview-field">
-					<strong>Activities of Interest:</strong>
-					{formData.activities}
-				</div>
-				<div class="preview-field">
-					<strong>City of Residence:</strong>
-					{formData.city} &nbsp;&nbsp;&nbsp; <strong>How Long?</strong>
-					{formData.howLong}
-				</div>
+						<div class="classic-section-header">Business Information</div>
+						<div class="classic-row">
+							<span>Business Name:</span>
+							<span class="classic-underline">{formData.businessName}</span>
+						</div>
+						<div class="classic-row">
+							<span>Profession:</span>
+							<span class="classic-underline">{formData.profession}</span>
+						</div>
+						<div class="classic-row-double">
+							<div>
+								<span>Location:</span>
+								<span class="classic-underline">{formData.location}</span>
+							</div>
+							<div>
+								<span>Years in Business:</span>
+								<span class="classic-underline">{formData.yearsInBusiness}</span>
+							</div>
+						</div>
+						<div class="classic-row">
+							<span>Previous Types of Jobs:</span>
+							<span class="classic-underline">{formData.previousJobs}</span>
+						</div>
 
-				<div class="preview-section-header">Miscellaneous</div>
-				<div class="preview-field">
-					<strong>My burning desire is to:</strong>
-					{formData.burningDesire}
+						<div class="classic-section-header">Personal Information</div>
+						<div class="classic-row">
+							<span>Family Information:</span>
+						</div>
+						<div class="classic-row classic-indent">
+							<span>A. Spouse:</span>
+							<span class="classic-underline">{formData.spouse}</span>
+						</div>
+						<div class="classic-row classic-indent">
+							<span>B. Children:</span>
+							<span class="classic-underline">{formData.children}</span>
+						</div>
+						<div class="classic-row classic-indent">
+							<span>C. Animals:</span>
+							<span class="classic-underline">{formData.animals}</span>
+						</div>
+						<div class="classic-row">
+							<span>Hobbies:</span>
+							<span class="classic-underline">{formData.hobbies}</span>
+						</div>
+						<div class="classic-row">
+							<span>Activities of Interest:</span>
+							<span class="classic-underline">{formData.activities}</span>
+						</div>
+						<div class="classic-row-double">
+							<div>
+								<span>City of Residence:</span>
+								<span class="classic-underline">{formData.city}</span>
+							</div>
+							<div>
+								<span>How Long?</span>
+								<span class="classic-underline">{formData.howLong}</span>
+							</div>
+						</div>
+
+						<div class="classic-section-header">Miscellaneous</div>
+						<div class="classic-row">
+							<span>My burning desire is to . . .</span>
+							<span class="classic-underline">{formData.burningDesire}</span>
+						</div>
+						<div class="classic-row">
+							<span>Something no one knows about me is:</span>
+							<span class="classic-underline">{formData.secretThing}</span>
+						</div>
+						<div class="classic-row">
+							<span>My key to success is . . .</span>
+							<span class="classic-underline">{formData.successKey}</span>
+						</div>
+					</div>
 				</div>
-				<div class="preview-field">
-					<strong>Something no one knows about me is:</strong>
-					{formData.secretThing}
+			{:else}
+				<div class="preview-wrapper">
+					<div class="preview-container" bind:this={previewElement}>
+						<div class="preview-header">
+							<h2>BNI Member Bio Sheet</h2>
+						</div>
+
+						<div class="preview-top">
+							<div><strong>Our Speakers:</strong> {formData.speaker}</div>
+							<div><strong>Date:</strong> {formatDate(formData.date)}</div>
+						</div>
+
+						<div class="preview-section-header">Business Information</div>
+						<div class="preview-field"><strong>Business Name:</strong> {formData.businessName}</div>
+						<div class="preview-field"><strong>Profession:</strong> {formData.profession}</div>
+						<div class="preview-field"><strong>Location:</strong> {formData.location}</div>
+						<div class="preview-field">
+							<strong>Years in Business:</strong>
+							{formData.yearsInBusiness}
+						</div>
+						<div class="preview-field">
+							<strong>Previous Types of Jobs:</strong>
+							{formData.previousJobs}
+						</div>
+
+						<div class="preview-section-header">Personal Information</div>
+						<div class="preview-field">Family Information:</div>
+						<div class="preview-field preview-indent">A. Spouse: {formData.spouse}</div>
+						<div class="preview-field preview-indent">B. Children: {formData.children}</div>
+						<div class="preview-field preview-indent">C. Animals: {formData.animals}</div>
+						<div class="preview-field"><strong>Hobbies:</strong> {formData.hobbies}</div>
+						<div class="preview-field">
+							<strong>Activities of Interest:</strong>
+							{formData.activities}
+						</div>
+						<div class="preview-field">
+							<strong>City of Residence:</strong>
+							{formData.city} &nbsp;&nbsp;&nbsp; <strong>How Long?</strong>
+							{formData.howLong}
+						</div>
+
+						<div class="preview-section-header">Miscellaneous</div>
+						<div class="preview-field">
+							<strong>My burning desire is to:</strong>
+							{formData.burningDesire}
+						</div>
+						<div class="preview-field">
+							<strong>Something no one knows about me is:</strong>
+							{formData.secretThing}
+						</div>
+						<div class="preview-field">
+							<strong>My key to success is:</strong>
+							{formData.successKey}
+						</div>
+					</div>
 				</div>
-				<div class="preview-field">
-					<strong>My key to success is:</strong>
-					{formData.successKey}
-				</div>
-			</div>
+			{/if}
 		</div>
 	</div>
 {/if}
@@ -753,11 +920,127 @@
 		cursor: not-allowed;
 	}
 
-	.preview-container {
-		border: 3px solid var(--primary-dark);
-		padding: 40px;
-		background: var(--white);
+	.preview-wrapper {
+		background: #ffffff;
+		padding: 0;
 		border-radius: 8px;
+		overflow: hidden;
+	}
+
+	/* CLASSIC DESIGN STYLES */
+	.classic-container {
+		background: #ffffff;
+		padding: 30px;
+		min-height: 400px;
+		width: 100%;
+		margin: 0;
+		border: 2px solid #000000;
+		font-family: Arial, sans-serif;
+		font-size: 13px;
+		line-height: 1.6;
+	}
+
+	.classic-header {
+		text-align: center;
+		border: 2px solid #000000;
+		padding: 15px;
+		margin-bottom: 20px;
+		background: #ffffff;
+	}
+
+	.classic-header h2 {
+		font-family: Arial, sans-serif;
+		font-size: 22px;
+		font-weight: bold;
+		color: #000000;
+		margin: 0;
+		padding: 0;
+		letter-spacing: 0px;
+	}
+
+	.classic-top {
+		display: flex;
+		justify-content: space-between;
+		margin-bottom: 15px;
+		font-size: 13px;
+		color: #000000;
+		padding: 0 10px;
+	}
+
+	.classic-top u {
+		text-decoration: underline;
+	}
+
+	.classic-top strong {
+		font-weight: bold;
+	}
+
+	.classic-section-header {
+		background: #000000;
+		color: #ffffff;
+		padding: 8px 10px;
+		font-family: Arial, sans-serif;
+		font-size: 13px;
+		font-weight: bold;
+		margin: 18px 0 12px;
+	}
+
+	.classic-row {
+		margin-bottom: 10px;
+		font-size: 13px;
+		line-height: 1.6;
+		color: #000000;
+		padding: 0 10px;
+		display: flex;
+		flex-wrap: wrap;
+		gap: 10px;
+	}
+
+	.classic-row span {
+		display: inline;
+	}
+
+	.classic-row-double {
+		display: grid;
+		grid-template-columns: 1fr 1fr;
+		gap: 20px;
+		margin-bottom: 10px;
+		padding: 0 10px;
+	}
+
+	.classic-row-double div {
+		display: flex;
+		gap: 8px;
+		font-size: 13px;
+		line-height: 1.6;
+		color: #000000;
+		flex-wrap: wrap;
+	}
+
+	.classic-row-double span {
+		display: inline;
+	}
+
+	.classic-underline {
+		border-bottom: 1px solid #000000;
+		padding-bottom: 2px;
+		display: inline-block;
+		min-width: 100px;
+		text-decoration: underline;
+	}
+
+	.classic-indent {
+		padding-left: 50px;
+	}
+
+	/* MODERN DESIGN STYLES */
+	.preview-container {
+		background: #ffffff;
+		padding: 40px;
+		min-height: 400px;
+		width: 100%;
+		margin: 0;
+		border: 2px solid var(--primary-dark);
 	}
 
 	.preview-header {
@@ -765,7 +1048,7 @@
 		border: 3px solid var(--primary-dark);
 		padding: 20px;
 		margin-bottom: 30px;
-		background: linear-gradient(135deg, #f8f7f4 0%, #ffffff 100%);
+		background: #ffffff;
 	}
 
 	.preview-header h2 {
@@ -774,6 +1057,8 @@
 		font-weight: 700;
 		color: var(--primary-dark);
 		letter-spacing: 1px;
+		margin: 0;
+		padding: 0;
 	}
 
 	.preview-top {
@@ -781,6 +1066,8 @@
 		justify-content: space-between;
 		margin-bottom: 20px;
 		font-size: 0.95rem;
+		color: var(--text-dark);
+		padding: 0 10px;
 	}
 
 	.preview-section-header {
@@ -797,6 +1084,8 @@
 		margin-bottom: 12px;
 		font-size: 0.9rem;
 		line-height: 1.8;
+		color: var(--text-dark);
+		padding: 0 10px;
 	}
 
 	.preview-field strong {
@@ -805,7 +1094,7 @@
 	}
 
 	.preview-indent {
-		padding-left: 40px;
+		padding-left: 50px;
 	}
 
 	.preview-title {
@@ -863,6 +1152,10 @@
 		.features-grid {
 			grid-template-columns: 1fr;
 			gap: 24px;
+		}
+
+		.classic-row-double {
+			grid-template-columns: 1fr;
 		}
 	}
 
