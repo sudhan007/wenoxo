@@ -13,7 +13,11 @@
 		date: '2024-05-21',
 		businessName: 'All Loan Credit',
 		profession: 'Financial Service',
-		location: '10/35 Kanimadam, anjugramam post, Kanyakumari',
+		doorStreet: '10/35 Kanimadam',
+		area: 'anjugramam post',
+		city: 'Kanyakumari',
+		state: 'Tamil Nadu',
+		country: 'India',
 		yearsInBusiness: 8,
 		previousJobs: 'CNC',
 		spouse: 'Sujatha jini',
@@ -21,12 +25,66 @@
 		animals: '----',
 		hobbies: 'Playing cricket and kabadi',
 		activities: 'Two Wheeler Long Drive',
-		city: 'Kanyakumari',
 		howLong: '40 Years',
 		burningDesire: 'Process High value loans (above 10 crores)',
 		secretThing: 'District level player in Kabadi',
 		successKey: 'decision making , understanding the requirement, punctuality'
 	};
+
+	// Countries list
+	let countries = [
+		'Afghanistan', 'Albania', 'Algeria', 'Andorra', 'Angola', 'Argentina', 'Armenia', 'Australia',
+		'Austria', 'Azerbaijan', 'Bahamas', 'Bahrain', 'Bangladesh', 'Barbados', 'Belarus', 'Belgium',
+		'Belize', 'Benin', 'Bhutan', 'Bolivia', 'Bosnia and Herzegovina', 'Botswana', 'Brazil', 'Brunei',
+		'Bulgaria', 'Burkina Faso', 'Burundi', 'Cambodia', 'Cameroon', 'Canada', 'Cape Verde', 'Central African Republic',
+		'Chad', 'Chile', 'China', 'Colombia', 'Comoros', 'Congo', 'Costa Rica', 'Croatia', 'Cuba', 'Cyprus',
+		'Czech Republic', 'Denmark', 'Djibouti', 'Dominica', 'Dominican Republic', 'Ecuador', 'Egypt', 'El Salvador',
+		'Equatorial Guinea', 'Eritrea', 'Estonia', 'Eswatini', 'Ethiopia', 'Fiji', 'Finland', 'France', 'Gabon',
+		'Gambia', 'Georgia', 'Germany', 'Ghana', 'Greece', 'Grenada', 'Guatemala', 'Guinea', 'Guinea-Bissau', 'Guyana',
+		'Haiti', 'Honduras', 'Hungary', 'Iceland', 'India', 'Indonesia', 'Iran', 'Iraq', 'Ireland', 'Israel',
+		'Italy', 'Jamaica', 'Japan', 'Jordan', 'Kazakhstan', 'Kenya', 'Kiribati', 'Kosovo', 'Kuwait', 'Kyrgyzstan',
+		'Laos', 'Latvia', 'Lebanon', 'Lesotho', 'Liberia', 'Libya', 'Liechtenstein', 'Lithuania', 'Luxembourg', 'Madagascar',
+		'Malawi', 'Malaysia', 'Maldives', 'Mali', 'Malta', 'Marshall Islands', 'Mauritania', 'Mauritius', 'Mexico', 'Micronesia',
+		'Moldova', 'Monaco', 'Mongolia', 'Montenegro', 'Morocco', 'Mozambique', 'Myanmar', 'Namibia', 'Nauru', 'Nepal',
+		'Netherlands', 'New Zealand', 'Nicaragua', 'Niger', 'Nigeria', 'North Korea', 'North Macedonia', 'Norway', 'Oman', 'Pakistan',
+		'Palau', 'Palestine', 'Panama', 'Papua New Guinea', 'Paraguay', 'Peru', 'Philippines', 'Poland', 'Portugal', 'Qatar',
+		'Romania', 'Russia', 'Rwanda', 'Saint Kitts and Nevis', 'Saint Lucia', 'Saint Vincent and the Grenadines', 'Samoa', 'San Marino',
+		'Sao Tome and Principe', 'Saudi Arabia', 'Senegal', 'Serbia', 'Seychelles', 'Sierra Leone', 'Singapore', 'Slovakia', 'Slovenia',
+		'Solomon Islands', 'Somalia', 'South Africa', 'South Korea', 'South Sudan', 'Spain', 'Sri Lanka', 'Sudan', 'Suriname', 'Sweden',
+		'Switzerland', 'Syria', 'Taiwan', 'Tajikistan', 'Tanzania', 'Thailand', 'Timor-Leste', 'Togo', 'Tonga', 'Trinidad and Tobago',
+		'Tunisia', 'Turkey', 'Turkmenistan', 'Tuvalu', 'Uganda', 'Ukraine', 'United Arab Emirates', 'United Kingdom', 'United States',
+		'Uruguay', 'Uzbekistan', 'Vanuatu', 'Vatican City', 'Venezuela', 'Vietnam', 'Yemen', 'Zambia', 'Zimbabwe'
+	];
+
+	let filteredCountries = countries;
+	let showCountryDropdown = false;
+	let countrySearchInput = '';
+
+	function filterCountries(event) {
+		countrySearchInput = event.target.value;
+		const value = event.target.value.toLowerCase();
+		if (value.length === 0) {
+			filteredCountries = countries;
+			showCountryDropdown = false;
+		} else {
+			filteredCountries = countries.filter(c => c.toLowerCase().includes(value));
+			showCountryDropdown = true;
+		}
+	}
+
+	function selectCountry(country) {
+		formData.country = country;
+		countrySearchInput = country;
+		showCountryDropdown = false;
+		filteredCountries = countries;
+	}
+
+	function toggleCountryDropdown() {
+		showCountryDropdown = !showCountryDropdown;
+		if (showCountryDropdown) {
+			filteredCountries = countries;
+		}
+	}
 
 	let previewElement;
 	let html2canvasLoaded = false;
@@ -72,40 +130,56 @@
 		try {
 			const filename = `BNI_Bio_Sheet_${formData.speaker.replace(/\s+/g, '_')}.pdf`;
 
-			// Get the canvas directly from html2canvas
-			const canvas = await window.html2canvas(previewElement, { 
-				scale: 1,
+			// Use jsPDF to create a properly formatted single-page PDF
+			const jsPDF = window.jspdf.jsPDF;
+			const pdf = new jsPDF({
+				orientation: 'portrait',
+				unit: 'mm',
+				format: 'a4',
+				compress: true
+			});
+
+			// Get canvas from html2canvas with optimized settings
+			const canvas = await window.html2canvas(previewElement, {
+				scale: 2,
 				useCORS: true,
 				backgroundColor: '#ffffff',
 				logging: false,
 				allowTaint: true,
 				windowHeight: previewElement.scrollHeight,
-				windowWidth: previewElement.scrollWidth
+				windowWidth: previewElement.scrollWidth,
+				ignoreElements: (element) => {
+					// Ignore buttons and other non-printable elements
+					return element.tagName === 'BUTTON' || element.classList?.contains('no-print');
+				}
 			});
 
-			// Get dimensions
-			const imgData = canvas.toDataURL('image/jpeg', 0.98);
-			const imgWidth = 210; // A4 width in mm
-			const pageHeight = 297; // A4 height in mm
-			const imgHeight = (canvas.height * imgWidth) / canvas.width;
+			// A4 dimensions in mm (with margins)
+			const a4Width = 210;
+			const a4Height = 297;
+			const margin = 5; // 5mm margins
+			const contentWidth = a4Width - 2 * margin;
 
-			// Create PDF
-			const jsPDF = window.jspdf.jsPDF;
-			const pdf = new jsPDF('p', 'mm', 'a4');
+			// Calculate height to fit on one page
+			const imgData = canvas.toDataURL('image/jpeg', 0.95);
+			const imgHeight = (canvas.height * contentWidth) / canvas.width;
 
-			let heightLeft = imgHeight;
-			let position = 0;
+			// Scale down if content exceeds one page
+			let finalHeight = imgHeight;
+			let finalWidth = contentWidth;
 
-			// Add image(s) to PDF
-			pdf.addImage(imgData, 'JPEG', 0, position, imgWidth, imgHeight);
-			heightLeft -= pageHeight;
-
-			while (heightLeft > 0) {
-				position = heightLeft - imgHeight;
-				pdf.addPage();
-				pdf.addImage(imgData, 'JPEG', 0, position, imgWidth, imgHeight);
-				heightLeft -= pageHeight;
+			if (imgHeight > a4Height - 2 * margin) {
+				// Scale proportionally to fit one page
+				const scaleFactor = (a4Height - 2 * margin) / imgHeight;
+				finalHeight = imgHeight * scaleFactor;
+				finalWidth = contentWidth * scaleFactor;
 			}
+
+			// Add image centered on page
+			const xPosition = margin + (contentWidth - finalWidth) / 2;
+			const yPosition = margin;
+
+			pdf.addImage(imgData, 'JPEG', xPosition, yPosition, finalWidth, finalHeight);
 
 			// Save the PDF
 			pdf.save(filename);
@@ -305,15 +379,65 @@
 					<input type="text" id="profession" bind:value={formData.profession} />
 				</div>
 
+				<div class="section-title" style="margin-top: 28px; font-size: 1.2rem;">Location Details</div>
+
+				<div class="form-group">
+					<label for="doorStreet">Door No / Street:</label>
+					<input type="text" id="doorStreet" bind:value={formData.doorStreet} placeholder="e.g., 10/35 Kanimadam" />
+				</div>
+
+				<div class="form-group">
+					<label for="area">Area:</label>
+					<input type="text" id="area" bind:value={formData.area} placeholder="e.g., anjugramam post" />
+				</div>
+
 				<div class="row">
 					<div class="form-group">
-						<label for="location">Location:</label>
-						<input type="text" id="location" bind:value={formData.location} />
+						<label for="city">City:</label>
+						<input type="text" id="city" bind:value={formData.city} placeholder="e.g., Kanyakumari" />
 					</div>
 					<div class="form-group">
-						<label for="yearsInBusiness">Years in Business:</label>
-						<input type="number" id="yearsInBusiness" bind:value={formData.yearsInBusiness} />
+						<label for="state">State / Province:</label>
+						<input type="text" id="state" bind:value={formData.state} placeholder="e.g., Tamil Nadu" />
 					</div>
+				</div>
+
+				<div class="form-group">
+					<label for="country">Country:</label>
+					<div class="country-search-wrapper">
+						<div class="country-input-container">
+							<input
+								type="text"
+								id="country"
+								bind:value={countrySearchInput}
+								on:input={filterCountries}
+								on:focus={toggleCountryDropdown}
+								placeholder="Search or select country..."
+								autocomplete="off"
+							/>
+							<span class="search-icon">🔍</span>
+						</div>
+						{#if showCountryDropdown && filteredCountries.length > 0}
+							<div class="country-dropdown">
+								{#each filteredCountries as country (country)}
+									<div 
+										class="country-option"
+										on:click={() => selectCountry(country)}
+										role="button"
+										tabindex="0"
+										on:keydown={(e) => e.key === 'Enter' && selectCountry(country)}
+									>
+										{country}
+									</div>
+								{/each}
+							</div>
+						{/if}
+					</div>
+				</div>
+
+				<div class="form-group">
+					<label for="yearsInBusiness">Years in Business:</label>
+					<input type="number" id="yearsInBusiness" bind:value={formData.yearsInBusiness} />
 				</div>
 
 				<div class="form-group">
@@ -350,11 +474,7 @@
 
 				<div class="row">
 					<div class="form-group">
-						<label for="city">City of Residence:</label>
-						<input type="text" id="city" bind:value={formData.city} />
-					</div>
-					<div class="form-group">
-						<label for="howLong">How Long:</label>
+						<label for="howLong">How Long (in area):</label>
 						<input type="text" id="howLong" bind:value={formData.howLong} />
 					</div>
 				</div>
@@ -444,15 +564,34 @@
 							<span>Profession:</span>
 							<span class="classic-underline">{formData.profession}</span>
 						</div>
+
+						<div class="classic-section-header">Location</div>
+						<div class="classic-row">
+							<span>Door No / Street:</span>
+							<span class="classic-underline">{formData.doorStreet}</span>
+						</div>
+						<div class="classic-row">
+							<span>Area:</span>
+							<span class="classic-underline">{formData.area}</span>
+						</div>
 						<div class="classic-row-double">
 							<div>
-								<span>Location:</span>
-								<span class="classic-underline">{formData.location}</span>
+								<span>City:</span>
+								<span class="classic-underline">{formData.city}</span>
 							</div>
 							<div>
-								<span>Years in Business:</span>
-								<span class="classic-underline">{formData.yearsInBusiness}</span>
+								<span>State:</span>
+								<span class="classic-underline">{formData.state}</span>
 							</div>
+						</div>
+						<div class="classic-row">
+							<span>Country:</span>
+							<span class="classic-underline">{formData.country}</span>
+						</div>
+
+						<div class="classic-row">
+							<span>Years in Business:</span>
+							<span class="classic-underline">{formData.yearsInBusiness}</span>
 						</div>
 						<div class="classic-row">
 							<span>Previous Types of Jobs:</span>
@@ -483,15 +622,9 @@
 							<span>Activities of Interest:</span>
 							<span class="classic-underline">{formData.activities}</span>
 						</div>
-						<div class="classic-row-double">
-							<div>
-								<span>City of Residence:</span>
-								<span class="classic-underline">{formData.city}</span>
-							</div>
-							<div>
-								<span>How Long?</span>
-								<span class="classic-underline">{formData.howLong}</span>
-							</div>
+						<div class="classic-row">
+							<span>How Long?</span>
+							<span class="classic-underline">{formData.howLong}</span>
 						</div>
 
 						<div class="classic-section-header">Miscellaneous</div>
@@ -524,7 +657,14 @@
 						<div class="preview-section-header">Business Information</div>
 						<div class="preview-field"><strong>Business Name:</strong> {formData.businessName}</div>
 						<div class="preview-field"><strong>Profession:</strong> {formData.profession}</div>
-						<div class="preview-field"><strong>Location:</strong> {formData.location}</div>
+
+						<div class="preview-section-header">Location</div>
+						<div class="preview-field"><strong>Door No / Street:</strong> {formData.doorStreet}</div>
+						<div class="preview-field"><strong>Area:</strong> {formData.area}</div>
+						<div class="preview-field"><strong>City:</strong> {formData.city}</div>
+						<div class="preview-field"><strong>State:</strong> {formData.state}</div>
+						<div class="preview-field"><strong>Country:</strong> {formData.country}</div>
+
 						<div class="preview-field">
 							<strong>Years in Business:</strong>
 							{formData.yearsInBusiness}
@@ -545,8 +685,7 @@
 							{formData.activities}
 						</div>
 						<div class="preview-field">
-							<strong>City of Residence:</strong>
-							{formData.city} &nbsp;&nbsp;&nbsp; <strong>How Long?</strong>
+							<strong>How Long?</strong>
 							{formData.howLong}
 						</div>
 
@@ -890,6 +1029,80 @@
 		gap: 20px;
 	}
 
+	/* Country Dropdown Styles */
+	.country-search-wrapper {
+		position: relative;
+		width: 100%;
+	}
+
+	.country-input-container {
+		position: relative;
+		width: 100%;
+	}
+
+	.country-input-container input {
+		width: 100%;
+		padding: 14px 40px 14px 16px;
+		border: 2px solid #e5e5e5;
+		border-radius: 10px;
+		font-family: 'DM Sans', sans-serif;
+		font-size: 0.95rem;
+		transition: all 0.3s ease;
+		background: var(--white);
+		color: var(--text-dark);
+	}
+
+	.country-input-container input:focus {
+		outline: none;
+		border-color: var(--accent-gold);
+		box-shadow: 0 0 0 4px rgba(212, 165, 116, 0.1);
+		transform: translateY(-1px);
+	}
+
+	.search-icon {
+		position: absolute;
+		right: 14px;
+		top: 50%;
+		transform: translateY(-50%);
+		pointer-events: none;
+		font-size: 0.9rem;
+		opacity: 0.5;
+	}
+
+	.country-dropdown {
+		position: absolute;
+		top: 100%;
+		left: 0;
+		right: 0;
+		background: var(--white);
+		border: 2px solid var(--accent-gold);
+		border-top: none;
+		border-radius: 0 0 10px 10px;
+		max-height: 300px;
+		overflow-y: auto;
+		z-index: 1000;
+		box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+	}
+
+	.country-option {
+		padding: 12px 16px;
+		cursor: pointer;
+		transition: all 0.2s ease;
+		border-bottom: 1px solid #f0f0f0;
+		font-size: 0.95rem;
+		color: var(--text-dark);
+	}
+
+	.country-option:hover {
+		background-color: var(--bg-light);
+		padding-left: 20px;
+		font-weight: 500;
+	}
+
+	.country-option:last-child {
+		border-bottom: none;
+	}
+
 	.download-btn {
 		width: 100%;
 		padding: 16px 32px;
@@ -927,30 +1140,29 @@
 		overflow: hidden;
 	}
 
-	/* CLASSIC DESIGN STYLES */
+	/* CLASSIC DESIGN STYLES - OPTIMIZED FOR SINGLE PAGE */
 	.classic-container {
 		background: #ffffff;
-		padding: 30px;
-		min-height: 400px;
+		padding: 20px;
 		width: 100%;
 		margin: 0;
 		border: 2px solid #000000;
 		font-family: Arial, sans-serif;
-		font-size: 13px;
-		line-height: 1.6;
+		font-size: 11px;
+		line-height: 1.4;
 	}
 
 	.classic-header {
 		text-align: center;
 		border: 2px solid #000000;
-		padding: 15px;
-		margin-bottom: 20px;
+		padding: 10px;
+		margin-bottom: 12px;
 		background: #ffffff;
 	}
 
 	.classic-header h2 {
 		font-family: Arial, sans-serif;
-		font-size: 22px;
+		font-size: 18px;
 		font-weight: bold;
 		color: #000000;
 		margin: 0;
@@ -961,10 +1173,10 @@
 	.classic-top {
 		display: flex;
 		justify-content: space-between;
-		margin-bottom: 15px;
-		font-size: 13px;
+		margin-bottom: 10px;
+		font-size: 11px;
 		color: #000000;
-		padding: 0 10px;
+		padding: 0 8px;
 	}
 
 	.classic-top u {
@@ -978,22 +1190,22 @@
 	.classic-section-header {
 		background: #000000;
 		color: #ffffff;
-		padding: 8px 10px;
+		padding: 6px 8px;
 		font-family: Arial, sans-serif;
-		font-size: 13px;
+		font-size: 11px;
 		font-weight: bold;
-		margin: 18px 0 12px;
+		margin: 10px 0 8px;
 	}
 
 	.classic-row {
-		margin-bottom: 10px;
-		font-size: 13px;
-		line-height: 1.6;
+		margin-bottom: 6px;
+		font-size: 11px;
+		line-height: 1.4;
 		color: #000000;
-		padding: 0 10px;
+		padding: 0 8px;
 		display: flex;
 		flex-wrap: wrap;
-		gap: 10px;
+		gap: 8px;
 	}
 
 	.classic-row span {
@@ -1003,16 +1215,16 @@
 	.classic-row-double {
 		display: grid;
 		grid-template-columns: 1fr 1fr;
-		gap: 20px;
-		margin-bottom: 10px;
-		padding: 0 10px;
+		gap: 12px;
+		margin-bottom: 6px;
+		padding: 0 8px;
 	}
 
 	.classic-row-double div {
 		display: flex;
-		gap: 8px;
-		font-size: 13px;
-		line-height: 1.6;
+		gap: 6px;
+		font-size: 11px;
+		line-height: 1.4;
 		color: #000000;
 		flex-wrap: wrap;
 	}
@@ -1023,21 +1235,20 @@
 
 	.classic-underline {
 		border-bottom: 1px solid #000000;
-		padding-bottom: 2px;
+		padding-bottom: 1px;
 		display: inline-block;
-		min-width: 100px;
+		min-width: 80px;
 		text-decoration: underline;
 	}
 
 	.classic-indent {
-		padding-left: 50px;
+		padding-left: 30px;
 	}
 
-	/* MODERN DESIGN STYLES */
+	/* MODERN DESIGN STYLES - OPTIMIZED FOR SINGLE PAGE */
 	.preview-container {
 		background: #ffffff;
-		padding: 40px;
-		min-height: 400px;
+		padding: 25px;
 		width: 100%;
 		margin: 0;
 		border: 2px solid var(--primary-dark);
@@ -1046,14 +1257,14 @@
 	.preview-header {
 		text-align: center;
 		border: 3px solid var(--primary-dark);
-		padding: 20px;
-		margin-bottom: 30px;
+		padding: 12px;
+		margin-bottom: 16px;
 		background: #ffffff;
 	}
 
 	.preview-header h2 {
 		font-family: 'Crimson Pro', serif;
-		font-size: 2rem;
+		font-size: 1.6rem;
 		font-weight: 700;
 		color: var(--primary-dark);
 		letter-spacing: 1px;
@@ -1064,28 +1275,28 @@
 	.preview-top {
 		display: flex;
 		justify-content: space-between;
-		margin-bottom: 20px;
-		font-size: 0.95rem;
+		margin-bottom: 14px;
+		font-size: 0.85rem;
 		color: var(--text-dark);
-		padding: 0 10px;
+		padding: 0 8px;
 	}
 
 	.preview-section-header {
 		background: var(--primary-dark);
 		color: var(--white);
-		padding: 12px 20px;
+		padding: 8px 12px;
 		font-family: 'Crimson Pro', serif;
-		font-size: 1.2rem;
+		font-size: 1rem;
 		font-weight: 700;
-		margin: 24px 0 16px;
+		margin: 12px 0 8px;
 	}
 
 	.preview-field {
-		margin-bottom: 12px;
-		font-size: 0.9rem;
-		line-height: 1.8;
+		margin-bottom: 6px;
+		font-size: 0.85rem;
+		line-height: 1.5;
 		color: var(--text-dark);
-		padding: 0 10px;
+		padding: 0 8px;
 	}
 
 	.preview-field strong {
@@ -1094,7 +1305,7 @@
 	}
 
 	.preview-indent {
-		padding-left: 50px;
+		padding-left: 35px;
 	}
 
 	.preview-title {
@@ -1157,6 +1368,10 @@
 		.classic-row-double {
 			grid-template-columns: 1fr;
 		}
+
+		.country-dropdown {
+			max-height: 250px;
+		}
 	}
 
 	@media (max-width: 480px) {
@@ -1188,6 +1403,10 @@
 
 		.welcome-screen {
 			padding: 20px 16px;
+		}
+
+		.country-dropdown {
+			max-height: 200px;
 		}
 	}
 </style>
