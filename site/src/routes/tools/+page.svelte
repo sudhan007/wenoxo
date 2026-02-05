@@ -11,28 +11,27 @@
 
 	// Form data
 	let formData = {
-		speaker: 'Merin Paramanantham',
-		date: '2024-05-21',
-		businessName: 'All Loan Credit',
-		profession: 'Financial Service',
-		doorStreet: '10/35 Kanimadam',
-		area: 'anjugramam post',
-		city: 'Kanyakumari',
-		state: 'Tamil Nadu',
-		country: 'India',
-		yearsInBusiness: 8,
+		speaker: '',
+		date: '',
+		businessName: '',
+		profession: '',
+		doorStreet: '',
+		area: '',
+		city: '',
+		state: '',
+		country: '',
+		yearsInBusiness: 0,
 		previousJobs: [
-			{ company: 'CNC', position: 'Manager', startYear: '1999', endYear: '2004' }
+			{ company: '', position: '', startYear: '', endYear: '' }
 		],
-		spouse: 'Sujatha jini',
-		children: 'MS shiona',
-		animals: '----',
-		hobbies: ['Playing cricket', 'kabadi'],
-		activities: ['Two Wheeler Long Drive'],
-		howLong: '40 Years',
-		burningDesire: 'Process High value loans (above 10 crores)',
-		secretThing: 'District level player in Kabadi',
-		successKey: 'decision making , understanding the requirement, punctuality',
+		spouse: '',
+		children: '',
+		animals: '',
+		hobbies: [' ', ''],
+		activities: [''],
+		howLong: '',
+		burningDesire: '',
+		secretThing: '',
 		photo: null,
 		companyLogo: null
 	};
@@ -158,7 +157,9 @@
 		logoPreview = null;
 	}
 
-	let previewElement;
+	// References for preview elements
+	let previewElement; // For display (responsive)
+	let pdfElement; // For PDF generation (static size)
 	let html2canvasLoaded = false;
 	let jsPdfLoaded = false;
 
@@ -200,8 +201,8 @@
 
 	function formatPreviousJobs() {
 		return formData.previousJobs
-			.filter(job => job.company && job.position)
-			.map(job => `${job.position} at ${job.company} - ${job.startYear} - ${job.endYear}`)
+			.filter(job => job.company)
+			.map(job => job.company)
 			.join(', ');
 	}
 
@@ -230,7 +231,7 @@
 	}
 
 	async function downloadPDF() {
-		if (!previewElement || !html2canvasLoaded || !jsPdfLoaded) {
+		if (!pdfElement || !html2canvasLoaded || !jsPdfLoaded) {
 			alert('Libraries not loaded yet. Please wait a moment and try again.');
 			return;
 		}
@@ -264,49 +265,52 @@
 			// Generate PDF
 			isGeneratingPDF = true;
 			const filename = `BNI_Bio_Sheet_${formData.speaker.replace(/\s+/g, '_')}.pdf`;
+ 
 
 			const jsPDF = window.jspdf.jsPDF;
-			const pdf = new jsPDF({
-				orientation: 'portrait',
-				unit: 'mm',
-				format: 'a4',
-				compress: true
-			});
 
-			const canvas = await window.html2canvas(previewElement, {
-				scale: 2,
-				useCORS: true,
-				backgroundColor: '#ffffff',
-				logging: false,
-				allowTaint: true,
-				windowHeight: previewElement.scrollHeight,
-				windowWidth: previewElement.scrollWidth,
-				ignoreElements: (element) => {
-					return element.tagName === 'BUTTON' || element.classList?.contains('no-print');
+				// A4 portrait size in mm
+				const PDF_WIDTH = 210;
+				const PDF_HEIGHT = 297;
+				const margin = 10;
+
+				const pdf = new jsPDF({
+					orientation: 'portrait',
+					unit: 'mm',
+					format: 'a4',
+					compress: true
+				});
+
+				const canvas = await window.html2canvas(pdfElement, {
+					scale: 2,
+					useCORS: true,
+					backgroundColor: '#ffffff',
+					logging: false,
+					allowTaint: true,
+					windowWidth: pdfElement.scrollWidth,
+					windowHeight: pdfElement.scrollHeight
+				});
+
+				const imgData = canvas.toDataURL('image/jpeg', 0.95);
+
+				// Image dimensions
+				const imgWidth = PDF_WIDTH - margin * 2;
+				const imgHeight = (canvas.height * imgWidth) / canvas.width;
+
+				// MULTI-PAGE handling
+				let heightLeft = imgHeight;
+				let position = margin;
+
+				pdf.addImage(imgData, 'JPEG', margin, position, imgWidth, imgHeight);
+				heightLeft -= PDF_HEIGHT - margin * 2;
+
+				while (heightLeft > 0) {
+					position = heightLeft - imgHeight + margin;
+					pdf.addPage();
+					pdf.addImage(imgData, 'JPEG', margin, position, imgWidth, imgHeight);
+					heightLeft -= PDF_HEIGHT - margin * 2;
 				}
-			});
 
-			const a4Width = 210;
-			const a4Height = 297;
-			const margin = 5;
-			const contentWidth = a4Width - 2 * margin;
-
-			const imgData = canvas.toDataURL('image/jpeg', 0.95);
-			const imgHeight = (canvas.height * contentWidth) / canvas.width;
-
-			let finalHeight = imgHeight;
-			let finalWidth = contentWidth;
-
-			if (imgHeight > a4Height - 2 * margin) {
-				const scaleFactor = (a4Height - 2 * margin) / imgHeight;
-				finalHeight = imgHeight * scaleFactor;
-				finalWidth = contentWidth * scaleFactor;
-			}
-
-			const xPosition = margin + (contentWidth - finalWidth) / 2;
-			const yPosition = margin;
-
-			pdf.addImage(imgData, 'JPEG', xPosition, yPosition, finalWidth, finalHeight);
 			pdf.save(filename);
 
 			isGeneratingPDF = false;
@@ -457,7 +461,7 @@
 				<img width="150" height="150" src="/logo.webp" alt="Logo" />
 			</div>
 
-			<div class="features">
+			<!-- <div class="features">
 				<div class="feature-item">
 					<span class="emoji">✏️</span>
 					<div>
@@ -481,7 +485,7 @@
 						<p>Professional output</p>
 					</div>
 				</div>
-			</div>
+			</div> -->
 		</div>
 	</div>
 {:else}
@@ -510,64 +514,7 @@
 			<h1>BNI Member Bio Sheet</h1>
 			<p class="subtitle">Fill in your details to generate your bio sheet</p>
 
-			<form id="bioForm">
-				<!-- CARD 01: PHOTO & LOGO UPLOADS -->
-				<div class="section-title-wrapper">
-					<div class="section-title">Upload Images</div>
-				</div>
-
-				<div class="form-card upload-card">
-					<div class="upload-group">
-						<label class="upload-label">Your Photo (Passport Size)</label>
-						<div class="upload-container">
-							{#if photoPreview}
-								<div class="image-preview-wrapper">
-									<img src={photoPreview} alt="Photo preview" class="image-preview passport-size" />
-									<button type="button" class="remove-image-btn" on:click={removePhoto}>×</button>
-								</div>
-							{:else}
-								<label class="upload-box">
-									<input
-										type="file"
-										accept="image/*"
-										on:change={handlePhotoUpload}
-										style="display: none;"
-									/>
-									<div class="upload-placeholder">
-										<span class="upload-icon">📷</span>
-										<span>Click to upload photo</span>
-									</div>
-								</label>
-							{/if}
-						</div>
-					</div>
-
-					<div class="upload-group">
-						<label class="upload-label">Company Logo</label>
-						<div class="upload-container">
-							{#if logoPreview}
-								<div class="image-preview-wrapper">
-									<img src={logoPreview} alt="Logo preview" class="image-preview logo-size" />
-									<button type="button" class="remove-image-btn" on:click={removeLogo}>×</button>
-								</div>
-							{:else}
-								<label class="upload-box">
-									<input
-										type="file"
-										accept="image/*"
-										on:change={handleLogoUpload}
-										style="display: none;"
-									/>
-									<div class="upload-placeholder">
-										<span class="upload-icon">🏢</span>
-										<span>Click to upload logo</span>
-									</div>
-								</label>
-							{/if}
-						</div>
-					</div>
-				</div>
-
+			<form id="bioForm"> 
 				<!-- CARD 02: SPEAKER & DATE -->
 				<div class="form-card">
 					<div class="form-group">
@@ -670,52 +617,78 @@
 
 					<!-- PREVIOUS JOBS - MULTIPLE INPUTS -->
 					<div class="form-group full-width">
-						<label>Previous Types of Jobs:</label>
-						{#each formData.previousJobs as job, index}
-							<div class="job-entry">
-								<div class="job-inputs">
-									<input
-										type="text"
-										bind:value={job.position}
-										placeholder="Position"
-										class="job-input"
-									/>
-									<span class="job-at">at</span>
-									<input
-										type="text"
-										bind:value={job.company}
-										placeholder="Company"
-										class="job-input"
-									/>
-									<input
-										type="text"
-										bind:value={job.startYear}
-										placeholder="Start Year"
-										class="job-year"
-									/>
-									<span class="job-dash">-</span>
-									<input
-										type="text"
-										bind:value={job.endYear}
-										placeholder="End Year"
-										class="job-year"
-									/>
-								</div>
-								{#if formData.previousJobs.length > 1}
-									<button
-										type="button"
-										class="remove-item-btn"
-										on:click={() => removePreviousJob(index)}
-									>
-										×
-									</button>
-								{/if}
-							</div>
-						{/each}
-						<button type="button" class="add-item-btn" on:click={addPreviousJob}>
-							+ Add Another Job
-						</button>
-					</div>
+	<label>Previous Types of Jobs:</label>
+	<p class="field-helper">Add your work history (most recent first)</p>
+	
+	{#each formData.previousJobs as job, index}
+		<div class="job-entry">
+			<div class="job-number">{index + 1}</div>
+			<div class="job-inputs-grid">
+				<div class="job-field">
+					<input
+						type="text"
+						bind:value={job.position}
+						placeholder="e.g., Marketing Manager"
+						class="job-input"
+					/>
+					<span class="field-label">Position</span>
+				</div>
+				
+				<div class="job-field">
+					<input
+						type="text"
+						bind:value={job.company}
+						placeholder="e.g., ABC Corporation"
+						class="job-input"
+					/>
+					<span class="field-label">Company</span>
+				</div>
+				
+				<div class="job-field year-field">
+					<input
+						type="text"
+						bind:value={job.startYear}
+						placeholder="2018"
+						class="job-year"
+						maxlength="4"
+					/>
+					<span class="field-label">Start Year</span>
+				</div>
+				
+				<div class="job-field year-field">
+					<input
+						type="text"
+						bind:value={job.endYear}
+						placeholder="2022"
+						class="job-year"
+						maxlength="4"
+					/>
+					<span class="field-label">End Year</span>
+				</div>
+			</div>
+			
+			{#if formData.previousJobs.length > 1}
+				<button
+					type="button"
+					class="remove-item-btn-new"
+					on:click={() => removePreviousJob(index)}
+					title="Remove this job"
+				>
+					<svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+						<path d="M12 4L4 12M4 4L12 12" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+					</svg>
+				</button>
+			{/if}
+		</div>
+	{/each}
+	
+	<button type="button" class="add-item-btn-new" on:click={addPreviousJob}>
+		<svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+			<path d="M8 3V13M3 8H13" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+		</svg>
+		<span>Add Another Job</span>
+	</button>
+</div>
 				</div>
 
 				<!-- CARD 05: PERSONAL INFORMATION -->
@@ -827,123 +800,83 @@
 			</form>
 		</div>
 
-		<!-- Preview Section -->
+		<!-- Preview Section - RESPONSIVE (for display only) -->
 		<div class="preview-section">
 			<h2 class="preview-title">📄 Live Preview</h2>
 
 			{#if classic}
-				<div class="preview-wrapper">
-					<div class="classic-container" bind:this={previewElement}>
-						<!-- Header with Photo and Logo -->
-						<div class="classic-header-with-images">
-							{#if photoPreview}
-								<img src={photoPreview} alt="Member Photo" class="preview-photo" />
-							{:else}
-								<div class="photo-placeholder"></div>
-							{/if}
-							<div class="classic-header">
-								<h2>BNI Member Bio Sheet</h2>
-							</div>
-							{#if logoPreview}
-								<img src={logoPreview} alt="Company Logo" class="preview-logo" />
-							{:else}
-								<div class="logo-placeholder"></div>
-							{/if}
+				<div class="preview-wrapper" bind:this={previewElement}>
+					<div class="classic-container">
+						<!-- Header -->
+						<div class="classic-header">
+							<h2>BNI Member Bio Sheet</h2>
 						</div>
 
+						<!-- Top Section -->
 						<div class="classic-top">
-							<div>
-								Our <u>Speaker</u>: <strong>{formData.speaker}</strong>
-							</div>
-							<div style="text-align: right;">
-								Date: <u>{formatDate(formData.date)}</u>
-							</div>
+							<div>Our <u>Speaker</u>: <strong>{formData.speaker}</strong></div>
+							<div style="text-align: right;">Date: <u>{formatDate(formData.date)}</u></div>
 						</div>
 
+						<!-- Business Information -->
 						<div class="classic-section-header">Business Information</div>
 						<div class="classic-row">
-							<span>Business Name:</span>
-							<span class="classic-underline">{formData.businessName}</span>
+							<span>Business Name: <u>{formData.businessName}</u></span>
 						</div>
 						<div class="classic-row">
-							<span>Profession:</span>
-							<span class="classic-underline">{formData.profession}</span>
+							<span>Profession: {formData.profession}</span>
+						</div>
+						<div class="classic-row-blank"></div>
+						<div class="classic-row">
+							<span>Location: <u>{formData.doorStreet}, {formData.area}, {formData.city}</u></span>
+							<span style="margin-left: auto;">Years in Business: <u>{formData.yearsInBusiness}</u></span>
+						</div>
+						<div class="classic-row">
+							<span>Previous Types of Jobs: <u>{formatPreviousJobs()}</u></span>
 						</div>
 
-						<div class="classic-section-header">Location</div>
-						<div class="classic-row">
-							<span>Door No / Street:</span>
-							<span class="classic-underline">{formData.doorStreet}</span>
-						</div>
-						<div class="classic-row">
-							<span>Area:</span>
-							<span class="classic-underline">{formData.area}</span>
-						</div>
-						<div class="classic-row-double">
-							<div>
-								<span>City:</span>
-								<span class="classic-underline">{formData.city}</span>
-							</div>
-							<div>
-								<span>State:</span>
-								<span class="classic-underline">{formData.state}</span>
-							</div>
-						</div>
-						<div class="classic-row">
-							<span>Country:</span>
-							<span class="classic-underline">{formData.country}</span>
-						</div>
-
-						<div class="classic-row">
-							<span>Years in Business:</span>
-							<span class="classic-underline">{formData.yearsInBusiness}</span>
-						</div>
-						<div class="classic-row">
-							<span>Previous Types of Jobs:</span>
-							<span class="classic-underline">{formatPreviousJobs()}</span>
-						</div>
-
+						<!-- Personal Information -->
 						<div class="classic-section-header">Personal Information</div>
 						<div class="classic-row">
 							<span>Family Information:</span>
 						</div>
 						<div class="classic-row classic-indent">
-							<span>A. Spouse:</span>
-							<span class="classic-underline">{formData.spouse}</span>
+							<span>A. Spouse</span>
+							<span style="margin-left: 20px;">: <u>{formData.spouse}</u></span>
 						</div>
 						<div class="classic-row classic-indent">
-							<span>B. Children:</span>
-							<span class="classic-underline">{formData.children}</span>
+							<span>B. Children</span>
+							<span style="margin-left: 10px;">: <u>{formData.children}</u></span>
 						</div>
 						<div class="classic-row classic-indent">
-							<span>C. Animals:</span>
-							<span class="classic-underline">{formData.animals}</span>
+							<span>C. Animals</span>
+							<span style="margin-left: 15px;">{formData.animals}</span>
 						</div>
 						<div class="classic-row">
-							<span>Hobbies:</span>
-							<span class="classic-underline">{formData.hobbies.filter(h => h).join(', ')}</span>
+							<span>Hobbies: <u>{formData.hobbies.filter(h => h).join(' and ')}</u></span>
 						</div>
 						<div class="classic-row">
-							<span>Activities of Interest:</span>
-							<span class="classic-underline">{formData.activities.filter(a => a).join(', ')}</span>
+							<span>Activities of Interest: <u>{formData.activities.filter(a => a).join(', ')}</u></span>
 						</div>
 						<div class="classic-row">
-							<span>How Long?</span>
-							<span class="classic-underline">{formData.howLong}</span>
+							<span>City of Residence:</span>
+							<span style="margin-left: 20px;"><u>{formData.city}</u></span>
+							<span style="margin-left: auto;">How Long? <u>{formData.howLong}</u></span>
 						</div>
 
+						<!-- Miscellaneous -->
 						<div class="classic-section-header">Miscellaneous</div>
 						<div class="classic-row">
-							<span>My burning desire is to . . .</span>
-							<span class="classic-underline">{formData.burningDesire}</span>
+							<span>My burning desire is to . . . <u>{formData.burningDesire}</u></span>
 						</div>
+						<div class="classic-row-blank"></div>
 						<div class="classic-row">
-							<span>Something no one knows about me is:</span>
-							<span class="classic-underline">{formData.secretThing}</span>
+							<span>Something no one knows about me is: <u>{formData.secretThing}</u></span>
 						</div>
+						<div class="classic-row-blank"></div>
+						<div class="classic-row-blank"></div>
 						<div class="classic-row">
-							<span>My key to success is . . .</span>
-							<span class="classic-underline">{formData.successKey}</span>
+							<span>My key to success is . . . <u>{formData.successKey}</u></span>
 						</div>
 					</div>
 				</div>
@@ -952,19 +885,19 @@
 					<div class="preview-container" bind:this={previewElement}>
 						<!-- Header with Photo and Logo -->
 						<div class="preview-header-with-images">
-							{#if photoPreview}
+							<!-- {#if photoPreview}
 								<img src={photoPreview} alt="Member Photo" class="preview-photo" />
 							{:else}
 								<div class="photo-placeholder"></div>
-							{/if}
+							{/if} -->
 							<div class="preview-header">
 								<h2>BNI Member Bio Sheet</h2>
 							</div>
-							{#if logoPreview}
+							<!-- {#if logoPreview}
 								<img src={logoPreview} alt="Company Logo" class="preview-logo" />
 							{:else}
 								<div class="logo-placeholder"></div>
-							{/if}
+							{/if} -->
 						</div>
 
 						<div class="preview-top">
@@ -1028,6 +961,164 @@
 			{/if}
 		</div>
 
+		<!-- HIDDEN PDF ELEMENT - STATIC SIZE (for PDF download only) -->
+		<div class="pdf-hidden-element" bind:this={pdfElement}>
+			{#if classic}
+				<div class="pdf-classic-container">
+					<!-- Header -->
+					<div class="pdf-classic-header">
+						<h2>BNI Member Bio Sheet</h2>
+					</div>
+
+					<!-- Top Section -->
+					<div class="pdf-classic-top">
+						<div>Our <u  >Speaker: <strong>{formData.speaker}</strong></u></div>
+						<div style="text-align: right;">Date: <u>{formatDate(formData.date)}</u></div>
+					</div>
+
+					<!-- Business Information -->
+
+					<div  style="border: 1px solid #000000; padding-bottom: 15px;">
+						<div class="pdf-classic-section-headers"><p>Business Information</p></div>
+						<div class="pdf-classic-row">
+							<span >Business Name: <u>{formData.businessName}</u></span>
+						</div>
+						<div class="pdf-classic-row">
+							<span>Profession: {formData.profession}</span>
+						</div>
+						<div class="pdf-classic-row-blank"></div>
+						<div class="pdf-classic-row">
+							<span>Location: <u>{formData.doorStreet}, {formData.area}, {formData.city}</u></span>
+							<span style="margin-left: auto;">Years in Business: <u>{formData.yearsInBusiness}</u></span>
+						</div>
+						<div class="pdf-classic-row">
+							<span>Previous Types of Jobs: <u>{formatPreviousJobs()}</u></span>
+						</div>
+
+						<!-- Personal Information -->
+						<div class="pdf-classic-section-header"><p>Personal Information</p></div>
+						<div class="pdf-classic-row">
+							<span>Family Information:</span>
+						</div>
+						<div class="pdf-classic-row pdf-classic-indent">
+							<span>A. Spouse</span>
+							<span style="margin-left: 20px;">: <u>{formData.spouse}</u></span>
+						</div>
+						<div class="pdf-classic-row pdf-classic-indent">
+							<span>B. Children</span>
+							<span style="margin-left: 10px;">: <u>{formData.children}</u></span>
+						</div>
+						<div class="pdf-classic-row pdf-classic-indent">
+							<span>C. Animals</span>
+							<span style="margin-left: 15px;">{formData.animals}</span>
+						</div>
+						<div class="pdf-classic-row">
+							<span>Hobbies: <u>{formData.hobbies.filter(h => h).join(' and ')}</u></span>
+						</div>
+						<div class="pdf-classic-row">
+							<span>Activities of Interest: <u>{formData.activities.filter(a => a).join(', ')}</u></span>
+						</div>
+						<div class="pdf-classic-row">
+							<span>City of Residence:</span>
+							<span style="margin-left: 20px;"><u>{formData.city}</u></span>
+							<span style="margin-left: auto;">How Long? <u>{formData.howLong}</u></span>
+						</div>
+
+						<!-- Miscellaneous -->
+						<div class="pdf-classic-section-header"><p>Miscellaneous</p></div>
+						<div class="pdf-classic-row">
+							<span>My burning desire is to . . . <u>{formData.burningDesire}</u></span>
+						</div>
+						<div class="pdf-classic-row-blank"></div>
+						<div class="pdf-classic-row">
+							<span>Something no one knows about me is: <u>{formData.secretThing}</u></span>
+						</div>
+						<div class="pdf-classic-row-blank"></div>
+						<div class="pdf-classic-row-blank"></div>
+						<div class="pdf-classic-row">
+							<span>My key to success is . . . <u>{formData.successKey}</u></span>
+						</div>
+					</div>
+				</div>
+			{:else}
+				<div class="pdf-modern-container">
+					<!-- Header with Photo and Logo -->
+					<div class="pdf-header-with-images">
+						{#if photoPreview}
+							<img src={photoPreview} alt="Member Photo" class="pdf-photo" />
+						{:else}
+							<div class="pdf-photo-placeholder"></div>
+						{/if}
+						<div class="pdf-header">
+							<h2>BNI Member Bio Sheet</h2>
+						</div>
+						{#if logoPreview}
+							<img src={logoPreview} alt="Company Logo" class="pdf-logo" />
+						{:else}
+							<div class="pdf-logo-placeholder"></div>
+						{/if}
+					</div>
+
+					<div class="pdf-top">
+						<div><strong>Our Speakers:</strong> {formData.speaker}</div>
+						<div><strong>Date:</strong> {formatDate(formData.date)}</div>
+					</div>
+
+					<div class="pdf-section-header">Business Information</div>
+					<div class="pdf-field"><strong>Business Name:</strong> {formData.businessName}</div>
+					<div class="pdf-field"><strong>Profession:</strong> {formData.profession}</div>
+
+					<div class="pdf-section-header">Location</div>
+					<div class="pdf-field"><strong>Door No / Street:</strong> {formData.doorStreet}</div>
+					<div class="pdf-field"><strong>Area:</strong> {formData.area}</div>
+					<div class="pdf-field"><strong>City:</strong> {formData.city}</div>
+					<div class="pdf-field"><strong>State:</strong> {formData.state}</div> 
+					<div class="pdf-field"><strong>Country:</strong> {formData.country}</div>
+
+					<div class="pdf-field">
+						<strong>Years in Business:</strong>
+						{formData.yearsInBusiness}
+					</div>
+					<div class="pdf-field">
+						<strong>Previous Types of Jobs:</strong>
+						{formatPreviousJobs()}
+					</div>
+
+					<div class="pdf-section-header">Personal Information</div>
+					<div class="pdf-field">Family Information:</div>
+					<div class="pdf-field pdf-indent">A. Spouse: {formData.spouse}</div>
+					<div class="pdf-field pdf-indent">B. Children: {formData.children}</div>
+					<div class="pdf-field pdf-indent">C. Animals: {formData.animals}</div>
+					<div class="pdf-field">
+						<strong>Hobbies:</strong>
+						{formData.hobbies.filter((h) => h).join(', ')}
+					</div>
+					<div class="pdf-field">
+						<strong>Activities of Interest:</strong>
+						{formData.activities.filter((a) => a).join(', ')}
+					</div>
+					<div class="pdf-field">
+						<strong>How Long?</strong>
+						{formData.howLong}
+					</div>
+
+					<div class="pdf-section-header">Miscellaneous</div>
+					<div class="pdf-field">
+						<strong>My burning desire is to:</strong>
+						{formData.burningDesire}
+					</div>
+					<div class="pdf-field">
+						<strong>Something no one knows about me is:</strong>
+						{formData.secretThing}
+					</div>
+					<div class="pdf-field">
+						<strong>My key to success is:</strong>
+						{formData.successKey}
+					</div>
+				</div>
+			{/if}
+		</div>
+
 		<!-- Floating Download Button -->
 		<button
 			class="floating-download-btn"
@@ -1082,11 +1173,397 @@
 		--green-primary: #3fc231;
 		--green-dark: #2d9e2a;
 	}
+	.pdf-underline{
+			display: inline-block;
+	border-bottom: 1.5px solid #000;
+	padding-bottom: 1px;
+	line-height: 1.6;
+	}
 
 	:global(body) {
 		font-family: 'DM Sans', sans-serif;
 		background: linear-gradient(135deg, #f8f7f4 0%, #ede9e3 100%);
 		min-height: 100vh;
+	}
+
+	/* HIDDEN PDF ELEMENT - FIXED SIZE */
+	.pdf-hidden-element {
+		position: fixed;
+		top: -9999px;
+		left: -9999px;
+		width: 1000px;
+		height: 1414px;
+		background: white;
+		overflow: hidden;
+		z-index: -1000; 
+	}
+
+	/* Field Helper Text */
+.field-helper {
+	font-size: 0.8rem;
+	color: var(--text-medium);
+	margin-top: -4px;
+	margin-bottom: 16px;
+	font-weight: 400;
+	font-style: italic;
+}
+
+/* Improved Job Entry Styles */
+.job-entry {
+	display: flex;
+	gap: 12px;
+	margin-bottom: 20px;
+	align-items: flex-start;
+	background: #f8f9fa;
+	padding: 20px;
+	border-radius: 12px;
+	border: 2px solid #e8e8e8;
+	transition: all 0.3s ease;
+	position: relative;
+}
+
+.job-entry:hover {
+	border-color: var(--green-primary);
+	box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+}
+
+.job-number {
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	min-width: 32px;
+	height: 32px;
+	background: var(--green-primary);
+	color: white;
+	border-radius: 50%;
+	font-weight: 700;
+	font-size: 0.9rem;
+	margin-top: 8px;
+}
+
+.job-inputs-grid {
+	display: grid;
+	grid-template-columns: 1fr 1fr;
+	gap: 16px;
+	flex: 1;
+}
+
+.job-field {
+	display: flex;
+	flex-direction: column;
+	gap: 6px;
+}
+
+.job-field.year-field {
+	max-width: 120px;
+}
+
+.field-label {
+	font-size: 0.75rem;
+	font-weight: 600;
+	color: var(--text-medium);
+	text-transform: uppercase;
+	letter-spacing: 0.5px;
+	order: -1;
+}
+
+.job-input,
+.job-year {
+	width: 100%;
+	padding: 10px 12px;
+	border: 2px solid #e0e0e0;
+	border-radius: 8px;
+	font-size: 0.9rem;
+	transition: all 0.2s ease;
+}
+
+.job-input:focus,
+.job-year:focus {
+	outline: none;
+	border-color: var(--green-primary);
+	box-shadow: 0 0 0 3px rgba(63, 194, 49, 0.1);
+}
+
+/* New Remove Button Style */
+.remove-item-btn-new {
+	width: 32px;
+	height: 32px;
+	min-width: 32px;
+	border-radius: 8px;
+	background: #fff;
+	color: #ff4444;
+	border: 2px solid #ffdddd;
+	cursor: pointer;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	transition: all 0.2s ease;
+	margin-top: 8px;
+}
+
+.remove-item-btn-new:hover {
+	background: #ff4444;
+	color: white;
+	border-color: #ff4444;
+	transform: scale(1.05);
+}
+
+/* New Add Button Style */
+.add-item-btn-new {
+	display: inline-flex;
+	align-items: center;
+	gap: 8px;
+	padding: 12px 20px;
+	background: white;
+	color: var(--green-primary);
+	border: 2px dashed var(--green-primary);
+	border-radius: 10px;
+	font-size: 0.9rem;
+	font-weight: 600;
+	cursor: pointer;
+	transition: all 0.3s ease;
+	margin-top: 8px;
+}
+
+.add-item-btn-new:hover {
+	background: var(--green-primary);
+	color: white;
+	border-style: solid;
+	transform: translateY(-2px);
+	box-shadow: 0 4px 12px rgba(63, 194, 49, 0.2);
+}
+
+.add-item-btn-new svg {
+	transition: transform 0.3s ease;
+}
+
+.add-item-btn-new:hover svg {
+	transform: rotate(90deg);
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+	.job-inputs-grid {
+		grid-template-columns: 1fr;
+	}
+	
+	.job-field.year-field {
+		max-width: 100%;
+	}
+	
+	.job-entry {
+		padding: 16px;
+	}
+	
+	.job-number {
+		min-width: 28px;
+		height: 28px;
+		font-size: 0.85rem;
+	}
+	.preview-header h2{
+		font-size: 1rem !important;
+	}
+	.preview-header {
+		width: 100% !important;
+	}
+}
+
+	/* PDF CLASSIC STYLES - FIXED */
+	.pdf-classic-container {
+		width: 100%;
+		height: 100%;
+		background: #ffffff;
+		padding: 30px;
+		font-family: Arial, sans-serif;
+		font-size: 13px;
+		line-height: 1.5;
+		box-sizing: border-box;
+	}
+
+	.pdf-classic-header {
+		text-align: center;
+		border: 2px solid #000000;
+		padding: 10px;
+		background: #ffffff;
+		margin-bottom: 12px;
+		margin-top: -12px;
+	}
+
+	.pdf-classic-header h2 {
+		font-family: Arial, sans-serif;
+		font-size: 20px;
+		font-weight: bold;
+		color: #000000; 
+		margin-top: -12px;
+		margin-bottom: 10px;
+	}
+
+	.pdf-classic-top {
+		display: flex;
+		justify-content: space-between;
+		margin-bottom: 12px;
+		font-size: 13px;
+		color: #000000;
+		padding: 0 8px;
+	}
+
+	.pdf-classic-top u {
+		text-decoration: underline;
+	}
+
+	.pdf-classic-top strong {
+		font-weight: bold;
+	}
+
+	.pdf-classic-section-header {
+		background: #000000;
+		color: #ffffff;
+		padding: 6px 6px;
+		font-family: Arial, sans-serif;
+		font-size: 13px;
+		font-weight: bold;
+		margin: 12px 0 8px;
+	}
+	.pdf-classic-section-header p {    
+		font-size: 13px; 
+		margin-bottom: 13px;
+	}
+
+	.pdf-classic-section-headers {
+		background: #000000;
+		color: #ffffff;
+		padding: 6px 6px;
+		font-family: Arial, sans-serif;
+		font-size: 13px;
+		font-weight: bold; 
+	}
+	.pdf-classic-section-headers p {    
+		font-size: 13px; 
+		margin-bottom: 13px;
+	}
+
+
+	.pdf-classic-row {
+		margin-bottom: 4px;
+		font-size: 13px;
+		line-height: 1.5;
+		color: #000000;
+		padding: 0 8px;
+		display: flex;
+		flex-wrap: wrap;
+		gap: 4px;
+	}
+
+	.pdf-classic-row u {
+		text-decoration: underline;
+		  text-decoration-color: rgba(0, 0, 0, 0.6); /* 40% opacity */
+
+	}
+
+	.pdf-classic-row-blank {
+		height: 18px;
+	}
+
+	.pdf-classic-indent {
+		padding-left: 30px;
+	}
+
+	/* PDF MODERN STYLES - FIXED */
+	.pdf-modern-container {
+		width: 100%;
+		height: 100%;
+		background: #ffffff;
+		padding: 30px;
+		font-family: 'DM Sans', Arial, sans-serif;
+		font-size: 13px;
+		line-height: 1.5;
+		box-sizing: border-box;
+		overflow: hidden;
+	}
+
+	.pdf-header-with-images {
+		display: grid;
+		grid-template-columns: 100px 1fr 100px;
+		align-items: center;
+		gap: 15px;
+		margin-bottom: 16px;
+	}
+
+	.pdf-photo {
+		width: 100px;
+		height: 120px;
+		object-fit: cover;
+		border: 2px solid #000000;
+		border-radius: 4px;
+	}
+
+	.pdf-logo {
+		width: 100px;
+		height: 100px;
+		object-fit: contain;
+	}
+
+	.pdf-photo-placeholder,
+	.pdf-logo-placeholder {
+		width: 100px;
+		height: 100px;
+		background: #f5f5f5;
+	}
+
+	.pdf-header {
+		text-align: center;
+		border: 3px solid var(--primary-dark);
+		padding: 12px;
+		background: #ffffff;
+		display: flex;
+		align-items: center;
+		justify-content: center;
+	}
+
+	.pdf-header h2 {
+		font-family: 'Crimson Pro', serif;
+		font-size: 18px;
+		font-weight: 700;
+		color: var(--primary-dark);
+		letter-spacing: 1px;
+		margin: 0;
+		padding: 0;
+	}
+
+	.pdf-top {
+		display: flex;
+		justify-content: space-between;
+		margin-bottom: 14px;
+		font-size: 12px;
+		color: var(--text-dark);
+		padding: 0 8px;
+	}
+
+	.pdf-section-header {
+		background: var(--primary-dark);
+		color: var(--white);
+		padding: 8px 12px;
+		font-family: 'Crimson Pro', serif;
+		font-size: 13px;
+		font-weight: 700;
+		margin: 10px 0 8px;
+	}
+
+	.pdf-field {
+		margin-bottom: 6px;
+		font-size: 12px;
+		line-height: 1.4;
+		color: var(--text-dark);
+		padding: 0 8px;
+	}
+
+	.pdf-field strong {
+		font-weight: 600;
+		color: var(--primary-dark);
+	}
+
+	.pdf-indent {
+		padding-left: 35px;
 	}
 
 	/* ============================================
@@ -1350,117 +1827,6 @@
 		width: 40px;
 		height: 2px;
 		background: var(--green-primary);
-	}
-
-	/* ============================================
-	   UPLOAD CARD STYLES
-	   ============================================ */
-	.upload-card {
-		display: flex;
-		gap: 30px;
-		align-items: flex-start;
-		justify-content: center;
-	}
-
-	.upload-group {
-		flex: 1;
-		display: flex;
-		flex-direction: column;
-		align-items: center;
-	}
-
-	.upload-label {
-		display: block;
-		font-weight: 700;
-		color: var(--primary-dark);
-		margin-bottom: 12px;
-		font-size: 0.85rem;
-		letter-spacing: 0.5px;
-		text-transform: uppercase;
-		font-family: 'Playfair Display', serif;
-		text-align: center;
-	}
-
-	.upload-container {
-		width: 100%;
-		max-width: 200px;
-	}
-
-	.upload-box {
-		display: flex;
-		align-items: center;
-		justify-content: center;
-		width: 100%;
-		height: 180px;
-		border: 3px dashed #e5e5e5;
-		border-radius: 12px;
-		cursor: pointer;
-		transition: all 0.3s ease;
-		background: #fafafa;
-	}
-
-	.upload-box:hover {
-		border-color: var(--green-primary);
-		background: #f0f9ef;
-	}
-
-	.upload-placeholder {
-		display: flex;
-		flex-direction: column;
-		align-items: center;
-		gap: 8px;
-		color: var(--text-medium);
-		font-size: 0.85rem;
-	}
-
-	.upload-icon {
-		font-size: 2rem;
-	}
-
-	.image-preview-wrapper {
-		position: relative;
-		width: 100%;
-	}
-
-	.image-preview {
-		width: 100%;
-		height: 180px;
-		object-fit: cover;
-		border-radius: 12px;
-		border: 2px solid var(--green-primary);
-	}
-
-	.passport-size {
-		object-fit: cover;
-	}
-
-	.logo-size {
-		object-fit: contain;
-		background: #f5f5f5;
-	}
-
-	.remove-image-btn {
-		position: absolute;
-		top: -10px;
-		right: -10px;
-		width: 30px;
-		height: 30px;
-		border-radius: 50%;
-		background: #ff4444;
-		color: white;
-		border: none;
-		font-size: 1.5rem;
-		cursor: pointer;
-		display: flex;
-		align-items: center;
-		justify-content: center;
-		line-height: 1;
-		transition: all 0.3s ease;
-	}
-
-	.remove-image-btn:hover {
-		background: #cc0000;
-		transform: scale(1.1);
 	}
 
 	/* ============================================
@@ -1803,6 +2169,7 @@
 		display: inline-flex;
 		align-items: center;
 		justify-content: center;
+		font-size: 22px;
 	}
 
 	.btn-icon.spinning {
@@ -1810,7 +2177,7 @@
 	}
 
 	/* ============================================
-	   PREVIEW SECTION STYLES
+	   PREVIEW SECTION STYLES - RESPONSIVE ONLY
 	   ============================================ */
 	.preview-wrapper {
 		background: #ffffff;
@@ -1819,39 +2186,7 @@
 		overflow: hidden;
 	}
 
-	/* Header with images */
-	.classic-header-with-images,
-	.preview-header-with-images {
-		display: grid;
-		grid-template-columns: 100px 1fr 100px;
-		align-items: center;
-		gap: 15px;
-		margin-bottom: 16px;
-	}
-
-	.preview-photo {
-		width: 100px;
-		height: 120px;
-		object-fit: cover;
-		border: 2px solid #000000;
-		border-radius: 4px;
-		justify-self: center;
-	}
-
-	.preview-logo {
-		width: 100px;
-		height: 100px;
-		object-fit: contain;
-		justify-self: center;
-	}
-
-	.photo-placeholder,
-	.logo-placeholder {
-		width: 100px;
-		height: 100px;
-	}
-
-	/* CLASSIC DESIGN STYLES */
+	/* CLASSIC DESIGN STYLES - RESPONSIVE DISPLAY */
 	.classic-container {
 		background: #ffffff;
 		padding: 20px;
@@ -1860,7 +2195,7 @@
 		border: 2px solid #000000;
 		font-family: Arial, sans-serif;
 		font-size: 11px;
-		line-height: 1.4;
+		line-height: 1.5;
 	}
 
 	.classic-header {
@@ -1868,9 +2203,7 @@
 		border: 2px solid #000000;
 		padding: 10px;
 		background: #ffffff;
-		display: flex;
-		align-items: center;
-		justify-content: center;
+		margin-bottom: 12px;
 	}
 
 	.classic-header h2 {
@@ -1880,20 +2213,19 @@
 		color: #000000;
 		margin: 0;
 		padding: 0;
-		letter-spacing: 0px;
 	}
 
 	.classic-top {
 		display: flex;
 		justify-content: space-between;
-		margin-bottom: 10px;
+		margin-bottom: 12px;
 		font-size: 11px;
 		color: #000000;
 		padding: 0 8px;
 	}
 
 	.classic-top u {
-		text-decoration: none;
+		text-decoration: underline;
 	}
 
 	.classic-top strong {
@@ -1907,58 +2239,33 @@
 		font-family: Arial, sans-serif;
 		font-size: 11px;
 		font-weight: bold;
-		margin: 10px 0 8px;
+		margin: 12px 0 8px;
 	}
 
 	.classic-row {
-		margin-bottom: 6px;
+		margin-bottom: 4px;
 		font-size: 11px;
-		line-height: 1.4;
+		line-height: 1.5;
 		color: #000000;
 		padding: 0 8px;
 		display: flex;
 		flex-wrap: wrap;
-		gap: 8px;
+		gap: 4px;
 	}
 
-	.classic-row span {
-		display: inline;
+	.classic-row u {
+		text-decoration: underline;
 	}
 
-	.classic-row-double {
-		display: grid;
-		grid-template-columns: 1fr 1fr;
-		gap: 12px;
-		margin-bottom: 6px;
-		padding: 0 8px;
-	}
-
-	.classic-row-double div {
-		display: flex;
-		gap: 6px;
-		font-size: 11px;
-		line-height: 1.4;
-		color: #000000;
-		flex-wrap: wrap;
-	}
-
-	.classic-row-double span {
-		display: inline;
-	}
-
-	.classic-underline {
-		border-bottom: 1px solid #000000;
-		padding-bottom: 1px;
-		display: inline-block;
-		min-width: 80px;
-		text-decoration: none;
+	.classic-row-blank {
+		height: 18px;
 	}
 
 	.classic-indent {
 		padding-left: 30px;
 	}
 
-	/* MODERN DESIGN STYLES */
+	/* MODERN DESIGN STYLES - RESPONSIVE DISPLAY */
 	.preview-container {
 		background: #ffffff;
 		padding: 25px;
@@ -1999,7 +2306,7 @@
 	.preview-section-header {
 		background: var(--primary-dark);
 		color: var(--white);
-		padding: 6px 8px;
+		padding: 8px 12px;
 		font-family: 'Crimson Pro', serif;
 		font-size: 1rem;
 		font-weight: 700;
@@ -2043,6 +2350,36 @@
 		width: 100px;
 		height: 3px;
 		background: var(--accent-gold);
+	}
+
+	/* Header with images */
+	.preview-header-with-images { 
+		grid-template-columns: 100px 1fr 100px;
+		align-items: center;
+		gap: 15px;
+		margin-bottom: 16px;
+	}
+
+	.preview-photo {
+		width: 100px;
+		height: 120px;
+		object-fit: cover;
+		border: 2px solid #000000;
+		border-radius: 4px;
+		justify-self: center;
+	}
+
+	.preview-logo {
+		width: 100px;
+		height: 100px;
+		object-fit: contain;
+		justify-self: center;
+	}
+
+	.photo-placeholder,
+	.logo-placeholder {
+		width: 100px;
+		height: 100px;
 	}
 
 	/* ============================================
@@ -2149,21 +2486,12 @@
 			font-size: 24px;
 		}
 
-		.classic-row-double {
-			grid-template-columns: 1fr;
-		}
-
 		.country-dropdown {
 			max-height: 250px;
 		}
 
 		.form-card {
 			grid-template-columns: 1fr;
-		}
-
-		.upload-card {
-			flex-direction: column;
-			align-items: center;
 		}
 
 		.job-inputs {
@@ -2176,7 +2504,6 @@
 			width: 100%;
 		}
 
-		.classic-header-with-images,
 		.preview-header-with-images {
 			grid-template-columns: 80px 1fr 80px;
 			gap: 10px;
@@ -2190,6 +2517,10 @@
 		.preview-logo {
 			width: 80px;
 			height: 80px;
+		}
+
+		.classic-container {
+			padding: 20px;
 		}
 	}
 
@@ -2251,6 +2582,10 @@
 
 		.loading-text {
 			font-size: 0.85rem;
+		}
+
+		.classic-container {
+			padding: 20px;
 		}
 	}
 </style>
