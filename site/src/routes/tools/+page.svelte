@@ -209,7 +209,7 @@
 	// MongoDB API Call (replace with your actual endpoint)
 	async function saveBioToDatabase(bioData) {
 		try {
-			const response = await fetch('YOUR_MONGODB_API_ENDPOINT', {
+			const response = await fetch('https://reixit.onrender.com/api/user/auth/new_pdf', {
 				method: 'POST',
 				headers: {
 					'Content-Type': 'application/json',
@@ -1041,79 +1041,80 @@
 					</div>
 				</div>
 			{:else}
-				<div class="pdf-modern-container">
-					<!-- Header with Photo and Logo -->
-					<div class="pdf-header-with-images">
-						{#if photoPreview}
-							<img src={photoPreview} alt="Member Photo" class="pdf-photo" />
-						{:else}
-							<div class="pdf-photo-placeholder"></div>
-						{/if}
-						<div class="pdf-header">
-							<h2>BNI Member Bio Sheet</h2>
+				<div class="pdf-classic-container">
+					<!-- Header -->
+					<div class="pdf-classic-header">
+						<h2>BNI Member Bio Sheet</h2>
+					</div>
+
+					<!-- Top Section -->
+					<div class="pdf-classic-top">
+						<div>Our <u  >Speaker: <strong>{formData.speaker}</strong></u></div>
+						<div style="text-align: right;">Date: <u>{formatDate(formData.date)}</u></div>
+					</div>
+
+					<!-- Business Information -->
+
+					<div  style="border: 1px solid #000000; padding-bottom: 15px;">
+						<div class="pdf-classic-section-headers"><p>Business Information</p></div>
+						<div class="pdf-classic-row">
+							<span >Business Name: <u>{formData.businessName}</u></span>
 						</div>
-						{#if logoPreview}
-							<img src={logoPreview} alt="Company Logo" class="pdf-logo" />
-						{:else}
-							<div class="pdf-logo-placeholder"></div>
-						{/if}
-					</div>
+						<div class="pdf-classic-row">
+							<span>Profession: {formData.profession}</span>
+						</div>
+						<div class="pdf-classic-row-blank"></div>
+						<div class="pdf-classic-row">
+							<span>Location: <u>{formData.doorStreet}, {formData.area}, {formData.city}</u></span>
+							<span style="margin-left: auto;">Years in Business: <u>{formData.yearsInBusiness}</u></span>
+						</div>
+						<div class="pdf-classic-row">
+							<span>Previous Types of Jobs: <u>{formatPreviousJobs()}</u></span>
+						</div>
 
-					<div class="pdf-top">
-						<div><strong>Our Speakers:</strong> {formData.speaker}</div>
-						<div><strong>Date:</strong> {formatDate(formData.date)}</div>
-					</div>
+						<!-- Personal Information -->
+						<div class="pdf-classic-section-header"><p>Personal Information</p></div>
+						<div class="pdf-classic-row">
+							<span>Family Information:</span>
+						</div>
+						<div class="pdf-classic-row pdf-classic-indent">
+							<span>A. Spouse</span>
+							<span style="margin-left: 20px;">: <u>{formData.spouse}</u></span>
+						</div>
+						<div class="pdf-classic-row pdf-classic-indent">
+							<span>B. Children</span>
+							<span style="margin-left: 10px;">: <u>{formData.children}</u></span>
+						</div>
+						<div class="pdf-classic-row pdf-classic-indent">
+							<span>C. Animals</span>
+							<span style="margin-left: 15px;">{formData.animals}</span>
+						</div>
+						<div class="pdf-classic-row">
+							<span>Hobbies: <u>{formData.hobbies.filter(h => h).join(' and ')}</u></span>
+						</div>
+						<div class="pdf-classic-row">
+							<span>Activities of Interest: <u>{formData.activities.filter(a => a).join(', ')}</u></span>
+						</div>
+						<div class="pdf-classic-row">
+							<span>City of Residence:</span>
+							<span style="margin-left: 20px;"><u>{formData.city}</u></span>
+							<span style="margin-left: auto;">How Long? <u>{formData.howLong}</u></span>
+						</div>
 
-					<div class="pdf-section-header">Business Information</div>
-					<div class="pdf-field"><strong>Business Name:</strong> {formData.businessName}</div>
-					<div class="pdf-field"><strong>Profession:</strong> {formData.profession}</div>
-
-					<div class="pdf-section-header">Location</div>
-					<div class="pdf-field"><strong>Door No / Street:</strong> {formData.doorStreet}</div>
-					<div class="pdf-field"><strong>Area:</strong> {formData.area}</div>
-					<div class="pdf-field"><strong>City:</strong> {formData.city}</div>
-					<div class="pdf-field"><strong>State:</strong> {formData.state}</div> 
-					<div class="pdf-field"><strong>Country:</strong> {formData.country}</div>
-
-					<div class="pdf-field">
-						<strong>Years in Business:</strong>
-						{formData.yearsInBusiness}
-					</div>
-					<div class="pdf-field">
-						<strong>Previous Types of Jobs:</strong>
-						{formatPreviousJobs()}
-					</div>
-
-					<div class="pdf-section-header">Personal Information</div>
-					<div class="pdf-field">Family Information:</div>
-					<div class="pdf-field pdf-indent">A. Spouse: {formData.spouse}</div>
-					<div class="pdf-field pdf-indent">B. Children: {formData.children}</div>
-					<div class="pdf-field pdf-indent">C. Animals: {formData.animals}</div>
-					<div class="pdf-field">
-						<strong>Hobbies:</strong>
-						{formData.hobbies.filter((h) => h).join(', ')}
-					</div>
-					<div class="pdf-field">
-						<strong>Activities of Interest:</strong>
-						{formData.activities.filter((a) => a).join(', ')}
-					</div>
-					<div class="pdf-field">
-						<strong>How Long?</strong>
-						{formData.howLong}
-					</div>
-
-					<div class="pdf-section-header">Miscellaneous</div>
-					<div class="pdf-field">
-						<strong>My burning desire is to:</strong>
-						{formData.burningDesire}
-					</div>
-					<div class="pdf-field">
-						<strong>Something no one knows about me is:</strong>
-						{formData.secretThing}
-					</div>
-					<div class="pdf-field">
-						<strong>My key to success is:</strong>
-						{formData.successKey}
+						<!-- Miscellaneous -->
+						<div class="pdf-classic-section-header"><p>Miscellaneous</p></div>
+						<div class="pdf-classic-row">
+							<span>My burning desire is to . . . <u>{formData.burningDesire}</u></span>
+						</div>
+						<div class="pdf-classic-row-blank"></div>
+						<div class="pdf-classic-row">
+							<span>Something no one knows about me is: <u>{formData.secretThing}</u></span>
+						</div>
+						<div class="pdf-classic-row-blank"></div>
+						<div class="pdf-classic-row-blank"></div>
+						<div class="pdf-classic-row">
+							<span>My key to success is . . . <u>{formData.successKey}</u></span>
+						</div>
 					</div>
 				</div>
 			{/if}
