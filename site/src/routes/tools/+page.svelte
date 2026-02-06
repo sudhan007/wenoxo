@@ -33,7 +33,22 @@
 		burningDesire: '',
 		secretThing: '',
 		photo: null,
-		companyLogo: null
+		companyLogo: null,
+
+		goals: '',
+		accomplishments: '',
+		interests: '',
+		networks: '',
+		skills: '',
+		// Contact Sphere fields
+		contactSphere: [''],
+		contactSphereTop3: ['', '', ''],
+		// Last 10 Customers fields
+		last10Customers: [''],
+		notesOnCustomers: '',
+		notesOnReferrals: ''
+
+
 	};
 
 	// File preview URLs
@@ -120,6 +135,25 @@
 
 	function removeActivity(index) {
 		formData.activities = formData.activities.filter((_, i) => i !== index);
+	}
+
+
+
+	function addContactSphere() {
+		formData.contactSphere = [...formData.contactSphere, ''];
+	}
+
+	function removeContactSphere(index) {
+		formData.contactSphere = formData.contactSphere.filter((_, i) => i !== index);
+	}
+
+	// Last 10 Customers Management
+	function addCustomer() {
+		formData.last10Customers = [...formData.last10Customers, ''];
+	}
+
+	function removeCustomer(index) {
+		formData.last10Customers = formData.last10Customers.filter((_, i) => i !== index);
 	}
 
 	// File Upload Handlers
@@ -260,7 +294,7 @@
 			};
 
 			// Save to MongoDB
-			await saveBioToDatabase(bioData);
+			// await saveBioToDatabase(bioData);
 
 			// Generate PDF
 			isGeneratingPDF = true;
@@ -617,78 +651,78 @@
 
 					<!-- PREVIOUS JOBS - MULTIPLE INPUTS -->
 					<div class="form-group full-width">
-	<label>Previous Types of Jobs:</label>
-	<p class="field-helper">Add your work history (most recent first)</p>
-	
-	{#each formData.previousJobs as job, index}
-		<div class="job-entry">
-			<div class="job-number">{index + 1}</div>
-			<div class="job-inputs-grid">
-				<div class="job-field">
-					<input
-						type="text"
-						bind:value={job.position}
-						placeholder="e.g., Marketing Manager"
-						class="job-input"
-					/>
-					<span class="field-label">Position</span>
-				</div>
-				
-				<div class="job-field">
-					<input
-						type="text"
-						bind:value={job.company}
-						placeholder="e.g., ABC Corporation"
-						class="job-input"
-					/>
-					<span class="field-label">Company</span>
-				</div>
-				
-				<div class="job-field year-field">
-					<input
-						type="text"
-						bind:value={job.startYear}
-						placeholder="2018"
-						class="job-year"
-						maxlength="4"
-					/>
-					<span class="field-label">Start Year</span>
-				</div>
-				
-				<div class="job-field year-field">
-					<input
-						type="text"
-						bind:value={job.endYear}
-						placeholder="2022"
-						class="job-year"
-						maxlength="4"
-					/>
-					<span class="field-label">End Year</span>
-				</div>
-			</div>
-			
-			{#if formData.previousJobs.length > 1}
-				<button
-					type="button"
-					class="remove-item-btn-new"
-					on:click={() => removePreviousJob(index)}
-					title="Remove this job"
-				>
-					<svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
-						<path d="M12 4L4 12M4 4L12 12" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
-					</svg>
-				</button>
-			{/if}
-		</div>
-	{/each}
-	
-	<button type="button" class="add-item-btn-new" on:click={addPreviousJob}>
-		<svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
-			<path d="M8 3V13M3 8H13" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
-		</svg>
-		<span>Add Another Job</span>
-	</button>
-</div>
+						<label>Previous Types of Jobs:</label>
+						<p class="field-helper">Add your work history (most recent first)</p>
+						
+						{#each formData.previousJobs as job, index}
+							<div class="job-entry">
+								<div class="job-number">{index + 1}</div>
+								<div class="job-inputs-grid">
+									<div class="job-field">
+										<input
+											type="text"
+											bind:value={job.position}
+											placeholder="e.g., Marketing Manager"
+											class="job-input"
+										/>
+										<span class="field-label">Position</span>
+									</div>
+									
+									<div class="job-field">
+										<input
+											type="text"
+											bind:value={job.company}
+											placeholder="e.g., ABC Corporation"
+											class="job-input"
+										/>
+										<span class="field-label">Company</span>
+									</div>
+									
+									<div class="job-field year-field">
+										<input
+											type="text"
+											bind:value={job.startYear}
+											placeholder="2018"
+											class="job-year"
+											maxlength="4"
+										/>
+										<span class="field-label">Start Year</span>
+									</div>
+									
+									<div class="job-field year-field">
+										<input
+											type="text"
+											bind:value={job.endYear}
+											placeholder="2022"
+											class="job-year"
+											maxlength="4"
+										/>
+										<span class="field-label">End Year</span>
+									</div>
+								</div>
+								
+								{#if formData.previousJobs.length > 1}
+									<button
+										type="button"
+										class="remove-item-btn-new"
+										on:click={() => removePreviousJob(index)}
+										title="Remove this job"
+									>
+										<svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+											<path d="M12 4L4 12M4 4L12 12" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+										</svg>
+									</button>
+								{/if}
+							</div>
+						{/each}
+						
+						<button type="button" class="add-item-btn-new" on:click={addPreviousJob}>
+							<svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+								<path d="M8 3V13M3 8H13" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+							</svg>
+							<span>Add Another Job</span>
+						</button>
+					</div>
 				</div>
 
 				<!-- CARD 05: PERSONAL INFORMATION -->
@@ -775,6 +809,117 @@
 						<textarea id="successKey" bind:value={formData.successKey} rows="4"></textarea>
 					</div>
 				</div>
+
+
+				<div class="section-title-wrapper">
+					<div class="section-title">BNI Gains Worksheet</div>
+				</div>
+
+				<div class="form-card">
+					<div class="form-group full-width">
+						<label for="goals">Goals:</label>
+						<p class="field-helper">Your business or personal objectives</p>
+						<textarea id="goals" bind:value={formData.goals} rows="3" placeholder="e.g., To achieve 10 crore turnover by this year"></textarea>
+					</div>
+
+					<div class="form-group full-width">
+						<label for="accomplishments">Accomplishments:</label>
+						<p class="field-helper">What you're proud of achieving</p>
+						<textarea id="accomplishments" bind:value={formData.accomplishments} rows="3" placeholder="e.g., Processed a loan which worth 1.85 crores in a very short time"></textarea>
+					</div>
+
+					<div class="form-group full-width">
+						<label for="interests">Interests:</label>
+						<p class="field-helper">Things you enjoy doing</p>
+						<textarea id="interests" bind:value={formData.interests} rows="2" placeholder="e.g., Sports and music"></textarea>
+					</div>
+
+					<div class="form-group full-width">
+						<label for="networks">Networks:</label>
+						<p class="field-helper">Organizations or groups you associate with</p>
+						<textarea id="networks" bind:value={formData.networks} rows="2" placeholder="e.g., BNI, Local Chamber of Commerce"></textarea>
+					</div>
+
+					<div class="form-group full-width">
+						<label for="skills">Skills:</label>
+						<p class="field-helper">Your talents and abilities</p>
+						<textarea id="skills" bind:value={formData.skills} rows="2" placeholder="e.g., Communication, quick loan valuation"></textarea>
+					</div>
+				</div>
+
+
+				<div class="section-title-wrapper">
+					<div class="section-title">Contact Sphere Planning</div>
+				</div>
+
+				<div class="form-card">
+					<div class="form-group full-width">
+						<label>Contact Sphere:</label>
+						<p class="field-helper">Businesses or professions that naturally provide referrals</p>
+						{#each formData.contactSphere as sphere, index}
+							<div class="multi-input-entry">
+								<input type="text" bind:value={formData.contactSphere[index]} placeholder="e.g., Hotel Business, Hospitals, Schools" />
+								{#if formData.contactSphere.length > 1}
+									<button type="button" class="remove-item-btn" on:click={() => removeContactSphere(index)}>
+										×
+									</button>
+								{/if}
+							</div>
+						{/each}
+						<button type="button" class="add-item-btn" on:click={addContactSphere}>
+							+ Add Contact Sphere
+						</button>
+					</div>
+
+					<div class="form-group full-width">
+						<label>Contact Sphere Top-3:</label>
+						<p class="field-helper">Your top 3 contact sphere priorities</p>
+						<div class="top3-grid">
+							<input type="text" bind:value={formData.contactSphereTop3[0]} placeholder="1. e.g., Bejansing Eye Hospital" />
+							<input type="text" bind:value={formData.contactSphereTop3[1]} placeholder="2. e.g., Velavan Hospital" />
+							<input type="text" bind:value={formData.contactSphereTop3[2]} placeholder="3. e.g., Auditors" />
+						</div>
+					</div>
+				</div>
+
+				<div class="section-title-wrapper">
+					<div class="section-title">Last 10 Customer Worksheet</div>
+				</div>
+
+				<div class="form-card">
+					<div class="form-group full-width">
+						<label>Last 10 Customers:</label>
+						<p class="field-helper">List your recent customers (most recent first)</p>
+						{#each formData.last10Customers as customer, index}
+							<div class="multi-input-entry">
+								<input type="text" bind:value={formData.last10Customers[index]} placeholder="e.g., Krishna balan - owner of Jeyam Hotel" />
+								{#if formData.last10Customers.length > 1}
+									<button type="button" class="remove-item-btn" on:click={() => removeCustomer(index)}>
+										×
+									</button>
+								{/if}
+							</div>
+						{/each}
+						<button type="button" class="add-item-btn" on:click={addCustomer}>
+							+ Add Customer
+						</button>
+					</div>
+
+					<div class="form-group full-width">
+						<label for="notesOnCustomers">Notes on Customers:</label>
+						<p class="field-helper">Observations about your last 10 customers</p>
+						<textarea id="notesOnCustomers" bind:value={formData.notesOnCustomers} rows="4" placeholder="Make notes about your last 10 customers"></textarea>
+					</div>
+
+					<div class="form-group full-width">
+						<label for="notesOnReferrals">Notes on Referrals:</label>
+						<p class="field-helper">Track referral patterns and opportunities</p>
+						<textarea id="notesOnReferrals" bind:value={formData.notesOnReferrals} rows="4" placeholder="Make notes about referrals"></textarea>
+					</div>
+				</div>
+
+
+
 
 				<div style="display: flex; gap: 10px;">
 					<button
@@ -878,6 +1023,48 @@
 						<div class="classic-row">
 							<span>My key to success is . . . <u>{formData.successKey}</u></span>
 						</div>
+
+
+ 
+						<div class="classic-section-header">BNI Gains Worksheet</div>
+						 
+						<div class="classic-row">
+							<span>Goals: <u>{formData.goals}</u></span>
+						</div> 
+						<div class="classic-row">
+							<span>Accomplishments: <u>{formData.accomplishments}</u></span>
+						</div> 
+						<div class="classic-row">
+							<span>Interests: <u>{formData.interests}</u></span>
+						</div> 
+						<div class="classic-row">
+							<span>Networks: <u>{formData.networks}</u></span>
+						</div> 
+						<div class="classic-row">
+							<span>Skills: <u>{formData.skills}</u></span>
+						</div>
+
+						<div class="classic-section-header">Contact Sphere</div>
+						<div class="classic-row">
+							<span>Contact Sphere: <u>{formData.contactSphere.filter(s => s).join(', ')}</u></span>
+						</div>
+						<div class="classic-row">
+							<span>Top-3: <u>{formData.contactSphereTop3.filter(s => s).join(', ')}</u></span>
+						</div> 
+
+						<!-- Last 10 Customers --> 
+						<div class="classic-section-header">Last 10 Customers</div>
+						<div class="classic-row">
+							<span>Customers: <u>{formData.last10Customers.filter(c => c).join(', ')}</u></span>
+						</div> 
+						<div class="classic-row">
+							<span>Notes on Customers: <u>{formData.notesOnCustomers}</u></span>
+						</div> 
+						<div class="classic-row">
+							<span>Notes on Referrals: <u>{formData.notesOnReferrals}</u></span>
+						</div> 
+
+
 					</div>
 				</div>
 			{:else}
@@ -956,6 +1143,34 @@
 							<strong>My key to success is:</strong>
 							{formData.successKey}
 						</div>
+
+ 
+							<div class="preview-section-header">BNI Gains Worksheet</div> 
+							<div class="preview-field"><strong>Goals:</strong> {formData.goals}</div> 
+							<div class="preview-field"><strong>Accomplishments:</strong> {formData.accomplishments}</div> 
+							<div class="preview-field"><strong>Interests:</strong> {formData.interests}</div> 
+							<div class="preview-field"><strong>Networks:</strong> {formData.networks}</div> 
+							<div class="preview-field"><strong>Skills:</strong> {formData.skills}</div> 
+
+							<!-- Contact Sphere --> 
+							<div class="preview-section-header">Contact Sphere</div>
+							<div class="preview-field">
+								<strong>Contact Sphere:</strong> {formData.contactSphere.filter(s => s).join(', ')}
+							</div>
+							<div class="preview-field">
+								<strong>Top-3:</strong> {formData.contactSphereTop3.filter(s => s).join(', ')}
+							</div> 
+							<!-- Last 10 Customers --> 
+							<div class="preview-section-header">Last 10 Customers</div>
+							<div class="preview-field">
+								<strong>Customers:</strong> {formData.last10Customers.filter(c => c).join(', ')}
+							</div> 
+							<div class="preview-field">
+								<strong>Notes on Customers:</strong> {formData.notesOnCustomers}
+							</div> 
+							<div class="preview-field">
+								<strong>Notes on Referrals:</strong> {formData.notesOnReferrals}
+							</div> 
 					</div>
 				</div>
 			{/if}
@@ -1038,6 +1253,46 @@
 						<div class="pdf-classic-row">
 							<span>My key to success is . . . <u>{formData.successKey}</u></span>
 						</div>
+
+						
+						<div class="classic-section-header">BNI Gains Worksheet</div>
+						 
+						<div class="classic-row">
+							<span>Goals: <u>{formData.goals}</u></span>
+						</div> 
+						<div class="classic-row">
+							<span>Accomplishments: <u>{formData.accomplishments}</u></span>
+						</div> 
+						<div class="classic-row">
+							<span>Interests: <u>{formData.interests}</u></span>
+						</div> 
+						<div class="classic-row">
+							<span>Networks: <u>{formData.networks}</u></span>
+						</div> 
+						<div class="classic-row">
+							<span>Skills: <u>{formData.skills}</u></span>
+						</div>
+
+						<div class="classic-section-header">Contact Sphere</div>
+						<div class="classic-row">
+							<span>Contact Sphere: <u>{formData.contactSphere.filter(s => s).join(', ')}</u></span>
+						</div>
+						<div class="classic-row">
+							<span>Top-3: <u>{formData.contactSphereTop3.filter(s => s).join(', ')}</u></span>
+						</div> 
+
+						<!-- Last 10 Customers --> 
+						<div class="classic-section-header">Last 10 Customers</div>
+						<div class="classic-row">
+							<span>Customers: <u>{formData.last10Customers.filter(c => c).join(', ')}</u></span>
+						</div> 
+						<div class="classic-row">
+							<span>Notes on Customers: <u>{formData.notesOnCustomers}</u></span>
+						</div> 
+						<div class="classic-row">
+							<span>Notes on Referrals: <u>{formData.notesOnReferrals}</u></span>
+						</div> 
+
 					</div>
 				</div>
 			{:else}
@@ -1115,6 +1370,49 @@
 						<div class="pdf-classic-row">
 							<span>My key to success is . . . <u>{formData.successKey}</u></span>
 						</div>
+
+
+						
+						<div class="classic-section-header">BNI Gains Worksheet</div>
+						 
+						<div class="classic-row">
+							<span>Goals: <u>{formData.goals}</u></span>
+						</div> 
+						<div class="classic-row">
+							<span>Accomplishments: <u>{formData.accomplishments}</u></span>
+						</div> 
+						<div class="classic-row">
+							<span>Interests: <u>{formData.interests}</u></span>
+						</div> 
+						<div class="classic-row">
+							<span>Networks: <u>{formData.networks}</u></span>
+						</div> 
+						<div class="classic-row">
+							<span>Skills: <u>{formData.skills}</u></span>
+						</div>
+
+						<div class="classic-section-header">Contact Sphere</div>
+						<div class="classic-row">
+							<span>Contact Sphere: <u>{formData.contactSphere.filter(s => s).join(', ')}</u></span>
+						</div>
+						<div class="classic-row">
+							<span>Top-3: <u>{formData.contactSphereTop3.filter(s => s).join(', ')}</u></span>
+						</div> 
+
+						<!-- Last 10 Customers --> 
+						<div class="classic-section-header">Last 10 Customers</div>
+						<div class="classic-row">
+							<span>Customers: <u>{formData.last10Customers.filter(c => c).join(', ')}</u></span>
+						</div> 
+						<div class="classic-row">
+							<span>Notes on Customers: <u>{formData.notesOnCustomers}</u></span>
+						</div> 
+						<div class="classic-row">
+							<span>Notes on Referrals: <u>{formData.notesOnReferrals}</u></span>
+						</div> 
+
+
+						
 					</div>
 				</div>
 			{/if}
@@ -2588,5 +2886,15 @@
 		.classic-container {
 			padding: 20px;
 		}
+	}
+
+
+	.top3-grid {
+		display: grid;
+		gap: 12px;
+	}
+
+	.top3-grid input {
+		width: 100%;
 	}
 </style>
