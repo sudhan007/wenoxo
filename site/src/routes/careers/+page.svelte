@@ -366,7 +366,7 @@
 		},
 		{
 			title: 'Business Development Executive (BDE)',
-			exp: 'Experienced',
+			exp: '4+ Years',
 			type: 'Full Time',
 			short:
 				'Drive sales growth, build strong client relationships, and identify new business opportunities.',
@@ -393,7 +393,7 @@
 		},
 		{
 			title: 'Digital Marketing Executive',
-			exp: 'Relevant Experience',
+			exp: 'Min 1 Years',
 			type: 'Full Time',
 			short: 'Execute digital marketing campaigns, content creation, SEO, email marketing & ASO.',
 			responsibilities: [
