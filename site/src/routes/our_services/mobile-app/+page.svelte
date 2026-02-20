@@ -10,6 +10,7 @@
 		ShoppingBag,
 		Truck
 	} from 'lucide-svelte';
+	import JourneyButton from '@/components/home/journeyButton.svelte';
 </script>
 
 <main id="s-mobile" class="view-pane pt-36 md:pt-40">
@@ -88,7 +89,7 @@
 	<section class="section-padding bg-white">
 		<div class="mx-auto max-w-7xl px-6 pt-4 lg:px-12">
 			<h3
-				class="mb-16 text-center text-[11px] font-black uppercase tracking-[0.5em] text-slate-300"
+				class="mb-16 text-center text-[14px] font-black uppercase tracking-[0.5em] text-slate-400"
 			>
 				Technology Arsenal
 			</h3>
@@ -218,7 +219,7 @@
 			<div class="grid gap-12 md:grid-cols-2">
 				<div class="group cursor-pointer">
 					<div
-						class="relative mb-8 aspect-video overflow-hidden rounded-[3rem] bg-white shadow-2xl"
+						class="relative mb-8 aspect-video overflow-hidden rounded-[2rem] bg-white shadow-2xl"
 					>
 						<img
 							alt="Kings-chic"
@@ -246,7 +247,7 @@
 				</div>
 				<div class="group cursor-pointer pt-12 lg:pt-24">
 					<div
-						class="relative mb-8 aspect-video overflow-hidden rounded-[3rem] bg-white shadow-2xl"
+						class="relative mb-8 aspect-video overflow-hidden rounded-[2rem] bg-white shadow-2xl"
 					>
 						<img
 							alt="Pratap"
@@ -342,10 +343,7 @@
 				Partner with Wenoxo to build mobile apps that strengthen brands and accelerate digital
 				growth.
 			</p>
-			<button
-				class="rounded-full bg-blue-600 px-12 py-5 text-sm font-black uppercase tracking-[0.2em] text-white shadow-2xl shadow-blue-200"
-				>Start Your Digital Journey &rarr;</button
-			>
+			<JourneyButton />
 		</div>
 	</section>
 </main>
