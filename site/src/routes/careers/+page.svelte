@@ -393,7 +393,7 @@
 		},
 		{
 			title: 'Digital Marketing Executive',
-			exp: 'Min 1 Years',
+			exp: 'Min 1 Year',
 			type: 'Full Time',
 			short: 'Execute digital marketing campaigns, content creation, SEO, email marketing & ASO.',
 			responsibilities: [
