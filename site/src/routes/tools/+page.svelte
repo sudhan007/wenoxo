@@ -368,7 +368,6 @@
   right: 0;
   max-width: 430px;
   margin: 0 auto;
-
   background: #fff;
   border-top: 1px solid #EAE8E3;
   padding: 12px 16px;
