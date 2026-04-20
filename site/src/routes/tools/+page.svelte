@@ -477,12 +477,12 @@
   </div>
 
   <!-- STEP DOTS -->
-  <div class="step-dots">
+  <!-- <div class="step-dots">
     {#each { length: 5 } as _, i}
       <div class="dot" class:active={i === currentStep} class:done={i < currentStep} on:click={() => goToStep(i)} />
     {/each}
   </div>
-  <div class="step-label">Step {currentStep + 1} of 5 — {steps[currentStep]}</div>
+  <div class="step-label">Step {currentStep + 1} of 5 — {steps[currentStep]}</div> -->
 
   <!-- ── STEP 1: Basic & Business ── -->
   <div class="section" class:active={currentStep === 0}>
