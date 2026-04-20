@@ -272,7 +272,7 @@
     min-height: 100vh;
     display: flex;
     flex-direction: column;
-    background: #F5F4F0;
+    background: #ffffff;
   }
 
   /* TOP BAR */
@@ -362,11 +362,22 @@
 
   /* BOTTOM NAV */
   .bottom-nav {
-    position: sticky; bottom: 0; background: #fff;
-    border-top: 1px solid #EAE8E3; padding: 12px 16px;
-    display: flex; gap: 10px; z-index: 10;
-    box-shadow: 0 -2px 12px rgba(0,0,0,0.05);
-  }
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  max-width: 430px;
+  margin: 0 auto;
+
+  background: #fff;
+  border-top: 1px solid #EAE8E3;
+  padding: 12px 16px;
+  display: flex;
+  gap: 10px;
+  z-index: 1000;
+
+  box-shadow: 0 -2px 12px rgba(0,0,0,0.05);
+}
   .btn {
     flex: 1; padding: 13px;
     font-family: 'DM Sans', sans-serif; font-size: 14px; font-weight: 500;
