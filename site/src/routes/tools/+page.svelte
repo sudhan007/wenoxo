@@ -827,9 +827,8 @@
     <button class="btn" on:click={openPreview}>Preview</button>
     {#if currentStep < 4}
       <button class="btn primary" on:click={() => navigate(1)}>Next →</button>
-    {:else}
-      <!-- FIX 3: Last step — Preview is plain btn, no primary highlight -->
-      <button class="btn" on:click={openPreview}>Preview ✓</button>
+    <!-- {:else} 
+      <button class="btn" on:click={openPreview}>Preview ✓</button> -->
     {/if}
   </div>
 </div>
