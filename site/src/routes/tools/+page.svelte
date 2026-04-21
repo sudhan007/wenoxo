@@ -6,30 +6,24 @@
 
   const steps = ['Basic & Business', 'Personal', 'GAINS', 'Contact Sphere', 'Last 10 Customers'];
 
-  // Multiple jobs support
-  let jobs = [
-    { profession: '', businessName: '', companyName: '', yearsInBusiness: '' }
-  ];
+  // FIX 2: Separate current job (single) vs previous jobs (multiple)
+  let currentJob = { profession: '', businessName: '', companyName: '', yearsInBusiness: '' };
+  let previousJobs = [];
 
-  function addJob() {
-    jobs = [...jobs, { profession: '', businessName: '', companyName: '', yearsInBusiness: '' }];
+  function addPreviousJob() {
+    previousJobs = [...previousJobs, { profession: '', businessName: '', companyName: '', yearsInBusiness: '' }];
   }
 
-  function removeJob(i) {
-    if (jobs.length > 1) jobs = jobs.filter((_, idx) => idx !== i);
+  function removePreviousJob(i) {
+    previousJobs = previousJobs.filter((_, idx) => idx !== i);
   }
 
   let formData = {
-    // Step 1
     speakerName: '',
     date: '',
     locationCity: '',
     locationState: '',
-    previousPosition: '',
-    previousCompany: '',
     timeline: '',
-
-    // Step 2
     spouseName: '',
     childrenNames: '',
     animals: '',
@@ -37,8 +31,6 @@
     activities: '',
     residencyCity: '',
     residencyDuration: '',
-
-    // Step 3
     burningDesire: '',
     secretFact: '',
     keySuccess: '',
@@ -47,12 +39,8 @@
     interests: '',
     networks: '',
     skills: '',
-
-    // Step 4
     contactSphere: '',
     contactSphereTop3: '',
-
-    // Step 5
     last10Customers: '',
     customerNotes: '',
     referralNotes: '',
@@ -61,15 +49,6 @@
   let showPreview = false;
   let photoInput;
   let pdfGenerating = false;
-
-  // Detect desktop
-  let isDesktop = false;
-  onMount(() => {
-    const check = () => { isDesktop = window.innerWidth >= 768; };
-    check();
-    window.addEventListener('resize', check);
-    return () => window.removeEventListener('resize', check);
-  });
 
   function navigate(direction) {
     const nextStep = currentStep + direction;
@@ -101,30 +80,33 @@
     if (event.target === event.currentTarget) closePreview();
   }
 
+  // All jobs for preview & PDF
+  $: filledCurrentJob = (currentJob.profession || currentJob.businessName) ? [currentJob] : [];
+  $: filledPreviousJobs = previousJobs.filter(j => j.profession || j.businessName);
+  $: allJobs = [...filledCurrentJob, ...filledPreviousJobs];
+
   function buildPDFHTML() {
     const esc = (s) => String(s || '').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
     const nl = (s) => esc(s).replace(/\n/g,'<br>');
     const loc = [formData.locationCity, formData.locationState].filter(Boolean).join(', ');
-    const prev = [formData.previousPosition, formData.previousCompany].filter(Boolean).join(' @ ');
-    const primaryJob = jobs[0] || {};
-    const subline = [primaryJob.profession, primaryJob.businessName].filter(Boolean).join(' · ');
+    const subline = [currentJob.profession, currentJob.businessName].filter(Boolean).join(' · ');
 
     const section = (title, body) => body ? `
       <div style="padding:8px 14px;border-bottom:1px solid #EAE8E3;background:#fff;">
         <div style="font-size:8px;font-weight:700;color:#CC1F1F;text-transform:uppercase;letter-spacing:0.8px;margin-bottom:5px;">${esc(title)}</div>
-        <div style="font-size:11px;color:#1A1A1A;line-height:1.7;">${nl(body)}</div>
+        <div style="font-size:11px;color:#1A1A1A;line-height:1.7;text-transform:none;">${nl(body)}</div>
       </div>` : '';
 
     const chip = (label, val) => val ? `
       <div style="padding:7px 10px;border:1px solid #EAE8E3;border-radius:6px;background:#F9F8F5;">
         <div style="font-size:8px;font-weight:600;color:#999;text-transform:uppercase;letter-spacing:0.5px;margin-bottom:2px;">${esc(label)}</div>
-        <div style="font-size:11px;font-weight:500;color:#1A1A1A;">${esc(val)}</div>
+        <div style="font-size:11px;font-weight:500;color:#1A1A1A;text-transform:none;">${esc(val)}</div>
       </div>` : '';
 
     const gainsCell = (label, val) => `
       <div style="padding:6px 10px;border:1px solid #EAE8E3;border-radius:6px;background:#F5F4F0;">
         <div style="font-size:8px;font-weight:600;color:#CC1F1F;text-transform:uppercase;letter-spacing:0.5px;margin-bottom:3px;">${esc(label)}</div>
-        <div style="font-size:11px;color:#1A1A1A;line-height:1.5;">${nl(val) || '<span style="color:#CCC;font-style:italic;">—</span>'}</div>
+        <div style="font-size:11px;color:#1A1A1A;line-height:1.5;text-transform:none;">${nl(val) || '<span style="color:#CCC;font-style:italic;">—</span>'}</div>
       </div>`;
 
     const aviHTML = photoData
@@ -134,9 +116,8 @@
     const chips = [
       chip('Date', formData.date),
       chip('Location', loc),
-      chip('Years in Business', jobs.map(j => j.yearsInBusiness).filter(Boolean).join(', ')),
-      chip('Company', jobs.map(j => j.companyName || j.businessName).filter(Boolean).join(', ')),
-      prev ? `<div style="grid-column:1/-1;padding:7px 10px;border:1px solid #EAE8E3;border-radius:6px;background:#F9F8F5;"><div style="font-size:8px;font-weight:600;color:#999;text-transform:uppercase;letter-spacing:0.5px;margin-bottom:2px;">Previous</div><div style="font-size:11px;font-weight:500;color:#1A1A1A;">${esc(prev)}</div></div>` : ''
+      chip('Years in Business', currentJob.yearsInBusiness),
+      chip('Company', currentJob.companyName || currentJob.businessName),
     ].filter(Boolean).join('');
 
     const familyParts = [
@@ -151,16 +132,19 @@
       formData.keySuccess && `Key Success:\n${formData.keySuccess}`,
     ].filter(Boolean).join('\n\n');
 
-    // Multiple jobs block
-    const jobsBlock = jobs.filter(j => j.profession || j.businessName).length > 0 ? `
+    const filledAll = allJobs;
+    const jobsHTML = filledAll.map((j, i) => `
+      <div style="padding:7px 10px;border:1px solid #EAE8E3;border-radius:6px;background:#F9F8F5;margin-bottom:6px;">
+        <div style="font-size:8px;font-weight:600;${i === 0 ? 'color:#CC1F1F' : 'color:#888'};text-transform:uppercase;letter-spacing:0.4px;margin-bottom:3px;">${i === 0 ? 'Current' : 'Previous'}</div>
+        <div style="font-size:11px;font-weight:600;color:#1A1A1A;text-transform:none;">${esc(j.profession || '')}${j.profession && j.businessName ? ' · ' : ''}${esc(j.businessName || '')}</div>
+        ${j.companyName ? `<div style="font-size:10px;color:#666;margin-top:2px;text-transform:none;">${esc(j.companyName)}</div>` : ''}
+        ${j.yearsInBusiness ? `<div style="font-size:10px;color:#999;margin-top:1px;text-transform:none;">${esc(j.yearsInBusiness)} in business</div>` : ''}
+      </div>`).join('');
+
+    const jobsBlock = filledAll.length > 0 ? `
       <div style="padding:8px 14px;border-bottom:1px solid #EAE8E3;background:#fff;">
         <div style="font-size:8px;font-weight:700;color:#CC1F1F;text-transform:uppercase;letter-spacing:0.8px;margin-bottom:8px;">Business / Profession</div>
-        ${jobs.filter(j => j.profession || j.businessName).map((j, i) => `
-          <div style="padding:7px 10px;border:1px solid #EAE8E3;border-radius:6px;background:#F9F8F5;margin-bottom:6px;">
-            <div style="font-size:11px;font-weight:600;color:#1A1A1A;">${esc(j.profession || '')}${j.profession && j.businessName ? ' · ' : ''}${esc(j.businessName || '')}</div>
-            ${j.companyName ? `<div style="font-size:10px;color:#666;margin-top:2px;">${esc(j.companyName)}</div>` : ''}
-            ${j.yearsInBusiness ? `<div style="font-size:10px;color:#999;margin-top:1px;">${esc(j.yearsInBusiness)} in business</div>` : ''}
-          </div>`).join('')}
+        ${jobsHTML}
       </div>` : '';
 
     const hasGains = formData.goals || formData.accomplishments || formData.interests || formData.networks || formData.skills;
@@ -179,16 +163,16 @@
     const contactBlock = (formData.contactSphere || formData.contactSphereTop3) ? `
       <div style="padding:8px 14px;border-bottom:1px solid #EAE8E3;background:#fff;">
         <div style="font-size:8px;font-weight:700;color:#CC1F1F;text-transform:uppercase;letter-spacing:0.8px;margin-bottom:5px;">Contact Sphere</div>
-        ${formData.contactSphere ? `<div style="font-size:11px;color:#1A1A1A;line-height:1.7;">${nl(formData.contactSphere)}</div>` : ''}
-        ${formData.contactSphereTop3 ? `<div style="margin-top:6px;"><div style="font-size:8px;font-weight:600;color:#888;text-transform:uppercase;letter-spacing:0.5px;margin-bottom:3px;">Top 3</div><div style="font-size:11px;color:#1A1A1A;line-height:1.7;">${nl(formData.contactSphereTop3)}</div></div>` : ''}
+        ${formData.contactSphere ? `<div style="font-size:11px;color:#1A1A1A;line-height:1.7;text-transform:none;">${nl(formData.contactSphere)}</div>` : ''}
+        ${formData.contactSphereTop3 ? `<div style="margin-top:6px;"><div style="font-size:8px;font-weight:600;color:#888;text-transform:uppercase;letter-spacing:0.5px;margin-bottom:3px;">Top 3</div><div style="font-size:11px;color:#1A1A1A;line-height:1.7;text-transform:none;">${nl(formData.contactSphereTop3)}</div></div>` : ''}
       </div>` : '';
 
     const customersBlock = (formData.last10Customers || formData.customerNotes || formData.referralNotes) ? `
       <div style="padding:8px 14px;border-bottom:1px solid #EAE8E3;background:#fff;">
         <div style="font-size:8px;font-weight:700;color:#CC1F1F;text-transform:uppercase;letter-spacing:0.8px;margin-bottom:5px;">Last 10 Customers</div>
-        ${formData.last10Customers ? `<div style="font-size:11px;color:#1A1A1A;line-height:1.7;">${nl(formData.last10Customers)}</div>` : ''}
-        ${formData.customerNotes ? `<div style="margin-top:6px;"><div style="font-size:8px;font-weight:600;color:#888;text-transform:uppercase;letter-spacing:0.5px;margin-bottom:3px;">Customer Notes</div><div style="font-size:11px;color:#1A1A1A;line-height:1.7;">${nl(formData.customerNotes)}</div></div>` : ''}
-        ${formData.referralNotes ? `<div style="margin-top:6px;"><div style="font-size:8px;font-weight:600;color:#888;text-transform:uppercase;letter-spacing:0.5px;margin-bottom:3px;">Referral Notes</div><div style="font-size:11px;color:#1A1A1A;line-height:1.7;">${nl(formData.referralNotes)}</div></div>` : ''}
+        ${formData.last10Customers ? `<div style="font-size:11px;color:#1A1A1A;line-height:1.7;text-transform:none;">${nl(formData.last10Customers)}</div>` : ''}
+        ${formData.customerNotes ? `<div style="margin-top:6px;"><div style="font-size:8px;font-weight:600;color:#888;text-transform:uppercase;letter-spacing:0.5px;margin-bottom:3px;">Customer Notes</div><div style="font-size:11px;color:#1A1A1A;line-height:1.7;text-transform:none;">${nl(formData.customerNotes)}</div></div>` : ''}
+        ${formData.referralNotes ? `<div style="margin-top:6px;"><div style="font-size:8px;font-weight:600;color:#888;text-transform:uppercase;letter-spacing:0.5px;margin-bottom:3px;">Referral Notes</div><div style="font-size:11px;color:#1A1A1A;line-height:1.7;text-transform:none;">${nl(formData.referralNotes)}</div></div>` : ''}
       </div>` : '';
 
     return `
@@ -196,8 +180,8 @@
         <div style="background-color:#CC1F1F;padding:20px 20px;display:flex;align-items:center;gap:14px;">
           ${aviHTML}
           <div style="flex:1;min-width:0;">
-            <div style="font-size:20px;font-weight:700;color:#ffffff;">${esc(formData.speakerName || 'Your Name')}</div>
-            <div style="font-size:11px;color:rgba(255,255,255,0.85);margin-top:3px;">${esc(subline)}</div>
+            <div style="font-size:20px;font-weight:700;color:#ffffff;text-transform:none;">${esc(formData.speakerName || 'Your Name')}</div>
+            <div style="font-size:11px;color:rgba(255,255,255,0.85);margin-top:3px;text-transform:none;">${esc(subline)}</div>
           </div>
           <div style="font-size:10px;font-weight:700;color:rgba(255,255,255,0.65);letter-spacing:2px;">BNI</div>
         </div>
@@ -259,7 +243,6 @@
 
   $: progressPercentage = ((currentStep + 1) / 5) * 100;
   $: fullName = formData.speakerName || 'Your Name';
-  $: primaryJob = jobs[0] || {};
 </script>
 
 <style>
@@ -286,18 +269,7 @@
     display: flex;
     flex-direction: column;
     background: #ffffff;
-  }
-
-  /* On desktop, keep app centered; shift it left when preview panel opens */
-  @media (min-width: 768px) {
-    .app {
-      position: relative;
-      left: 0;
-      transition: left 0.35s cubic-bezier(0.4,0,0.2,1);
-    }
-    .app.preview-open {
-      left: -230px;
-    }
+    /* FIX 4: No left shift, no transition — preview panel overlays without moving the app */
   }
 
   /* TOP BAR */
@@ -343,6 +315,7 @@
     border: 1px solid #E0DDD7; border-radius: 10px;
     outline: none; transition: border-color 0.15s, background 0.15s, box-shadow 0.15s;
     -webkit-appearance: none;
+    text-transform: none; /* FIX 1 */
   }
   .field input:focus, .field textarea:focus {
     border-color: #CC1F1F; background: #fff;
@@ -377,7 +350,7 @@
     padding: 4px 0 10px; border-bottom: 1px solid #F0EDE8; margin-bottom: 14px;
   }
 
-  /* JOB BLOCK */
+  /* CURRENT JOB BLOCK */
   .job-block {
     background: #F9F8F5; border: 1px solid #EAE8E3; border-radius: 12px;
     padding: 12px; margin-bottom: 12px; position: relative;
@@ -386,6 +359,7 @@
     display: flex; align-items: center; justify-content: space-between; margin-bottom: 10px;
   }
   .job-num { font-size: 11px; font-weight: 600; color: #CC1F1F; }
+  .job-num-prev { font-size: 11px; font-weight: 600; color: #888; }
   .remove-job-btn {
     background: none; border: none; font-size: 16px; color: #CCC; cursor: pointer;
     padding: 2px 6px; border-radius: 6px; transition: color 0.15s;
@@ -400,7 +374,7 @@
   }
   .add-job-btn:hover { background: #FFF0F0; }
 
-  /* BOTTOM NAV — z-index lower than overlay */
+  /* BOTTOM NAV */
   .bottom-nav {
     position: fixed;
     bottom: 0; left: 0; right: 0;
@@ -409,7 +383,7 @@
     border-top: 1px solid #EAE8E3;
     padding: 12px 16px;
     display: flex; gap: 10px;
-    z-index: 8;
+    z-index: 8; /* FIX 4: stays behind overlay (z-index 50), stays put — no shift */
     box-shadow: 0 -2px 12px rgba(0,0,0,0.05);
   }
   .btn {
@@ -436,7 +410,6 @@
   }
   .sheet-backdrop.open { display: flex; }
 
-  /* hide mobile sheet on desktop */
   @media (min-width: 768px) {
     .sheet-backdrop { display: none !important; }
   }
@@ -470,6 +443,7 @@
       overflow-y: auto;
       transform: translateX(100%);
       transition: transform 0.35s cubic-bezier(0.4,0,0.2,1);
+      /* FIX 4: panel slides over the top — app does NOT move */
     }
     .desktop-preview-panel.open {
       transform: translateX(0);
@@ -492,14 +466,12 @@
   }
   .panel-close:hover { background: #EAE8E3; }
 
-  /* A4-proportion content area inside panel */
   .desktop-panel-content {
     padding: 16px;
     padding-bottom: 100px;
   }
 
-  /* Bio card — shared between mobile sheet and desktop panel */
-  .bio-card { }
+  /* Bio card — shared styles */
   .bio-head {
     background: #CC1F1F; border-radius: 14px 14px 0 0;
     padding: 18px 16px; display: flex; align-items: center; gap: 14px;
@@ -513,8 +485,15 @@
   }
   .bio-avi img { width: 100%; height: 100%; object-fit: cover; border-radius: 50%; }
   .bio-head-info { flex: 1; min-width: 0; }
-  .bio-head-name { font-family: 'Playfair Display', serif; font-size: 18px; font-weight: 600; color: white; line-height: 1.2; }
-  .bio-head-sub { font-size: 11px; color: rgba(255,255,255,0.8); margin-top: 3px; line-height: 1.4; }
+  .bio-head-name {
+    font-family: 'Playfair Display', serif; font-size: 18px; font-weight: 600;
+    color: white; line-height: 1.2;
+    text-transform: none; /* FIX 1 */
+  }
+  .bio-head-sub {
+    font-size: 11px; color: rgba(255,255,255,0.8); margin-top: 3px; line-height: 1.4;
+    text-transform: none; /* FIX 1 */
+  }
   .bni-tag { font-family: 'Playfair Display', serif; font-size: 10px; font-weight: 600; color: rgba(255,255,255,0.65); letter-spacing: 1.5px; }
 
   .bio-chips {
@@ -524,7 +503,8 @@
   }
   .chip { background: #F9F8F5; border-radius: 8px; padding: 8px 10px; border: 1px solid #EAE8E3; }
   .chip-lbl { font-size: 9px; font-weight: 500; color: #999; text-transform: uppercase; letter-spacing: 0.6px; margin-bottom: 2px; }
-  .chip-val { font-size: 12px; font-weight: 500; color: #1A1A1A; word-break: break-word; }
+  /* FIX 1: Explicit no-uppercase on all data value elements */
+  .chip-val { font-size: 12px; font-weight: 500; color: #1A1A1A; word-break: break-word; text-transform: none; }
   .chip.full { grid-column: 1 / -1; }
 
   .bio-sections {
@@ -533,29 +513,35 @@
   }
   .bio-sec { background: #F9F8F5; border-radius: 8px; padding: 10px 12px; margin-top: 8px; border: 1px solid #EAE8E3; }
   .bio-sec-lbl { font-size: 9px; font-weight: 500; color: #CC1F1F; text-transform: uppercase; letter-spacing: 0.8px; margin-bottom: 5px; }
-  .bio-sec-val { font-size: 12px; color: #1A1A1A; line-height: 1.6; white-space: pre-line; }
+  /* FIX 1: user data shown exactly as typed — no text-transform */
+  .bio-sec-val { font-size: 12px; color: #1A1A1A; line-height: 1.6; white-space: pre-line; text-transform: none; }
 
   .gains-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 6px; }
   .gains-item { background: #F9F8F5; border-radius: 8px; padding: 8px 10px; border: 1px solid #EAE8E3; }
   .gains-item-lbl { font-size: 9px; font-weight: 500; color: #CC1F1F; text-transform: uppercase; letter-spacing: 0.6px; margin-bottom: 3px; }
-  .gains-item-val { font-size: 11px; color: #1A1A1A; line-height: 1.5; }
+  /* FIX 1 */
+  .gains-item-val { font-size: 11px; color: #1A1A1A; line-height: 1.5; text-transform: none; }
   .gains-item-val.empty { color: #CCC; font-style: italic; }
 
   .preview-footer { text-align: center; font-size: 10px; color: #BBB; padding: 12px 16px 0; }
   .sheet-actions { padding: 12px 12px 0; display: flex; gap: 10px; }
 
-  /* Mobile sheet inner padding */
   .sheet .bio-card { margin: 14px 12px 0; }
-  /* Desktop panel inner padding */
   .desktop-panel-content .bio-card { margin: 0; }
 
-  /* Jobs preview block in bio */
+  /* Jobs preview */
   .jobs-preview-list { display: flex; flex-direction: column; gap: 6px; }
   .job-preview-item {
     background: #F9F8F5; border-radius: 8px; padding: 8px 10px; border: 1px solid #EAE8E3;
   }
-  .job-preview-name { font-size: 12px; font-weight: 600; color: #1A1A1A; }
-  .job-preview-sub { font-size: 11px; color: #666; margin-top: 2px; }
+  .job-preview-badge {
+    font-size: 9px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 3px;
+  }
+  .job-preview-badge.current { color: #CC1F1F; }
+  .job-preview-badge.previous { color: #888; }
+  /* FIX 1 */
+  .job-preview-name { font-size: 12px; font-weight: 600; color: #1A1A1A; text-transform: none; }
+  .job-preview-sub { font-size: 11px; color: #666; margin-top: 2px; text-transform: none; }
 </style>
 
 <svelte:head>
@@ -564,7 +550,8 @@
 </svelte:head>
 
 <!-- ═══════════════════════════ APP ═══════════════════════════ -->
-<div class="app" class:preview-open={showPreview && isDesktop}>
+<!-- FIX 4: No preview-open class shift — panel overlays from right -->
+<div class="app">
 
   <!-- TOP BAR -->
   <div class="topbar">
@@ -605,41 +592,63 @@
         <input type="date" bind:value={formData.date} />
       </div>
 
-      <div class="sec-divider">Business / Profession</div>
+      <!-- FIX 2: Current Job — single block, no "Add Another" -->
+      <div class="sec-divider">Current Job / Business</div>
+      <div class="job-block">
+        <div class="job-block-header">
+          <span class="job-num">Current Job</span>
+        </div>
+        <div class="field">
+          <label>Profession / Role</label>
+          <input type="text" placeholder="e.g. Web Developer, Chartered Accountant" bind:value={currentJob.profession} />
+        </div>
+        <div class="field">
+          <label>Business Name <span class="req">*</span></label>
+          <input type="text" placeholder="Enter Your Business Name" bind:value={currentJob.businessName} />
+        </div>
+        <div class="field">
+          <label>Company Name</label>
+          <input type="text" placeholder="Enter Your Company Name" bind:value={currentJob.companyName} />
+        </div>
+        <div class="field" style="margin-bottom:0">
+          <label>Years in Business</label>
+          <input type="text" placeholder="e.g. 8 years" bind:value={currentJob.yearsInBusiness} />
+        </div>
+      </div>
 
-      {#each jobs as job, i}
+      <!-- FIX 2: Previous Jobs — separate section with Add/Remove -->
+      <div class="sec-divider">Previous Jobs / Businesses</div>
+
+      {#each previousJobs as job, i}
         <div class="job-block">
           <div class="job-block-header">
-            <span class="job-num">{jobs.length > 1 ? `Job ${i + 1}` : 'Current Job'}</span>
-            {#if jobs.length > 1}
-              <button class="remove-job-btn" on:click={() => removeJob(i)} title="Remove">✕</button>
-            {/if}
+            <span class="job-num-prev">Previous Job {i + 1}</span>
+            <button class="remove-job-btn" on:click={() => removePreviousJob(i)} title="Remove">✕</button>
           </div>
           <div class="field">
             <label>Profession / Role</label>
-            <input type="text" placeholder="e.g. Web Developer, Chartered Accountant" bind:value={job.profession} />
+            <input type="text" placeholder="e.g. Senior Engineer" bind:value={job.profession} />
           </div>
           <div class="field">
-            <label>Business Name <span class="req">*</span></label>
-            <input type="text" placeholder="Enter Your Business Name" bind:value={job.businessName} />
+            <label>Business Name</label>
+            <input type="text" placeholder="Business or Company Name" bind:value={job.businessName} />
           </div>
           <div class="field">
             <label>Company Name</label>
-            <input type="text" placeholder="Enter Your Company Name" bind:value={job.companyName} />
+            <input type="text" placeholder="Company Name" bind:value={job.companyName} />
           </div>
           <div class="field" style="margin-bottom:0">
             <label>Years in Business</label>
-            <input type="text" placeholder="e.g. 8 years" bind:value={job.yearsInBusiness} />
+            <input type="text" placeholder="e.g. 5 years" bind:value={job.yearsInBusiness} />
           </div>
         </div>
       {/each}
 
-      <button class="add-job-btn" on:click={addJob}>
-        <span style="font-size:18px;line-height:1">＋</span> Add Another Job / Business
+      <button class="add-job-btn" on:click={addPreviousJob}>
+        <span style="font-size:18px;line-height:1">＋</span> Add Previous Job / Business
       </button>
 
-      <div class="bio-sec-lbl">Location details input</div>
-
+      <div class="sec-divider">Location</div>
       <div class="row2">
         <div class="field">
           <label>City</label>
@@ -651,15 +660,7 @@
         </div>
       </div>
 
-      <div class="sec-divider">Previous Experience</div>
-      <div class="field">
-        <label>Previous Position</label>
-        <input type="text" placeholder="e.g. Senior Software Engineer" bind:value={formData.previousPosition} />
-      </div>
-      <div class="field">
-        <label>Previous Company</label>
-        <input type="text" placeholder="Company Name" bind:value={formData.previousCompany} />
-      </div>
+      <div class="sec-divider">Career Timeline</div>
       <div class="field">
         <label>Career Timeline</label>
         <textarea placeholder="Brief career journey or key milestones..." bind:value={formData.timeline} />
@@ -676,8 +677,8 @@
     <div class="form-card">
       <div class="sec-divider">Family</div>
       <div class="field">
-        <label>Spouse / Partner Name & Age</label>
-        <input type="text" placeholder="Priya Kumar (12)" bind:value={formData.spouseName} />
+        <label>Spouse / Partner Name &amp; Age</label>
+        <input type="text" placeholder="Priya Kumar (34)" bind:value={formData.spouseName} />
       </div>
       <div class="field">
         <label>Children's Names &amp; Ages</label>
@@ -690,7 +691,7 @@
 
       <div class="sec-divider">Lifestyle</div>
       <div class="field">
-        <label>Hobbies</label>   
+        <label>Hobbies</label>
         <textarea placeholder="Photography, cooking, reading, travel..." bind:value={formData.hobbies} />
       </div>
       <div class="field">
@@ -817,22 +818,21 @@
     </div>
   </div>
 
-  <!-- BOTTOM NAV (z-index: 8, below overlay z-index: 50) -->
+  <!-- BOTTOM NAV — stays fixed, aligned with app, does NOT shift -->
   <div class="bottom-nav">
     {#if currentStep > 0}
       <button class="btn" on:click={() => navigate(-1)}>← Back</button>
     {/if}
+    <!-- FIX 3: Preview button is never primary (no red highlight) -->
     <button class="btn" on:click={openPreview}>Preview</button>
     {#if currentStep < 4}
       <button class="btn primary" on:click={() => navigate(1)}>Next →</button>
     {:else}
-      <button class="btn primary" on:click={openPreview}>Preview ✓</button>
+      <!-- FIX 3: Last step — Preview is plain btn, no primary highlight -->
+      <button class="btn" on:click={openPreview}>Preview ✓</button>
     {/if}
   </div>
 </div>
-
-<!-- ─── SHARED BIO CONTENT (snippet, used in both mobile + desktop) ─── -->
-<!-- We use a Svelte snippet pattern: just duplicate the bio markup in each panel -->
 
 <!-- ═══ MOBILE: Bottom Sheet ═══ -->
 <div class="sheet-backdrop" class:open={showPreview} on:click={backdropClick}>
@@ -851,7 +851,7 @@
         <div class="bio-head-info">
           <div class="bio-head-name">{fullName}</div>
           <div class="bio-head-sub">
-            {[primaryJob.profession, primaryJob.businessName].filter(Boolean).join(' · ') || 'Profession · Business'}
+            {[currentJob.profession, currentJob.businessName].filter(Boolean).join(' · ') || 'Profession · Business'}
           </div>
         </div>
         <div class="bni-tag">BNI</div>
@@ -860,16 +860,27 @@
       <div class="bio-chips">
         {#if formData.date}<div class="chip"><div class="chip-lbl">Date</div><div class="chip-val">{formData.date}</div></div>{/if}
         {#if formData.locationCity || formData.locationState}<div class="chip"><div class="chip-lbl">Location</div><div class="chip-val">{[formData.locationCity, formData.locationState].filter(Boolean).join(', ')}</div></div>{/if}
-        {#if formData.previousPosition || formData.previousCompany}<div class="chip full"><div class="chip-lbl">Previous</div><div class="chip-val">{[formData.previousPosition, formData.previousCompany].filter(Boolean).join(' @ ')}</div></div>{/if}
+        {#if currentJob.yearsInBusiness}<div class="chip"><div class="chip-lbl">Years in Business</div><div class="chip-val">{currentJob.yearsInBusiness}</div></div>{/if}
+        {#if currentJob.companyName || currentJob.businessName}<div class="chip"><div class="chip-lbl">Company</div><div class="chip-val">{currentJob.companyName || currentJob.businessName}</div></div>{/if}
       </div>
 
       <div class="bio-sections">
-        {#if jobs.filter(j => j.profession || j.businessName).length > 0}
+        {#if filledCurrentJob.length > 0 || filledPreviousJobs.length > 0}
           <div class="bio-sec">
             <div class="bio-sec-lbl">Business / Profession</div>
             <div class="jobs-preview-list">
-              {#each jobs.filter(j => j.profession || j.businessName) as j}
+              {#each filledCurrentJob as j}
                 <div class="job-preview-item">
+                  <div class="job-preview-badge current">Current</div>
+                  <div class="job-preview-name">{[j.profession, j.businessName].filter(Boolean).join(' · ')}</div>
+                  {#if j.companyName || j.yearsInBusiness}
+                    <div class="job-preview-sub">{[j.companyName, j.yearsInBusiness && `${j.yearsInBusiness} in business`].filter(Boolean).join(' · ')}</div>
+                  {/if}
+                </div>
+              {/each}
+              {#each filledPreviousJobs as j}
+                <div class="job-preview-item">
+                  <div class="job-preview-badge previous">Previous</div>
                   <div class="job-preview-name">{[j.profession, j.businessName].filter(Boolean).join(' · ')}</div>
                   {#if j.companyName || j.yearsInBusiness}
                     <div class="job-preview-sub">{[j.companyName, j.yearsInBusiness && `${j.yearsInBusiness} in business`].filter(Boolean).join(' · ')}</div>
@@ -926,7 +937,7 @@
   </div>
 </div>
 
-<!-- ═══ DESKTOP: Right Slide-in Panel ═══ -->
+<!-- ═══ DESKTOP: Right Slide-in Panel (overlays, does NOT push app) ═══ -->
 <div class="desktop-preview-panel" class:open={showPreview}>
   <div class="desktop-panel-topbar">
     <span>Bio Preview</span>
@@ -941,7 +952,7 @@
         <div class="bio-head-info">
           <div class="bio-head-name">{fullName}</div>
           <div class="bio-head-sub">
-            {[primaryJob.profession, primaryJob.businessName].filter(Boolean).join(' · ') || 'Profession · Business'}
+            {[currentJob.profession, currentJob.businessName].filter(Boolean).join(' · ') || 'Profession · Business'}
           </div>
         </div>
         <div class="bni-tag">BNI</div>
@@ -950,16 +961,27 @@
       <div class="bio-chips">
         {#if formData.date}<div class="chip"><div class="chip-lbl">Date</div><div class="chip-val">{formData.date}</div></div>{/if}
         {#if formData.locationCity || formData.locationState}<div class="chip"><div class="chip-lbl">Location</div><div class="chip-val">{[formData.locationCity, formData.locationState].filter(Boolean).join(', ')}</div></div>{/if}
-        {#if formData.previousPosition || formData.previousCompany}<div class="chip full"><div class="chip-lbl">Previous</div><div class="chip-val">{[formData.previousPosition, formData.previousCompany].filter(Boolean).join(' @ ')}</div></div>{/if}
+        {#if currentJob.yearsInBusiness}<div class="chip"><div class="chip-lbl">Years in Business</div><div class="chip-val">{currentJob.yearsInBusiness}</div></div>{/if}
+        {#if currentJob.companyName || currentJob.businessName}<div class="chip"><div class="chip-lbl">Company</div><div class="chip-val">{currentJob.companyName || currentJob.businessName}</div></div>{/if}
       </div>
 
       <div class="bio-sections">
-        {#if jobs.filter(j => j.profession || j.businessName).length > 0}
+        {#if filledCurrentJob.length > 0 || filledPreviousJobs.length > 0}
           <div class="bio-sec">
             <div class="bio-sec-lbl">Business / Profession</div>
             <div class="jobs-preview-list">
-              {#each jobs.filter(j => j.profession || j.businessName) as j}
+              {#each filledCurrentJob as j}
                 <div class="job-preview-item">
+                  <div class="job-preview-badge current">Current</div>
+                  <div class="job-preview-name">{[j.profession, j.businessName].filter(Boolean).join(' · ')}</div>
+                  {#if j.companyName || j.yearsInBusiness}
+                    <div class="job-preview-sub">{[j.companyName, j.yearsInBusiness && `${j.yearsInBusiness} in business`].filter(Boolean).join(' · ')}</div>
+                  {/if}
+                </div>
+              {/each}
+              {#each filledPreviousJobs as j}
+                <div class="job-preview-item">
+                  <div class="job-preview-badge previous">Previous</div>
                   <div class="job-preview-name">{[j.profession, j.businessName].filter(Boolean).join(' · ')}</div>
                   {#if j.companyName || j.yearsInBusiness}
                     <div class="job-preview-sub">{[j.companyName, j.yearsInBusiness && `${j.yearsInBusiness} in business`].filter(Boolean).join(' · ')}</div>
