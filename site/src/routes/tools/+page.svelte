@@ -690,7 +690,7 @@
 
       <div class="sec-divider">Lifestyle</div>
       <div class="field">
-        <label>Hobbies</label>
+        <label>Hobbies</label>   
         <textarea placeholder="Photography, cooking, reading, travel..." bind:value={formData.hobbies} />
       </div>
       <div class="field">
