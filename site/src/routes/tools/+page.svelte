@@ -351,9 +351,8 @@
   }
 
   /* CURRENT JOB BLOCK */
-  .job-block {
-    background: #F9F8F5; border: 1px solid #EAE8E3; border-radius: 12px;
-    padding: 12px; margin-bottom: 12px; position: relative;
+  .job-block { 
+      margin-bottom: 12px; position: relative;
   }
   .job-block-header {
     display: flex; align-items: center; justify-content: space-between; margin-bottom: 10px;
@@ -593,7 +592,7 @@
       </div>
 
       <!-- FIX 2: Current Job — single block, no "Add Another" -->
-      <div class="sec-divider">Current Job / Business</div>
+      <div class="sec-divider">Job Details</div>
       <div class="job-block">
         <div class="job-block-header">
           <span class="job-num">Current Job</span>
