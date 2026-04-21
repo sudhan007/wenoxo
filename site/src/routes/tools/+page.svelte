@@ -840,7 +840,7 @@
     <div class="sheet-topbar">
       <span>Your Bio Sheet</span>
       <button class="sheet-close" on:click={closePreview}>✕</button>
-    </div>
+    </div>    
 
     <div class="bio-card">
       <div class="bio-head">
