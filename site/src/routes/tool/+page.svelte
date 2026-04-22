@@ -87,279 +87,183 @@
   $: filledPreviousJobs = previousJobs.filter(j => j.designation || j.companyName);
   $: allJobs = [...filledCurrentJob, ...filledPreviousJobs];
 
-
-const pageStyle = `
-  width: 794px;
-  height: 1123px;
-  box-sizing: border-box;
-  padding: 20px;
-  margin: 0 auto;
-  page-break-after: always;
-  page-break-inside: avoid;
-  overflow: hidden;
-`;
-
   function buildPDFHTML() {
     const esc = (s) => String(s || '').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
     const nl = (s) => esc(s).replace(/\n/g,'<br>');
+    const loc = [formData.locationCity, formData.locationState].filter(Boolean).join(', ');
+    const subline = [currentJob.profession, currentJob.businessName].filter(Boolean).join(' · ');
 
-    // PAGE 1 — BNI MEMBER BIO SHEET
-    const page1 = `
-      <div  style="${pageStyle}">
-        <div style="border:2px solid #000;padding:15px;text-align:center;margin-bottom:20px;">
-          <div style="font-size:24px;font-weight:bold;">BNI Member Bio Sheet</div>
+    const section = (title, body) => body ? `
+      <div style="padding:8px 14px;border-bottom:1px solid #EAE8E3;background:#fff;">
+        <div style="font-size:8px;font-weight:700;color:#CC1F1F;text-transform:uppercase;letter-spacing:0.8px;margin-bottom:5px;">${esc(title)}</div>
+        <div style="font-size:11px;color:#1A1A1A;line-height:1.7;text-transform:none;">${nl(body)}</div>
+      </div>` : '';
+
+    const chip = (label, val) => val ? `
+      <div style="padding:7px 10px;border:1px solid #EAE8E3;border-radius:6px;background:#F9F8F5;">
+        <div style="font-size:8px;font-weight:600;color:#999;text-transform:uppercase;letter-spacing:0.5px;margin-bottom:2px;">${esc(label)}</div>
+        <div style="font-size:11px;font-weight:500;color:#1A1A1A;text-transform:none;">${esc(val)}</div>
+      </div>` : '';
+
+    const gainsCell = (label, val) => `
+      <div style="padding:6px 10px;border:1px solid #EAE8E3;border-radius:6px;background:#F5F4F0;">
+        <div style="font-size:8px;font-weight:600;color:#CC1F1F;text-transform:uppercase;letter-spacing:0.5px;margin-bottom:3px;">${esc(label)}</div>
+        <div style="font-size:11px;color:#1A1A1A;line-height:1.5;text-transform:none;">${nl(val) || '<span style="color:#CCC;font-style:italic;">—</span>'}</div>
+      </div>`;
+
+    const aviHTML = photoData
+      ? `<img src="${photoData}" style="width:60px;height:60px;border-radius:50%;object-fit:cover;border:2px solid rgba(255,255,255,0.5);" />`
+      : `<div style="width:60px;height:60px;border-radius:50%;background:rgba(255,255,255,0.25);border:2px solid rgba(255,255,255,0.5);display:flex;align-items:center;justify-content:center;font-size:22px;font-weight:700;color:white;flex-shrink:0;">${esc(getInitials())}</div>`;
+
+    const chips = [
+      chip('Date', formData.date),
+      chip('Location', loc),
+      chip('Years in Business', currentJob.yearsInBusiness),
+      chip('Company', currentJob.companyName || currentJob.businessName),
+    ].filter(Boolean).join('');
+
+    const familyParts = [
+      formData.spouseName && `Spouse: ${formData.spouseName}`,
+      formData.childrenNames && `Children: ${formData.childrenNames}`,
+      formData.animals && `Pets: ${formData.animals}`,
+    ].filter(Boolean).join('\n');
+
+    const aboutParts = [
+      formData.burningDesire && `Burning Desire:\n${formData.burningDesire}`,
+      formData.secretFact && `Something Nobody Knows:\n${formData.secretFact}`,
+      formData.keySuccess && `Key Success:\n${formData.keySuccess}`,
+    ].filter(Boolean).join('\n\n');
+
+    // Current job row
+    const currentJobHTML = filledCurrentJob.map(j => `
+      <div style="padding:7px 10px;border:1px solid #EAE8E3;border-radius:6px;background:#F9F8F5;margin-bottom:6px;">
+        <div style="font-size:8px;font-weight:600;color:#CC1F1F;text-transform:uppercase;letter-spacing:0.4px;margin-bottom:3px;">Current</div>
+        <div style="font-size:11px;font-weight:600;color:#1A1A1A;text-transform:none;">${esc(j.profession || '')}${j.profession && j.businessName ? ' · ' : ''}${esc(j.businessName || '')}</div>
+        ${j.companyName ? `<div style="font-size:10px;color:#666;margin-top:2px;text-transform:none;">${esc(j.companyName)}</div>` : ''}
+        ${(j.yearsInBusiness || j.location) ? `<div style="font-size:10px;color:#999;margin-top:1px;text-transform:none;">${[j.yearsInBusiness && `${j.yearsInBusiness} in business`, j.location].filter(Boolean).join(' · ')}</div>` : ''}
+      </div>`).join('');
+
+    // Previous jobs — only designation + companyName
+    const prevJobsHTML = filledPreviousJobs.map(j => `
+      <div style="padding:7px 10px;border:1px solid #EAE8E3;border-radius:6px;background:#F9F8F5;margin-bottom:6px;">
+        <div style="font-size:8px;font-weight:600;color:#888;text-transform:uppercase;letter-spacing:0.4px;margin-bottom:3px;">Previous</div>
+        <div style="font-size:11px;font-weight:600;color:#1A1A1A;text-transform:none;">${esc(j.designation || '')}</div>
+        ${j.companyName ? `<div style="font-size:10px;color:#666;margin-top:2px;text-transform:none;">${esc(j.companyName)}</div>` : ''}
+      </div>`).join('');
+
+    const jobsBlock = allJobs.length > 0 ? `
+      <div style="padding:8px 14px;border-bottom:1px solid #EAE8E3;background:#fff;">
+        <div style="font-size:8px;font-weight:700;color:#CC1F1F;text-transform:uppercase;letter-spacing:0.8px;margin-bottom:8px;">Business / Profession</div>
+        ${currentJobHTML}${prevJobsHTML}
+      </div>` : '';
+
+    const hasGains = formData.goals || formData.accomplishments || formData.interests || formData.networks || formData.skills;
+    const gainsBlock = hasGains ? `
+      <div style="padding:8px 14px;border-bottom:1px solid #EAE8E3;background:#fff;">
+        <div style="font-size:8px;font-weight:700;color:#CC1F1F;text-transform:uppercase;letter-spacing:0.8px;margin-bottom:8px;">GAINS Worksheet</div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:6px;">
+          ${gainsCell('Goals', formData.goals)}
+          ${gainsCell('Accomplishments', formData.accomplishments)}
+          ${gainsCell('Interests', formData.interests)}
+          ${gainsCell('Networks', formData.networks)}
+          <div style="grid-column:1/-1">${gainsCell('Skills', formData.skills)}</div>
         </div>
+      </div>` : '';
 
-        <div style="margin-bottom:20px;font-size:12px;">
-          <div style="margin-bottom:8px;">
-            <span style="font-weight:bold;">Our Speaker:</span> <u>${esc(formData.speakerName || '')}</u>
-            <span style="float:right;"><span style="font-weight:bold;">Date:</span> <u>${esc(formData.date || '')}</u></span>
+    const top3Items = [formData.contactSphereTop3_1, formData.contactSphereTop3_2, formData.contactSphereTop3_3].filter(Boolean);
+    const hasTop3 = top3Items.length > 0;
+
+    const contactBlock = (formData.contactSphere || hasTop3) ? `
+      <div style="padding:8px 14px;border-bottom:1px solid #EAE8E3;background:#fff;">
+        <div style="font-size:8px;font-weight:700;color:#CC1F1F;text-transform:uppercase;letter-spacing:0.8px;margin-bottom:5px;">Contact Sphere</div>
+        ${formData.contactSphere ? `<div style="font-size:11px;color:#1A1A1A;line-height:1.7;text-transform:none;">${nl(formData.contactSphere)}</div>` : ''}
+        ${hasTop3 ? `
+          <div style="margin-top:6px;">
+            <div style="font-size:8px;font-weight:600;color:#888;text-transform:uppercase;letter-spacing:0.5px;margin-bottom:6px;">Top 3</div>
+            <div style="display:flex;flex-direction:column;gap:5px;">
+              ${top3Items.map((item, idx) => `
+                <div style="padding:6px 10px;border:1px solid #EAE8E3;border-radius:6px;background:#F9F8F5;display:flex;align-items:center;gap:8px;">
+                  <div style="width:18px;height:18px;border-radius:50%;background:#CC1F1F;color:white;font-size:9px;font-weight:700;display:flex;align-items:center;justify-content:center;flex-shrink:0;">${idx + 1}</div>
+                  <div style="font-size:11px;color:#1A1A1A;text-transform:none;">${esc(item)}</div>
+                </div>`).join('')}
+            </div>
+          </div>` : ''}
+      </div>` : '';
+
+    const customersBlock = (formData.last10Customers || formData.customerNotes || formData.referralNotes) ? `
+      <div style="padding:8px 14px;border-bottom:1px solid #EAE8E3;background:#fff;">
+        <div style="font-size:8px;font-weight:700;color:#CC1F1F;text-transform:uppercase;letter-spacing:0.8px;margin-bottom:5px;">Last 10 Customers</div>
+        ${formData.last10Customers ? `<div style="font-size:11px;color:#1A1A1A;line-height:1.7;text-transform:none;">${nl(formData.last10Customers)}</div>` : ''}
+        ${formData.customerNotes ? `<div style="margin-top:6px;"><div style="font-size:8px;font-weight:600;color:#888;text-transform:uppercase;letter-spacing:0.5px;margin-bottom:3px;">Customer Notes</div><div style="font-size:11px;color:#1A1A1A;line-height:1.7;text-transform:none;">${nl(formData.customerNotes)}</div></div>` : ''}
+        ${formData.referralNotes ? `<div style="margin-top:6px;"><div style="font-size:8px;font-weight:600;color:#888;text-transform:uppercase;letter-spacing:0.5px;margin-bottom:3px;">Referral Notes</div><div style="font-size:11px;color:#1A1A1A;line-height:1.7;text-transform:none;">${nl(formData.referralNotes)}</div></div>` : ''}
+      </div>` : '';
+
+    return `
+      <div style="font-family:Arial,sans-serif;background:#ffffff;color:#1A1A1A;width:794px;">
+        <div style="background-color:#CC1F1F;padding:20px 20px;display:flex;align-items:center;gap:14px;">
+          ${aviHTML}
+          <div style="flex:1;min-width:0;">
+            <div style="font-size:20px;font-weight:700;color:#ffffff;text-transform:none;">${esc(formData.speakerName || 'Your Name')}</div>
+            <div style="font-size:11px;color:rgba(255,255,255,0.85);margin-top:3px;text-transform:none;">${esc(subline)}</div>
           </div>
+          <div style="font-size:10px;font-weight:700;color:rgba(255,255,255,0.65);letter-spacing:2px;">BNI</div>
         </div>
-
-        <div style="margin-bottom:20px;">
-          <div style="background:#000;color:#fff;padding:8px 10px;font-weight:bold;font-size:13px;margin-bottom:0;">Business Information</div>
-          <div style="border:1px solid #000;border-top:none;padding:12px;font-size:12px;">
-            <div style="margin-bottom:8px;">
-              <span style="font-weight:bold;">Business Name:</span> <u>${esc(currentJob.businessName || '')}</u>
-            </div>
-            <div style="margin-bottom:8px;">
-              <span style="font-weight:bold;">Profession:</span> ${esc(currentJob.profession || '')}
-            </div>
-            <div style="border-bottom:1px solid #000;margin-bottom:8px;"></div>
-            <div style="margin-bottom:8px;display:grid;grid-template-columns:1fr 1fr;gap:40px;">
-              <div><span style="font-weight:bold;">Location:</span> <u>${esc(currentJob.location || '')}</u></div>
-              <div><span style="font-weight:bold;">Years in Business:</span> <u>${esc(currentJob.yearsInBusiness || '')}</u></div>
-            </div>
-            <div>
-              <span style="font-weight:bold;">Previous Types of Jobs:</span> <u>${esc(filledPreviousJobs.map(j => j.designation).join(', ') || '')}</u>
-            </div>
-          </div>
+        ${chips ? `<div style="padding:10px 14px;background:#fff;border-bottom:1px solid #EAE8E3;display:grid;grid-template-columns:1fr 1fr;gap:7px;">${chips}</div>` : ''}
+        ${jobsBlock}
+        ${section('Career Timeline', formData.timeline)}
+        ${section('Family & Pets', familyParts)}
+        ${section('Hobbies & Activities', [formData.hobbies, formData.activities].filter(Boolean).join(' · '))}
+        ${formData.residencyCity || formData.residencyDuration ? section('Residency', [formData.residencyCity, formData.residencyDuration].filter(Boolean).join(' — ')) : ''}
+        ${section('About Me', aboutParts)}
+        ${gainsBlock}
+        ${contactBlock}
+        ${customersBlock}
+        <div style="text-align:center;font-size:8px;color:#BBB;padding:10px;border-top:1px solid #EAE8E3;background:#fff;">
+          Powered by Wenoxo Technologies · wenoxo.in
         </div>
-
-        <div style="margin-bottom:20px;">
-          <div style="background:#000;color:#fff;padding:8px 10px;font-weight:bold;font-size:13px;margin-bottom:0;">Personal Information</div>
-          <div style="border:1px solid #000;border-top:none;padding:12px;font-size:12px;">
-            <div style="font-weight:bold;margin-bottom:8px;">Family Information:</div>
-            <div style="margin-left:20px;margin-bottom:6px;">
-              <span style="font-weight:bold;">A. Spouse</span> : <u>${esc(formData.spouseName || '')}</u>
-            </div>
-            <div style="margin-left:20px;margin-bottom:6px;">
-              <span style="font-weight:bold;">B. Children</span> : <u>${esc(formData.childrenNames || '')}</u>
-            </div>
-            <div style="margin-left:20px;margin-bottom:12px;">
-              <span style="font-weight:bold;">C. Animals</span> <u>${esc(formData.animals || '----')}</u>
-            </div>
-            <div style="margin-bottom:6px;">
-              <span style="font-weight:bold;">Hobbies:</span> ${esc(formData.hobbies || '')}
-            </div>
-            <div style="margin-bottom:6px;">
-              <span style="font-weight:bold;">Activities of Interest:</span> ${esc(formData.activities || '')}
-            </div>
-            <div style="display:grid;grid-template-columns:1fr 1fr;gap:40px;">
-              <div><span style="font-weight:bold;">City of Residence:</span> <u>${esc(formData.residencyCity || '')}</u></div>
-              <div><span style="font-weight:bold;">How Long?</span> <u>${esc(formData.residencyDuration || '')}</u></div>
-            </div>
-          </div>
-        </div>
-
-        <div style="margin-bottom:20px;">
-          <div style="background:#000;color:#fff;padding:8px 10px;font-weight:bold;font-size:13px;margin-bottom:0;">Miscellaneous</div>
-          <div style="border:1px solid #000;border-top:none;padding:12px;font-size:12px;">
-            <div style="margin-bottom:12px;">
-              <span style="font-weight:bold;">My burning desire is to . . .</span> <u>${esc(formData.burningDesire || '')}</u>
-            </div>
-            <div style="margin-bottom:12px;">
-              <span style="font-weight:bold;">Something no one knows about me is:</span> <u>${esc(formData.secretFact || '')}</u>
-            </div>
-            <div>
-              <span style="font-weight:bold;">My key to success is . . . .</span> <u>${esc(formData.keySuccess || '')}</u>
-            </div>
-          </div>
-        </div>
-      </div>
-    `;
-
-    // PAGE 2 — BNI GAINS WORKSHEET
-    const page2 = `
-      <div style="${pageStyle}" >
-        <div style="border:2px solid #000;padding:15px;text-align:center;margin-bottom:20px;">
-          <div style="font-size:20px;font-weight:bold;font-style:italic;">BNI Gains Worksheet</div>
-        </div>
-
-        <table style="width:100%;border-collapse:collapse;margin-bottom:20px;font-size:11px;">
-          <tr>
-            <td style="border:1px solid #000;vertical-align:top;width:45%;padding:12px;">
-              <div style="font-weight:bold;margin-bottom:6px;">Goals</div>
-              <div style="font-size:10px;line-height:1.4;margin-bottom:12px;">Goals are the business or personal objectives you want or need to meet for yourself or the people who are important to you. You need to define your goals and have a clear picture of the other person's goals. The best way to build a relationship with someone is to help them achieve their goals.</div>
-            </td>
-            <td style="border:1px solid #000;vertical-align:top;width:55%;padding:12px;">
-              ${nl(formData.goals || '')}
-            </td>
-          </tr>
-          <tr>
-            <td style="border:1px solid #000;vertical-align:top;width:45%;padding:12px;">
-              <div style="font-weight:bold;margin-bottom:6px;">Accomplishments</div>
-              <div style="font-size:10px;line-height:1.4;margin-bottom:12px;">People like to talk about the thinks they are proud of. Remember, some of your best insight into others comes from knowing what goals they have already achieved. Your knowledge, skills, experiences, and value can be surmised from your achievements. Be ready to share your accomplishments with the people you meet.</div>
-            </td>
-            <td style="border:1px solid #000;vertical-align:top;width:55%;padding:12px;">
-              ${nl(formData.accomplishments || '')}
-            </td>
-          </tr>
-          <tr>
-            <td style="border:1px solid #000;vertical-align:top;width:45%;padding:12px;">
-              <div style="font-weight:bold;margin-bottom:6px;">Interests</div>
-              <div style="font-size:10px;line-height:1.4;margin-bottom:12px;">Your interests can help you connect with others. Interests are things like playing sports, reading books, and listening to music. People like to spend time with those who share their interests. When you and your network source share the same interests, it will strengthen your relationship</div>
-            </td>
-            <td style="border:1px solid #000;vertical-align:top;width:55%;padding:12px;">
-              ${nl(formData.interests || '')}
-            </td>
-          </tr>
-          <tr>
-            <td style="border:1px solid #000;vertical-align:top;width:45%;padding:12px;">
-              <div style="font-weight:bold;margin-bottom:6px;">Networks</div>
-              <div style="font-size:10px;line-height:1.4;margin-bottom:12px;">You have many networks, both formal and informal. A network can be an organization, institution, company or individual you associate with.</div>
-            </td>
-            <td style="border:1px solid #000;vertical-align:top;width:55%;padding:12px;">
-              ${nl(formData.networks || '')}
-            </td>
-          </tr>
-          <tr>
-            <td style="border:1px solid #000;vertical-align:top;width:45%;padding:12px;">
-              <div style="font-weight:bold;margin-bottom:6px;">Skills</div>
-              <div style="font-size:10px;line-height:1.4;margin-bottom:12px;">The more you know about the talents and abilities of the people in your network the better equipped you are to find (and refer!) competent affordable products and services when the need arises. And when you're trying to round up business opportunities, the more people know about your skills, the better your chances!</div>
-            </td>
-            <td style="border:1px solid #000;vertical-align:top;width:55%;padding:12px;">
-              ${nl(formData.skills || '')}
-            </td>
-          </tr>
-        </table>
-
-        <div style="font-size:10px;color:#666;line-height:1.5;">
-          How well do you know the people you want to include in your network? Chances are you have a little homework to do. Spend more time with the people you already know and concentrate on learning these five essentials – their goals, accomplishments, interests, networks and skills. Make sure you give back the same kind of information. The more they know about you, the faster your name will come to mind when an opportunity arises in which your products, services, knowledge, skills or experience might play a part.
-        </div>
-      </div>
-    `;
-
-    // PAGE 3 — CONTACT SPHERE & LAST 10 CUSTOMERS
-    const page3 = `
-      <div style="${pageStyle.replace('page-break-after: always;', '')}">
-        <div style="margin-bottom:20px;">
-          <div style="border:2px solid #000;padding:15px;text-align:center;margin-bottom:0;">
-            <div style="font-size:18px;font-weight:bold;">BNI Contact Sphere Planning WorkSheet</div>
-          </div>
-          
-          <table style="width:100%;border-collapse:collapse;border:2px solid #000;border-top:none;font-size:11px;">
-            <tr>
-              <td style="border-right:1px solid #000;border-bottom:1px solid #000;padding:12px;vertical-align:top;width:50%;">
-                <div style="font-weight:bold;font-style:italic;margin-bottom:8px;">Contact Sphere</div>
-                <div style="line-height:1.6;">
-                  ${(formData.contactSphere || '').split('\n').map((line, i) => line.trim() ? `<div>${i + 1}. ${esc(line.trim())}</div>` : '').join('')}
-                </div>
-                <div style="margin-top:8px;font-size:10px;color:#666;">
-                  Contact Spheres are made up of businesses or professions that naturally provide a source of referrals for one another. They are in somewhat related but non-competitive businesses. Businesses in the same Contact Sphere have a symbiotic relationship in that they support and enhance one another.
-                </div>
-              </td>
-              <td style="padding:12px;vertical-align:top;width:50%;">
-                <div style="font-weight:bold;margin-bottom:8px;">Contact Sphere Top-3!</div>
-                <div style="font-size:12px;">
-                  ${[formData.contactSphereTop3_1, formData.contactSphereTop3_2, formData.contactSphereTop3_3].map((val, i) => val ? `<div style="margin-bottom:4px;">${i + 1}. ${esc(val)}</div>` : '').join('')}
-                </div>
-                <div style="margin-top:8px;font-size:10px;color:#666;">
-                  Make a commitment to your dance partner to help fill their contact sphere by inviting people to BNI that are in their Top-3!
-                </div>
-              </td>
-            </tr>
-          </table>
-        </div>
-
-        <div style="margin-top:20px;">
-          <div style="border:2px solid #000;padding:15px;text-align:center;margin-bottom:0;">
-            <div style="font-size:18px;font-weight:bold;">BNI Last 10 Customer Worksheet</div>
-          </div>
-
-          <table style="width:100%;border-collapse:collapse;border:2px solid #000;border-top:none;font-size:11px;">
-            <tr>
-              <td style="border-right:1px solid #000;border-bottom:1px solid #000;padding:12px;vertical-align:top;width:50%;">
-                <div style="font-weight:bold;margin-bottom:8px;">Last 10 Customers</div>
-                <div style="font-size:10px;margin-bottom:8px;line-height:1.6;">
-                  ${(formData.last10Customers || '').split('\n').map((line, i) => line.trim() ? `<div>${i + 1}. ${esc(line.trim().replace(/^\d+[\.\)]\s*/, ''))}</div>` : '').join('')}
-                </div>
-                <div style="font-size:10px;color:#666;margin-top:8px;line-height:1.4;">
-                  List your last ten customers. Think about how you can increase the referrals you receive by helping your dance partner understand how to find you more customers like these! Were these customers in a certain kind of business or market? Were these customers in a specific position that you are targeting? Are there other specific companies that you are targeting that are similar to these?
-                </div>
-              </td>
-              <td style="padding:12px;vertical-align:top;width:50%;">
-                <div style="font-weight:bold;margin-bottom:8px;">Notes on Customers</div>
-                <div style="background:#f9f9f9;border:1px solid #ddd;padding:10px;min-height:100px;font-size:11px;margin-bottom:12px;">
-                  ${nl(formData.customerNotes || '')}
-                </div>
-                <div style="font-weight:bold;margin-bottom:8px;">Notes on Referrals</div>
-                <div style="background:#f9f9f9;border:1px solid #ddd;padding:10px;min-height:80px;font-size:11px;">
-                  ${nl(formData.referralNotes || '')}
-                </div>
-              </td>
-            </tr>
-          </table>
-        </div>
-      </div>
-    `;
-
-    return `<div style="background:#fff;">${page1}${page2}${page3}</div>`;
-
+      </div>`;
   }
 
-async function downloadPDF() {
-  if (pdfGenerating) return;
-  pdfGenerating = true;
+  async function downloadPDF() {
+    if (pdfGenerating) return;
+    pdfGenerating = true;
 
-  try {
-    const html = buildPDFHTML();
-    const printWindow = window.open('', '_blank', 'width=900,height=700');
-    
-    printWindow.document.write(`
-      <!DOCTYPE html>
-      <html>
-        <head>
-          <meta charset="utf-8"/>
-          <title>BNI-Bio-${(formData.speakerName || 'Member').replace(/\s+/g, '-')}</title>
-          <style>
-            * {
-              box-sizing: border-box;
-              margin: 0; padding: 0;
-              -webkit-print-color-adjust: exact !important;
-              print-color-adjust: exact !important;
-              color-adjust: exact !important;
-            }
-            body { background: #fff; font-family: Arial, sans-serif; }
-            @media print {
-              @page { size: A4; margin: 0; }
-              body { margin: 0; }
-            }
-          </style>
-        </head>
-        <body>${html}</body>
-      </html>
-    `);
+    if (!window.html2pdf) {
+      await new Promise((resolve, reject) => {
+        const script = document.createElement('script');
+        script.src = 'https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js';
+        script.onload = resolve;
+        script.onerror = reject;
+        document.head.appendChild(script);
+      });
+    }
 
-    printWindow.document.close();
+    const wrapper = document.createElement('div');
+    wrapper.style.cssText = 'position:fixed;left:-9999px;top:0;z-index:-999;';
+    wrapper.innerHTML = buildPDFHTML();
+    document.body.appendChild(wrapper);
 
-    // Wait for content to render, then print
-    printWindow.onload = () => {
-      setTimeout(() => {
-        printWindow.focus();
-        printWindow.print();
-        printWindow.close();
-      }, 500);
+    const opt = {
+      margin: [0, 0, 0, 0],
+      filename: `BNI-Bio-${(formData.speakerName || 'Member').replace(/\s+/g, '-')}.pdf`,
+      image: { type: 'jpeg', quality: 0.98 },
+      html2canvas: {
+        scale: 2, useCORS: true, logging: false,
+        backgroundColor: '#ffffff', allowTaint: true, width: 794,
+      },
+      jsPDF: { unit: 'px', format: [794, 1123], orientation: 'portrait' },
     };
 
-  } catch (e) {
-    console.error(e);
-    alert('PDF generation failed: ' + e.message);
-  } finally {
+    try {
+      await window.html2pdf().set(opt).from(wrapper.firstElementChild).save();
+    } catch (e) {
+      alert('PDF generation failed. Try: Share → Print → Save as PDF.');
+    }
+
+    document.body.removeChild(wrapper);
     pdfGenerating = false;
   }
-}
+
   $: progressPercentage = ((currentStep + 1) / 5) * 100;
   $: fullName = formData.speakerName || 'Your Name';
   $: top3Preview = [formData.contactSphereTop3_1, formData.contactSphereTop3_2, formData.contactSphereTop3_3].filter(Boolean);
