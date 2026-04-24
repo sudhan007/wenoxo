@@ -309,57 +309,60 @@ const pageStyle = `
 
   }
 
-async function downloadPDF() {
-  if (pdfGenerating) return;
-  pdfGenerating = true;
+  async function downloadPDF() {
+    if (pdfGenerating) return;
+    pdfGenerating = true;
 
-  try {
-    const html = buildPDFHTML();
-    const printWindow = window.open('', '_blank', 'width=900,height=700');
-    
-    printWindow.document.write(`
-      <!DOCTYPE html>
-      <html>
-        <head>
-          <meta charset="utf-8"/>
-          <title>BNI-Bio-${(formData.speakerName || 'Member').replace(/\s+/g, '-')}</title>
-          <style>
-            * {
-              box-sizing: border-box;
-              margin: 0; padding: 0;
-              -webkit-print-color-adjust: exact !important;
-              print-color-adjust: exact !important;
-              color-adjust: exact !important;
-            }
-            body { background: #fff; font-family: Arial, sans-serif; }
-            @media print {
-              @page { size: A4; margin: 0; }
-              body { margin: 0; }
-            }
-          </style>
-        </head>
-        <body>${html}</body>
-      </html>
-    `);
+    try {
+      const { jsPDF } = window.jspdf;
 
-    printWindow.document.close();
+      // Build a hidden off-screen container with the print HTML
+      const container = document.createElement('div');
+      container.style.cssText = `
+        position: fixed; left: -9999px; top: 0;
+        width: 794px; background: #fff;
+        font-family: Arial, sans-serif;
+      `;
+      container.innerHTML = buildPDFHTML();
+      document.body.appendChild(container);
 
-    // Wait for content to render, then print
-    printWindow.onload = () => {
-      setTimeout(() => {
-        printWindow.focus();
-        printWindow.print();
-        printWindow.close();
-      }, 500);
-    };
+      // A4 size in mm
+      const pdf = new jsPDF({ unit: 'mm', format: 'a4', orientation: 'portrait' });
+      const pageWidthMM = 210;
+      const pageHeightMM = 297;
 
-  } catch (e) {
-    console.error(e);
-    alert('PDF generation failed: ' + e.message);
-  } finally {
-    pdfGenerating = false;
+      // Get all page divs (794×1123px each)
+      const pages = container.querySelectorAll('div[style*="794px"]');
+
+      for (let i = 0; i < pages.length; i++) {
+        const canvas = await html2canvas(pages[i], {
+          scale: 2,
+          useCORS: true,
+          backgroundColor: '#ffffff',
+          width: 794,
+          height: 1123,
+        });
+
+        const imgData = canvas.toDataURL('image/jpeg', 0.95);
+        if (i > 0) pdf.addPage();
+        pdf.addImage(imgData, 'JPEG', 0, 0, pageWidthMM, pageHeightMM);
+      }
+
+      document.body.removeChild(container);
+
+      const filename = `BNI-Bio-${(formData.speakerName || 'Member').replace(/\s+/g, '-')}.pdf`;
+      pdf.save(filename);          // triggers native download on mobile too
+
+    } catch (e) {
+      console.error(e);
+      alert('PDF generation failed: ' + e.message);
+    } finally {
+      pdfGenerating = false;
+    }
   }
-}
+
+
+
   $: progressPercentage = ((currentStep + 1) / 5) * 100;
   $: fullName = formData.speakerName || 'Your Name';
   $: top3Preview = [formData.contactSphereTop3_1, formData.contactSphereTop3_2, formData.contactSphereTop3_3].filter(Boolean);
@@ -690,6 +693,8 @@ async function downloadPDF() {
 <svelte:head>
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@500;600&family=DM+Sans:wght@400;500&display=swap" rel="stylesheet" />
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 </svelte:head>
 
 <div class="app">
