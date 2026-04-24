@@ -749,8 +749,8 @@ const pageStyle = `
           <input type="text" placeholder="e.g. Web Developer, Chartered Accountant" bind:value={currentJob.profession} />
         </div>
         <div class="field">
-          <label>Business Name <span class="req">*</span></label>
-          <input type="text" placeholder="Enter Your Business Name" bind:value={currentJob.businessName} />
+          <label>Business Category <span class="req">*</span></label>
+          <input type="text" placeholder="Enter Your Business Category" bind:value={currentJob.businessName} />
         </div>
         <div class="field">
           <label>Company Name</label>
