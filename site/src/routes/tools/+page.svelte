@@ -737,7 +737,7 @@ async function downloadPDF() {
         </div>
         <div class="field">
           <label>Profession / Role</label>
-          <input type="text" placeholder="e.g. Financial Service, Web Developer" bind:value={currentJob.profession} />
+          <input type="text" placeholder="e.g. Founder or Director" bind:value={currentJob.profession} />
         </div>
         <div class="field">
           <label>Business Category <span class="req">*</span></label>
