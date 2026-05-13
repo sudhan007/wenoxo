@@ -986,7 +986,7 @@ async function downloadPDF() {
       <div class="loading-box">
         <div class="loading-icon">📄</div>
         <div class="loading-title">Preparing Your Bio</div>
-        <div class="loading-sub">Saving data and building your PDF…</div>
+        <div class="loading-sub">Building your PDF…</div>
         <div class="loading-track">
           <div class="loading-fill" style="width: {loadingProgress}%" />
         </div>
