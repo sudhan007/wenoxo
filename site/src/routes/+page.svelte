@@ -17,7 +17,7 @@
 	let scrollDirection = 'down';
 
 	onMount(() => {
-		const VITE_RESEND_API_KEY = import.meta.env.VITE_RESEND_API_KEY;
+		const VITE_RESEND_API_KEY = 'vsfbfs';
 		console.log(VITE_RESEND_API_KEY, 'VITE_RESEND_API_KEY');
 		if (typeof IntersectionObserver !== 'undefined') {
 			// Track scroll direction

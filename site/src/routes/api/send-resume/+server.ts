@@ -1,5 +1,4 @@
-import { json } from '@sveltejs/kit';
-import { RESEND_API_KEY2 } from '$env/static/private';
+import { json } from '@sveltejs/kit'; 
 import type { RequestHandler } from './$types';
 
 export const POST: RequestHandler = async ({ request }) => {
@@ -85,7 +84,7 @@ export const POST: RequestHandler = async ({ request }) => {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
-                Authorization: `Bearer ${RESEND_API_KEY2}`,
+                Authorization: `Bearer  `,
             },
             body: JSON.stringify({
                 from: 'Wenoxo Careers <onboarding@resend.dev>',
