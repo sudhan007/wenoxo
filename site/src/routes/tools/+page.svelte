@@ -173,7 +173,7 @@
     const top3 = [formData.contactSphereTop3_1, formData.contactSphereTop3_2, formData.contactSphereTop3_3].filter(Boolean);
 
     const sectionHeader = (title) =>
-      `<div style="margin-top:18px; margin-bottom:8px; display:flex; align-items:center; gap:10px;">
+      `<div class="pdf-section-header" style="margin-top:18px; margin-bottom:8px; display:flex; align-items:center; gap:10px;">
         <div style="font-size:16px; font-weight:700; color:#CC1F1F; text-transform:uppercase; letter-spacing:0.8px; white-space:nowrap;">${title}</div>
         <div style="flex:1; height:1.5px; background:#E0E0E0;margin-top:15px;"></div>
        </div>`;
@@ -203,25 +203,31 @@
       <td style="width:130px; vertical-align:top;">
         ${photoSrc
           ? `<img src="${photoSrc}" style="width:120px;height:115px;object-fit:cover;border-radius:2px;display:block;" />`
-          : `<div style="width:120px;height:115px;background:#EEE;border-radius:2px;display:flex;align-items:center;justify-content:center;font-size:32px;font-weight:700;color:#999;">${esc(getInitials())}</div>`
+          : `<div style="width:120px;height:115px;background:#EEE;
+          border-radius:2px;display:flex;align-items:center;justify-content:center;font-size:32px;font-weight:700;color:#999;">${esc(getInitials())}</div>`
         }
       </td>
       <td style="vertical-align:top; padding-left:10px;">
+
         <div style="font-size:27px; font-weight:800; color:#CC1F1F; margin-bottom:3px; margin-top:-18px;">${esc(formData.speakerName)}</div>
         <div style="font-size:20px; color:#333; margin-bottom:3px;font-weight:700;">${esc(currentJob.profession || currentJob.businessName)}</div>
+
         ${currentJob.companyName ? `<div style="font-size:16px; color:#333;  ">Company Name : ${esc(currentJob.companyName)}</div>` : ''}
-         <div style="font-size:16px; color:#333; display:flex; gap:18px; flex-wrap:wrap; margin-top:15px;">
-          ${currentJob.yearsInBusiness ? `
-            <span style="display:flex; align-items:center; gap:4px; line-height:1;">
-              <img width="15" height="13" style="flex-shrink:0;" src="${briii}" />
-              <p style="margin-top:-17px;  ">${esc(currentJob.yearsInBusiness)}</p>
-            </span>` : ''}
-          ${currentJob.location ? `
-            <span style="display:flex; align-items:center; gap:4px; line-height:1;">
-              <img width="15" height="13" style="flex-shrink:0;" src="${locIconBase64}" />
-              <p style="margin-top:-17px;">${esc(currentJob.location)}</p>
-            </span>` : ''}
-        </div>
+          <div style="font-size:16px; color:#333; display:flex; gap:18px; flex-wrap:wrap; margin-top:15px;"> 
+            ${currentJob.yearsInBusiness ? `
+              <span style="display:flex; align-items:center; gap:4px; line-height:1;">
+
+                <img width="15" height="13" style="flex-shrink:0;" src="${briii}" />
+                <p style="margin-top:-17px;  ">${esc(currentJob.yearsInBusiness)} Years</p>
+              </span>` : ''}
+            ${currentJob.location ? `
+              <span style="display:flex; align-items:center; gap:4px; line-height:1;">
+                <img width="15" height="13" style="flex-shrink:0;" src="${locIconBase64}" />
+                <p style="margin-top:-17px;">${esc(currentJob.location)}</p>
+              </span>` : ''}
+
+
+          </div>
       </td>
       <td style="vertical-align:top; text-align:right; white-space:nowrap; width:110px;">
         <div style="font-size:16px; color:#333;font-weight:700;margin-top:-13px;">${esc(displayDate)}</div>
@@ -233,12 +239,14 @@
   ${sectionHeader('Previous Types of Job')}
   <table style="width:100%; border-collapse:collapse; margin-bottom:4px;">
     <tr>
-      <td style="font-size:15px; color:#888; width:50%;  ">Designation</td>
-      <td style="font-size:15px; color:#888;  ">Company Name</td>
+      <td style="width:25%; font-size:15px; color:#888;   ">Designation</td>
+      <td style="width:25%; font-size:15px; color:#888;  ">Company Name</td>
+      <td style="width:25%; font-size:15px; color:#888;  "> </td>
     </tr>
     ${filledPreviousJobs.map(j => `<tr>
-      <td style="padding:3px 0; font-size:17px; font-weight:600; color:#111;">${esc(j.designation)}</td>
-      <td style="padding:3px 0; font-size:17px; color:#111;font-weight:600;">${esc(j.companyName)}</td>
+      <td style="width:25%; padding:3px 0; font-size:17px; font-weight:600; color:#111;">${esc(j.designation)}</td>
+      <td style="width:25%; padding:3px 0; font-size:17px; color:#111;font-weight:600;">${esc(j.companyName)}</td>
+      <td style="width:25%; padding:3px 0; font-size:17px; color:#111;font-weight:600;"> </td>
     </tr>`).join('')}
   </table>
   ` : ''}
@@ -248,17 +256,24 @@
     <tr style="justify-content:space-between;">
       ${formData.spouseName ? `<td style="width:25%; vertical-align:top; padding-right:8px;"><div style="font-size:15px;color:#888;">Spouse/Partner Name</div><div style="font-size:17px;font-weight:600;color:#111;">${esc(formData.spouseName)}</div></td>` : '<td style="width:25%;"></td>'}
       ${formData.childrenNames ? `<td style="width:25%; vertical-align:top; padding-right:8px;"><div style="font-size:15px;color:#888;">Childrens Name</div><div style="font-size:17px;font-weight:600;color:#111;">${esc(formData.childrenNames)}</div></td>` : '<td style="width:25%;"></td>'}
-      
+       
         ${formData.animals ? `<td style="width:25%; vertical-align:top; padding-right:8px;"><div style="font-size:15px;color:#888;">Pets / Animals</div><div style="font-size:17px;font-weight:600;color:#111;">${esc(formData.animals)}</div></td>` : '<td style="width:25%;"></td>'}
 
       </tr>
   </table>
   ${formData.hobbies ? `<div style="margin-bottom:8px;"><div style="font-size:15px;color:#888;">Hobbies</div><div style="font-size:17px;font-weight:600;color:#111;">${esc(formData.hobbies)}</div></div>` : ''}
   ${formData.activities ? `<div style="margin-bottom:8px;"><div style="font-size:15px;color:#888;">Activities Of Interest</div><div style="font-size:17px;font-weight:600;color:#111;">${esc(formData.activities)}</div></div>` : ''}
-  ${formData.residencyCity ? `<div style="margin-bottom:8px;"><div style="font-size:15px;color:#888;">City Of Residence</div><div style="font-size:17px;font-weight:600;color:#111;">${esc(formData.residencyCity)}</div></div>` : ''}
-      ${formData.residencyDuration ? `<div style="margin-bottom:8px;"><div style="font-size:15px;color:#888;">How Long</div><div style="font-size:17px;font-weight:600;color:#111;">${esc(formData.residencyDuration)}</div></div>` : ''}
-    
   
+  <table style="width:100%; border-collapse:collapse; margin-bottom:8px;">
+    <tr style="justify-content:space-between;">
+
+        ${formData.animals ? `<td style="width:25%; vertical-align:top; padding-right:8px;"><div style="font-size:15px;color:#888;">City Of Residence</div><div style="font-size:17px;font-weight:600;color:#111;">${esc(formData.residencyCity)}</div></td>` : '<td style="width:25%;"></td>'}
+        ${formData.animals ? `<td style="width:25%; vertical-align:top; padding-right:8px;"><div style="font-size:15px;color:#888;">How Long</div><div style="font-size:17px;font-weight:600;color:#111;">${esc(formData.residencyDuration)}</div></td>` : '<td style="width:25%;"></td>'}
+  ${formData.animals ? `<td style="width:25%; vertical-align:top; padding-right:8px;"><div style="font-size:15px;color:#888;"></div><div style="font-size:17px;font-weight:600;color:#111;"></div></td>` : '<td style="width:25%;"></td>'}
+  
+      </tr>
+  </table>
+   
 
   ${sectionHeader('Miscellaneous')}
   ${labelVal('My Burning Desire To', formData.burningDesire)}
@@ -395,6 +410,10 @@ async function downloadPDF() {
     const contentEl = container.querySelector('#bni-content');
     const totalHeightPx = contentEl.scrollHeight;
 
+    const headerEls = contentEl.querySelectorAll('.pdf-section-header');
+    const contentRect = contentEl.getBoundingClientRect();
+    const headerYs = Array.from(headerEls).map(el => el.getBoundingClientRect().top - contentRect.top);
+
     const footerWrap = document.createElement('div');
     footerWrap.style.cssText = 'position:fixed;left:-9999px;top:0;width:730px;background:#fff;font-family:\"Roboto\",Arial,sans-serif;';
     footerWrap.innerHTML = buildFooterHTML();
@@ -437,6 +456,8 @@ async function downloadPDF() {
       const scanH    = nominalY - scanFrom;
       if (scanH <= 0) return nominalY;
       const imgData  = ctx.getImageData(0, scanFrom, fullCanvas.width, scanH);
+      
+      let bestWhiteRow = nominalY;
       for (let row = scanH - 1; row >= 0; row--) {
         let white = true;
         for (let col = 0; col < fullCanvas.width; col++) {
@@ -445,9 +466,20 @@ async function downloadPDF() {
             white = false; break;
           }
         }
-        if (white) return scanFrom + row;
+        if (white) {
+           bestWhiteRow = scanFrom + row;
+           break;
+        }
       }
-      return nominalY;
+
+      const breakPx = bestWhiteRow / canvasScale;
+      for (const hY of headerYs) {
+        if (hY < breakPx && (breakPx - hY) < 90) {
+          return Math.max(0, (hY - 10) * canvasScale);
+        }
+      }
+
+      return bestWhiteRow;
     }
 
     // Build slices using smart break points (canvas coordinates)
