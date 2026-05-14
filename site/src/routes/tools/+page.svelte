@@ -520,10 +520,10 @@ async function downloadPDF() {
         const footerY = pageCanvas.height - footerCanvas.height - footerPad - 10;
         ctx.drawImage(footerCanvas, footerX, footerY);
       }
-      if (p === 0) {
-        ctx.fillStyle = '#CC1F1F';
-        ctx.fillRect(0, 0, pageCanvas.width, borderTop);
-      }
+      // if (p === 0) {
+      //   ctx.fillStyle = '#CC1F1F';
+      //   ctx.fillRect(0, 0, pageCanvas.width, borderTop);
+      // }
       const imgData = pageCanvas.toDataURL('image/jpeg', 0.95);
       pdf.addImage(imgData, 'JPEG', marginMM, marginMM, printWidthMM, printHeightMM);
     }
