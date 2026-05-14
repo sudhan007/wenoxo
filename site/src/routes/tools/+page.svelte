@@ -17,7 +17,7 @@
   }
 
   // ─── CONTACT SPHERE: dynamic list ───────────────────────────
-  let contactSphereItems = [''];
+  let contactSphereItems = ['', '', '', ''];
 
   function addContactSphere() {
     contactSphereItems = [...contactSphereItems, ''];
@@ -27,7 +27,7 @@
   }
 
   // ─── LAST 10 CUSTOMERS: name + company pairs ────────────────
-  let customers = [{ name: '', company: '' }];
+  let customers = Array.from({ length: 10 }, () => ({ name: '', company: '' }));
 
   function addCustomer() {
     customers = [...customers, { name: '', company: '' }];
@@ -214,7 +214,7 @@
           ${currentJob.yearsInBusiness ? `
             <span style="display:flex; align-items:center; gap:4px; line-height:1;">
               <img width="15" height="13" style="flex-shrink:0;" src="${briii}" />
-              <p style="margin-top:-17px;  ">${esc(currentJob.location)}</p>
+              <p style="margin-top:-17px;  ">${esc(currentJob.yearsInBusiness)}</p>
             </span>` : ''}
           ${currentJob.location ? `
             <span style="display:flex; align-items:center; gap:4px; line-height:1;">
@@ -233,8 +233,8 @@
   ${sectionHeader('Previous Types of Job')}
   <table style="width:100%; border-collapse:collapse; margin-bottom:4px;">
     <tr>
-      <td style="font-size:15px; color:#888; width:50%; padding-bottom:4px;">Designation</td>
-      <td style="font-size:15px; color:#888; padding-bottom:4px;">Company Name</td>
+      <td style="font-size:15px; color:#888; width:50%;  ">Designation</td>
+      <td style="font-size:15px; color:#888;  ">Company Name</td>
     </tr>
     ${filledPreviousJobs.map(j => `<tr>
       <td style="padding:3px 0; font-size:17px; font-weight:600; color:#111;">${esc(j.designation)}</td>
@@ -248,13 +248,17 @@
     <tr style="justify-content:space-between;">
       ${formData.spouseName ? `<td style="width:25%; vertical-align:top; padding-right:8px;"><div style="font-size:15px;color:#888;">Spouse/Partner Name</div><div style="font-size:17px;font-weight:600;color:#111;">${esc(formData.spouseName)}</div></td>` : '<td style="width:25%;"></td>'}
       ${formData.childrenNames ? `<td style="width:25%; vertical-align:top; padding-right:8px;"><div style="font-size:15px;color:#888;">Childrens Name</div><div style="font-size:17px;font-weight:600;color:#111;">${esc(formData.childrenNames)}</div></td>` : '<td style="width:25%;"></td>'}
-      ${formData.residencyCity ? `<td style="width:25%; vertical-align:top; padding-right:8px;"><div style="font-size:15px;color:#888;">City Of Residence</div><div style="font-size:17px;font-weight:600;color:#111;">${esc(formData.residencyCity)}</div></td>` : '<td style="width:25%;"></td>'}
-      ${formData.residencyDuration ? `<td style="width:25%; vertical-align:top;"><div style="font-size:15px;color:#888;">How Long</div><div style="font-size:17px;font-weight:600;color:#111;">${esc(formData.residencyDuration)}</div></td>` : '<td style="width:25%;"></td>'}
-    </tr>
+      
+        ${formData.animals ? `<td style="width:25%; vertical-align:top; padding-right:8px;"><div style="font-size:15px;color:#888;">Pets / Animals</div><div style="font-size:17px;font-weight:600;color:#111;">${esc(formData.animals)}</div></td>` : '<td style="width:25%;"></td>'}
+
+      </tr>
   </table>
   ${formData.hobbies ? `<div style="margin-bottom:8px;"><div style="font-size:15px;color:#888;">Hobbies</div><div style="font-size:17px;font-weight:600;color:#111;">${esc(formData.hobbies)}</div></div>` : ''}
   ${formData.activities ? `<div style="margin-bottom:8px;"><div style="font-size:15px;color:#888;">Activities Of Interest</div><div style="font-size:17px;font-weight:600;color:#111;">${esc(formData.activities)}</div></div>` : ''}
-  ${formData.animals ? `<div style="margin-bottom:8px;"><div style="font-size:15px;color:#888;">Pets / Animals</div><div style="font-size:17px;font-weight:600;color:#111;">${esc(formData.animals)}</div></div>` : ''}
+  ${formData.residencyCity ? `<div style="margin-bottom:8px;"><div style="font-size:15px;color:#888;">City Of Residence</div><div style="font-size:17px;font-weight:600;color:#111;">${esc(formData.residencyCity)}</div></div>` : ''}
+      ${formData.residencyDuration ? `<div style="margin-bottom:8px;"><div style="font-size:15px;color:#888;">How Long</div><div style="font-size:17px;font-weight:600;color:#111;">${esc(formData.residencyDuration)}</div></div>` : ''}
+    
+  
 
   ${sectionHeader('Miscellaneous')}
   ${labelVal('My Burning Desire To', formData.burningDesire)}
@@ -274,13 +278,13 @@
       <td style="width:55%; vertical-align:top; padding-right:24px;">
         <div style="font-size:15px; color:#888; margin-bottom:6px;">Contact Sphere</div>
         ${filledContactSphere.map((item, i) =>
-          `<div style="font-size:17px; color:#111; margin-bottom:5px; font-weight:600;">${i+1}. ${esc(item)}</div>`
+          `<div style="font-size:17px; color:#111; margin-bottom:3px; font-weight:600;">${i+1}. ${esc(item)}</div>`
         ).join('')}
       </td>
       <td style="width:45%; vertical-align:top;">
         <div style="font-size:15px; color:#888; margin-bottom:6px;">Top 3 Contact Sphere Members</div>
         ${top3.map((item, i) =>
-          `<div style="font-size:17px; font-weight:600; color:#111; margin-bottom:5px;">${i+1}. ${esc(item)}</div>`
+          `<div style="font-size:17px; font-weight:600; color:#111; margin-bottom:3px;">${i+1}. ${esc(item)}</div>`
         ).join('')}
       </td>
     </tr>
@@ -297,8 +301,8 @@ ${sectionHeader('Last 10 Customers')}
 </div>
 
   ${sectionHeader('Notes')}
-  ${formData.customerNotes ? `<div style="margin-bottom:10px;"><div style="font-size:15px;color:#888;margin-bottom:3px;">Notes On Customer</div><div style="font-size:17px;font-weight:600;color:#111;">${nl(formData.customerNotes)}</div></div>` : ''}
-  ${formData.referralNotes ? `<div style="margin-bottom:10px;"><div style="font-size:15px;color:#888;margin-bottom:3px;">Notes On Referrals</div><div style="font-size:17px;font-weight:600;color:#111;">${nl(formData.referralNotes)}</div></div>` : ''}
+  ${formData.customerNotes ? `<div style="margin-bottom:10px;"><div style="font-size:15px;color:#888; ">Notes On Customer</div><div style="font-size:17px;font-weight:600;color:#111;">${nl(formData.customerNotes)}</div></div>` : ''}
+  ${formData.referralNotes ? `<div style="margin-bottom:10px;"><div style="font-size:15px;color:#888; ">Notes On Referrals</div><div style="font-size:17px;font-weight:600;color:#111;">${nl(formData.referralNotes)}</div></div>` : ''}
 
 </div>
 </body>
@@ -313,7 +317,7 @@ ${sectionHeader('Last 10 Customers')}
           <div style="font-size:20px;font-weight:700;color:#CC1F1F;">${esc(formData.chapter || 'Chapter Name')}</div>
           <div style="font-size:17px;color:#555;margin-top:2px;">Region : ${esc(formData.region || 'Region')}</div>
         </div>
-        <img width="48" height="19" style="flex-shrink:0;" src="${bni64}" />
+        <img width="60" height="24" style="flex-shrink:0;" src="${bni64}" />
       </div>`;
   }
 
@@ -403,13 +407,17 @@ async function downloadPDF() {
     });
     document.body.removeChild(footerWrap);
 
-    const pageWidthMM  = 210;
-    const pageHeightMM = 297;
-    const pxPerMM      = 794 / pageWidthMM;
-    const pageHeightPx = Math.round(pageHeightMM * pxPerMM);
-    const borderTop    = 14;
-    const footerPad    = 20;
-    const usablePx     = pageHeightPx - 8;
+    const pageWidthMM   = 210;
+    const pageHeightMM  = 297;
+    const marginMM      = 25.4;
+    const printWidthMM  = pageWidthMM - (marginMM * 2);
+    const printHeightMM = pageHeightMM - (marginMM * 2);
+
+    const pxPerMM       = 794 / printWidthMM;
+    const pageHeightPx  = Math.round(printHeightMM * pxPerMM);
+    const borderTop     = 14;
+    const footerPad     = 20;
+    const usablePx      = pageHeightPx - 8;
 
     const fullCanvas = await html2canvas(contentEl, {
       scale: 2, useCORS: true, backgroundColor: '#ffffff',
@@ -485,7 +493,7 @@ async function downloadPDF() {
         ctx.fillRect(0, 0, pageCanvas.width, borderTop);
       }
       const imgData = pageCanvas.toDataURL('image/jpeg', 0.95);
-      pdf.addImage(imgData, 'JPEG', 0, 0, pageWidthMM, pageHeightMM);
+      pdf.addImage(imgData, 'JPEG', marginMM, marginMM, printWidthMM, printHeightMM);
     }
 
     pdf.save(`BNI-Bio-${(formData.speakerName || 'Member').replace(/\s+/g, '-')}.pdf`);
@@ -567,7 +575,7 @@ async function downloadPDF() {
 
   /* ── Contact Sphere row ── */
   .cs-row { display: flex; align-items: center; gap: 8px; margin-bottom: 8px; }
-  .cs-num { width: 22px; height: 22px; border-radius: 50%; background: #F0EDE8; color: #888; font-size: 11px; font-weight: 600; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+  .cs-num { width: 22px; height: 22px; border-radius: 50%; background: #CC1F1F; color: white; font-size: 11px; font-weight: 600; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
   .cs-row input { flex: 1; padding: 10px 12px; font-family: 'Roboto', sans-serif; font-size: 14px; background: #FAFAF8; color: #1A1A1A; border: 1px solid #E0DDD7; border-radius: 10px; outline: none; transition: border-color 0.15s, background 0.15s, box-shadow 0.15s; -webkit-appearance: none; }
   .cs-row input:focus { border-color: #CC1F1F; background: #fff; box-shadow: 0 0 0 3px rgba(204,31,31,0.07); }
 
@@ -760,10 +768,7 @@ async function downloadPDF() {
           <label>Profession / Role</label>
           <input type="text" placeholder="e.g. Founder or Director" bind:value={currentJob.profession} />
         </div>
-        <div class="field">
-          <label>Business Category <span class="req">*</span></label>
-          <input type="text" placeholder="Enter Your Business Category" bind:value={currentJob.businessName} />
-        </div>
+        
         <div class="field">
           <label>Company Name</label>
           <input type="text" placeholder="Enter Your Company Name" bind:value={currentJob.companyName} />
@@ -954,9 +959,7 @@ async function downloadPDF() {
           <div class="customer-block">
             <div class="customer-block-header">
               <span class="customer-num-badge">Customer {i + 1}</span>
-              {#if customers.length > 1}
-                <button class="remove-job-btn" on:click={() => removeCustomer(i)}>✕</button>
-              {/if}
+              
             </div>
             <div class="field">
               <label>Customer Name</label>
@@ -968,9 +971,7 @@ async function downloadPDF() {
             </div>
           </div>
         {/each}
-        <button class="add-job-btn" on:click={addCustomer} style="margin-bottom:0">
-          <span style="font-size:18px;line-height:1">＋</span> Add Customer
-        </button>
+        
       </div>
 
       <div class="field">
