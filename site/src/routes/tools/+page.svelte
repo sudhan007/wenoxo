@@ -192,7 +192,7 @@
 <style>
   * { box-sizing: border-box; margin:0; padding:0; }
   body { font-family: 'Roboto', Arial, Helvetica, sans-serif; background:#fff; color:#111; }
-  .content { width: 794px; background: #fff; padding: 28px 32px 120px 32px; display: block; }
+  .content { width: 794px; background: #fff; padding: 28px 32px 200px 32px; display: block; }
 </style>
 </head>
 <body>
@@ -380,11 +380,11 @@ async function downloadPDF() {
   showLoadingPopup = false;
   loadingProgress  = 0;
 
-  // ── Original PDF generation (unchanged) ──────────────────────────
+  // ── Smart-break PDF generation ──────────────────────────────────────────
   try {
     const { jsPDF } = window.jspdf;
     const container = document.createElement('div');
-    container.style.cssText = 'position:fixed;left:-9999px;top:0;width:794px;background:#fff;font-family:"Roboto",Arial,sans-serif;';
+    container.style.cssText = 'position:fixed;left:-9999px;top:0;width:794px;background:#fff;font-family:\"Roboto\",Arial,sans-serif;';
     container.innerHTML = buildPDFHTML();
     document.body.appendChild(container);
     await new Promise(r => setTimeout(r, 400));
@@ -392,7 +392,7 @@ async function downloadPDF() {
     const totalHeightPx = contentEl.scrollHeight;
 
     const footerWrap = document.createElement('div');
-    footerWrap.style.cssText = 'position:fixed;left:-9999px;top:0;width:730px;background:#fff;font-family:"Roboto",Arial,sans-serif;';
+    footerWrap.style.cssText = 'position:fixed;left:-9999px;top:0;width:730px;background:#fff;font-family:\"Roboto\",Arial,sans-serif;';
     footerWrap.innerHTML = buildFooterHTML();
     document.body.appendChild(footerWrap);
     await new Promise(r => setTimeout(r, 200));
@@ -418,25 +418,64 @@ async function downloadPDF() {
     });
     document.body.removeChild(container);
 
-    const pdf = new jsPDF({ unit: 'mm', format: 'a4', orientation: 'portrait' });
-    const totalPages = Math.ceil(totalHeightPx / usablePx);
+    // ── Smart page-break: scan backwards for an all-white row ──────────────────
+    const canvasScale  = 2;
+    const usableScaled = usablePx * canvasScale;
+    const searchRange  = 120 * canvasScale; // scan up to 120 content-px back
 
-    for (let p = 0; p < totalPages; p++) {
+    function findSmartBreak(nominalY) {
+      const ctx      = fullCanvas.getContext('2d');
+      const scanFrom = Math.max(0, nominalY - searchRange);
+      const scanH    = nominalY - scanFrom;
+      if (scanH <= 0) return nominalY;
+      const imgData  = ctx.getImageData(0, scanFrom, fullCanvas.width, scanH);
+      for (let row = scanH - 1; row >= 0; row--) {
+        let white = true;
+        for (let col = 0; col < fullCanvas.width; col++) {
+          const i = (row * fullCanvas.width + col) * 4;
+          if (imgData.data[i] < 240 || imgData.data[i+1] < 240 || imgData.data[i+2] < 240) {
+            white = false; break;
+          }
+        }
+        if (white) return scanFrom + row;
+      }
+      return nominalY;
+    }
+
+    // Build slices using smart break points (canvas coordinates)
+    const slices = [];
+    let pos = 0;
+    while (pos < fullCanvas.height) {
+      const nominalEnd = pos + usableScaled;
+      if (nominalEnd >= fullCanvas.height) {
+        slices.push({ start: pos, end: fullCanvas.height });
+        break;
+      }
+      const smartEnd = findSmartBreak(nominalEnd);
+      slices.push({ start: pos, end: smartEnd });
+      pos = smartEnd;
+    }
+    // ──────────────────────────────────────────────────────────────────────────────────
+
+    const pdf = new jsPDF({ unit: 'mm', format: 'a4', orientation: 'portrait' });
+
+    for (let p = 0; p < slices.length; p++) {
       if (p > 0) pdf.addPage();
-      const sliceStartPx  = p * usablePx;
-      const sliceHeightPx = Math.min(usablePx, totalHeightPx - sliceStartPx);
+      const { start, end } = slices[p];
+      const sliceH = end - start;
+
       const pageCanvas = document.createElement('canvas');
       pageCanvas.width  = fullCanvas.width;
-      pageCanvas.height = Math.round(pageHeightPx * 2);
+      pageCanvas.height = Math.round(pageHeightPx * canvasScale);
       const ctx = pageCanvas.getContext('2d');
       ctx.fillStyle = '#ffffff';
       ctx.fillRect(0, 0, pageCanvas.width, pageCanvas.height);
       ctx.drawImage(
         fullCanvas,
-        0, sliceStartPx * 2, fullCanvas.width, sliceHeightPx * 2,
-        0, borderTop, fullCanvas.width, sliceHeightPx * 2
+        0, start, fullCanvas.width, sliceH,
+        0, borderTop, fullCanvas.width, sliceH
       );
-      if (p === totalPages - 1) {
+      if (p === slices.length - 1) {
         const footerX = Math.round((pageCanvas.width - footerCanvas.width) / 2);
         const footerY = pageCanvas.height - footerCanvas.height - footerPad - 10;
         ctx.drawImage(footerCanvas, footerX, footerY);
@@ -449,8 +488,7 @@ async function downloadPDF() {
       pdf.addImage(imgData, 'JPEG', 0, 0, pageWidthMM, pageHeightMM);
     }
 
-    const filename = `BNI-Bio-${(formData.speakerName || 'Member').replace(/\s+/g, '-')}.pdf`;
-    pdf.save(filename);
+    pdf.save(`BNI-Bio-${(formData.speakerName || 'Member').replace(/\s+/g, '-')}.pdf`);
   } catch (e) {
     console.error(e);
   } finally {
