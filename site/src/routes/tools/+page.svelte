@@ -191,7 +191,7 @@
 <meta charset="UTF-8"/>
 <style>
   * { box-sizing: border-box; margin:0; padding:0; }
-  body { font-family: Arial, Helvetica, sans-serif; background:#fff; color:#111; }
+  body { font-family: 'Roboto', Arial, Helvetica, sans-serif; background:#fff; color:#111; }
   .content { width: 794px; background: #fff; padding: 28px 32px 120px 32px; display: block; }
 </style>
 </head>
@@ -308,12 +308,12 @@ ${sectionHeader('Last 10 Customers')}
   function buildFooterHTML() {
     const esc = (s) => String(s || '').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
     return `
-      <div style="font-family:Arial,Helvetica,sans-serif;padding:14px 0 10px;display:flex;justify-content:space-between;align-items:flex-end;">
+      <div style="font-family: 'Roboto', Arial, Helvetica, sans-serif;padding:14px 0 10px;display:flex;justify-content:space-between;align-items:flex-end;">
         <div>
           <div style="font-size:20px;font-weight:700;color:#CC1F1F;">${esc(formData.chapter || 'Chapter Name')}</div>
           <div style="font-size:17px;color:#555;margin-top:2px;">Region : ${esc(formData.region || 'Region')}</div>
         </div>
-        <img width="90" height="30" style="flex-shrink:0;" src="${bni64}" />
+        <img width="48" height="19" style="flex-shrink:0;" src="${bni64}" />
       </div>`;
   }
 
@@ -384,7 +384,7 @@ async function downloadPDF() {
   try {
     const { jsPDF } = window.jspdf;
     const container = document.createElement('div');
-    container.style.cssText = 'position:fixed;left:-9999px;top:0;width:794px;background:#fff;font-family:Arial,sans-serif;';
+    container.style.cssText = 'position:fixed;left:-9999px;top:0;width:794px;background:#fff;font-family:"Roboto",Arial,sans-serif;';
     container.innerHTML = buildPDFHTML();
     document.body.appendChild(container);
     await new Promise(r => setTimeout(r, 400));
@@ -392,7 +392,7 @@ async function downloadPDF() {
     const totalHeightPx = contentEl.scrollHeight;
 
     const footerWrap = document.createElement('div');
-    footerWrap.style.cssText = 'position:fixed;left:-9999px;top:0;width:730px;background:#fff;font-family:Arial,sans-serif;';
+    footerWrap.style.cssText = 'position:fixed;left:-9999px;top:0;width:730px;background:#fff;font-family:"Roboto",Arial,sans-serif;';
     footerWrap.innerHTML = buildFooterHTML();
     document.body.appendChild(footerWrap);
     await new Promise(r => setTimeout(r, 200));
@@ -471,7 +471,7 @@ async function downloadPDF() {
     background: #F5F4F0; overscroll-behavior: none;
   }
   :global(body) {
-    font-family: 'DM Sans', sans-serif;
+    font-family: 'Roboto', sans-serif;
     min-height: 100%; min-height: -webkit-fill-available;
     background: #F5F4F0; overscroll-behavior-y: none;
   }
@@ -480,8 +480,8 @@ async function downloadPDF() {
 
   .topbar { background: #fff; border-bottom: 1px solid #E8E6E0; padding: 14px 16px 10px; position: sticky; top: 0; z-index: 9; }
   .topbar-row { display: flex; align-items: center; gap: 10px; }
-  .bni-pill { background: #CC1F1F; color: white; font-family: 'Playfair Display', serif; font-weight: 600; font-size: 13px; padding: 4px 10px; border-radius: 6px; letter-spacing: 0.5px; }
-  .topbar h1 { font-family: 'Playfair Display', serif; font-size: 17px; font-weight: 500; color: #1A1A1A; }
+  .bni-pill { background: #CC1F1F; color: white; font-family: 'Roboto', sans-serif; font-weight: 600; font-size: 13px; padding: 4px 10px; border-radius: 6px; letter-spacing: 0.5px; }
+  .topbar h1 { font-family: 'Roboto', sans-serif; font-size: 17px; font-weight: 500; color: #1A1A1A; }
   .progress-bar { height: 3px; background: #EDE9E3; border-radius: 2px; margin-top: 10px; overflow: hidden; }
   .progress-fill { height: 100%; background: #CC1F1F; border-radius: 2px; transition: width 0.3s ease; }
 
@@ -496,7 +496,7 @@ async function downloadPDF() {
   .req { color: #CC1F1F; font-size: 14px; line-height: 1; }
   .field input, .field textarea {
     width: 100%; padding: 12px 14px;
-    font-family: 'DM Sans', sans-serif; font-size: 15px;
+    font-family: 'Roboto', sans-serif; font-size: 15px;
     background: #FAFAF8; color: #1A1A1A;
     border: 1px solid #E0DDD7; border-radius: 10px;
     outline: none; transition: border-color 0.15s, background 0.15s, box-shadow 0.15s;
@@ -524,13 +524,13 @@ async function downloadPDF() {
   .job-num-prev { font-size: 11px; font-weight: 600; color: #888; }
   .remove-job-btn { background: none; border: none; font-size: 16px; color: #CCC; cursor: pointer; padding: 2px 6px; border-radius: 6px; transition: color 0.15s; }
   .remove-job-btn:hover { color: #CC1F1F; }
-  .add-job-btn { display: flex; align-items: center; gap: 8px; justify-content: center; width: 100%; padding: 11px; background: #FDF6F6; border: 1.5px dashed #F4AAAA; border-radius: 10px; font-family: 'DM Sans', sans-serif; font-size: 13px; font-weight: 500; color: #CC1F1F; cursor: pointer; transition: background 0.15s; margin-bottom: 16px; }
+  .add-job-btn { display: flex; align-items: center; gap: 8px; justify-content: center; width: 100%; padding: 11px; background: #FDF6F6; border: 1.5px dashed #F4AAAA; border-radius: 10px; font-family: 'Roboto', sans-serif; font-size: 13px; font-weight: 500; color: #CC1F1F; cursor: pointer; transition: background 0.15s; margin-bottom: 16px; }
   .add-job-btn:hover { background: #FFF0F0; }
 
   /* ── Contact Sphere row ── */
   .cs-row { display: flex; align-items: center; gap: 8px; margin-bottom: 8px; }
   .cs-num { width: 22px; height: 22px; border-radius: 50%; background: #F0EDE8; color: #888; font-size: 11px; font-weight: 600; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
-  .cs-row input { flex: 1; padding: 10px 12px; font-family: 'DM Sans', sans-serif; font-size: 14px; background: #FAFAF8; color: #1A1A1A; border: 1px solid #E0DDD7; border-radius: 10px; outline: none; transition: border-color 0.15s, background 0.15s, box-shadow 0.15s; -webkit-appearance: none; }
+  .cs-row input { flex: 1; padding: 10px 12px; font-family: 'Roboto', sans-serif; font-size: 14px; background: #FAFAF8; color: #1A1A1A; border: 1px solid #E0DDD7; border-radius: 10px; outline: none; transition: border-color 0.15s, background 0.15s, box-shadow 0.15s; -webkit-appearance: none; }
   .cs-row input:focus { border-color: #CC1F1F; background: #fff; box-shadow: 0 0 0 3px rgba(204,31,31,0.07); }
 
   /* ── Customer row ── */
@@ -545,11 +545,11 @@ async function downloadPDF() {
   .top3-inputs { display: flex; flex-direction: column; gap: 8px; }
   .top3-row { display: flex; align-items: center; gap: 10px; }
   .top3-badge { width: 24px; height: 24px; border-radius: 50%; background: #CC1F1F; color: white; font-size: 11px; font-weight: 700; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
-  .top3-row input { flex: 1; padding: 10px 12px; font-family: 'DM Sans', sans-serif; font-size: 14px; background: #FAFAF8; color: #1A1A1A; border: 1px solid #E0DDD7; border-radius: 10px; outline: none; transition: border-color 0.15s, background 0.15s, box-shadow 0.15s; -webkit-appearance: none; text-transform: none; width: 100%; }
+  .top3-row input { flex: 1; padding: 10px 12px; font-family: 'Roboto', sans-serif; font-size: 14px; background: #FAFAF8; color: #1A1A1A; border: 1px solid #E0DDD7; border-radius: 10px; outline: none; transition: border-color 0.15s, background 0.15s, box-shadow 0.15s; -webkit-appearance: none; text-transform: none; width: 100%; }
   .top3-row input:focus { border-color: #CC1F1F; background: #fff; box-shadow: 0 0 0 3px rgba(204,31,31,0.07); }
 
   .bottom-nav { position: fixed; bottom: 0; left: 0; right: 0; max-width: 430px; margin: 0 auto; background: #fff; border-top: 1px solid #EAE8E3; padding: 12px 16px; display: flex; gap: 10px; z-index: 8; box-shadow: 0 -2px 12px rgba(0,0,0,0.05); }
-  .btn { flex: 1; padding: 13px; font-family: 'DM Sans', sans-serif; font-size: 14px; font-weight: 500; border-radius: 12px; border: 1px solid #DDD9D2; background: #F5F4F0; color: #444; cursor: pointer; transition: all 0.15s; -webkit-appearance: none; }
+  .btn { flex: 1; padding: 13px; font-family: 'Roboto', sans-serif; font-size: 14px; font-weight: 500; border-radius: 12px; border: 1px solid #DDD9D2; background: #F5F4F0; color: #444; cursor: pointer; transition: all 0.15s; -webkit-appearance: none; }
   .btn:active { transform: scale(0.97); }
   .btn.primary { background: #CC1F1F; color: white; border-color: #CC1F1F; flex: 2; }
   .btn.primary:active { background: #aa1919; }
@@ -565,7 +565,7 @@ async function downloadPDF() {
   .sheet { background: #F5F4F0; border-radius: 22px 22px 0 0; width: 100%; max-height: 92vh; overflow-y: auto; padding-bottom: 40px; }
   .sheet-handle { width: 36px; height: 4px; background: #D4D0C9; border-radius: 2px; margin: 12px auto 14px; }
   .sheet-topbar { display: flex; justify-content: space-between; align-items: center; padding: 0 16px 12px; border-bottom: 1px solid #E8E6E0; }
-  .sheet-topbar span { font-family: 'Playfair Display', serif; font-size: 16px; font-weight: 500; color: #1A1A1A; }
+  .sheet-topbar span { font-family: 'Roboto', sans-serif; font-size: 16px; font-weight: 500; color: #1A1A1A; }
   .sheet-close { font-size: 18px; color: #999; cursor: pointer; background: none; border: none; padding: 4px 10px; border-radius: 8px; }
 
   .desktop-preview-panel { display: none; }
@@ -575,15 +575,15 @@ async function downloadPDF() {
   }
 
   .desktop-panel-topbar { display: flex; align-items: center; justify-content: space-between; padding: 14px 16px; background: #fff; border-bottom: 1px solid #E8E6E0; position: sticky; top: 0; z-index: 2; }
-  .desktop-panel-topbar span { font-family: 'Playfair Display', serif; font-size: 16px; font-weight: 500; color: #1A1A1A; }
-  .panel-close { background: #F5F4F0; border: 1px solid #E8E6E0; border-radius: 8px; color: #666; font-size: 13px; cursor: pointer; padding: 6px 12px; font-family: 'DM Sans', sans-serif; font-weight: 500; }
+  .desktop-panel-topbar span { font-family: 'Roboto', sans-serif; font-size: 16px; font-weight: 500; color: #1A1A1A; }
+  .panel-close { background: #F5F4F0; border: 1px solid #E8E6E0; border-radius: 8px; color: #666; font-size: 13px; cursor: pointer; padding: 6px 12px; font-family: 'Roboto', sans-serif; font-weight: 500; }
   .desktop-panel-content { padding: 16px; padding-bottom: 100px; }
 
   .bio-head { background: #CC1F1F; border-radius: 14px 14px 0 0; padding: 18px 16px; display: flex; align-items: center; gap: 14px; }
-  .bio-avi { width: 60px; height: 60px; border-radius: 50%; background: rgba(255,255,255,0.2); border: 2px solid rgba(255,255,255,0.5); display: flex; align-items: center; justify-content: center; font-family: 'Playfair Display', serif; font-size: 22px; font-weight: 600; color: white; flex-shrink: 0; overflow: hidden; }
+  .bio-avi { width: 60px; height: 60px; border-radius: 50%; background: rgba(255,255,255,0.2); border: 2px solid rgba(255,255,255,0.5); display: flex; align-items: center; justify-content: center; font-family: 'Roboto', sans-serif; font-size: 22px; font-weight: 600; color: white; flex-shrink: 0; overflow: hidden; }
   .bio-avi img { width: 100%; height: 100%; object-fit: cover; border-radius: 50%; }
   .bio-head-info { flex: 1; min-width: 0; }
-  .bio-head-name { font-family: 'Playfair Display', serif; font-size: 18px; font-weight: 600; color: white; }
+  .bio-head-name { font-family: 'Roboto', sans-serif; font-size: 18px; font-weight: 600; color: white; }
   .bio-head-sub { font-size: 11px; color: rgba(255,255,255,0.8); margin-top: 3px; }
   .bni-tag { font-size: 10px; font-weight: 600; color: rgba(255,255,255,0.65); letter-spacing: 1.5px; }
 
@@ -647,7 +647,7 @@ async function downloadPDF() {
   font-size: 24px; margin: 0 auto 14px;
 }
 .loading-title {
-  font-family: 'Playfair Display', serif;
+  font-family: 'Roboto', sans-serif;
   font-size: 17px; font-weight: 600; color: #1A1A1A; margin-bottom: 4px;
 }
 .loading-sub {
@@ -667,7 +667,7 @@ async function downloadPDF() {
 
 <svelte:head>
   <link rel="preconnect" href="https://fonts.googleapis.com" />
-  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@500;600&family=DM+Sans:wght@400;500&display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;600;700;800;900&display=swap" rel="stylesheet" />
   <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 </svelte:head>
@@ -966,10 +966,11 @@ async function downloadPDF() {
 
   <!-- BOTTOM NAV -->
   <div class="bottom-nav">
+    
+    <button class="btn" on:click={openPreview}>Preview</button>
     {#if currentStep > 0}
       <button class="btn" on:click={() => navigate(-1)}>← Back</button>
     {/if}
-    <button class="btn" on:click={openPreview}>Preview</button>
     {#if currentStep < 4}
       <button class="btn primary" on:click={() => navigate(1)}>Next →</button>
     {/if}
