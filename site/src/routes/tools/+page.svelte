@@ -175,7 +175,7 @@
     const sectionHeader = (title) =>
       `<div class="pdf-section-header" style="margin-top:18px; margin-bottom:8px; display:flex; align-items:center; gap:10px;">
         <div style="font-size:16px; font-weight:700; color:#CC1F1F; text-transform:uppercase; letter-spacing:0.8px; white-space:nowrap;">${title}</div>
-        <div style="flex:1; height:1.5px; background:#E0E0E0;margin-top:15px;"></div>
+        <div style="flex:1; height:1.5px; background-color:#999999;margin-top:15px;"></div>
        </div>`;
 
     const labelVal = (label, value, bold = true) =>
@@ -559,6 +559,9 @@ async function downloadPDF() {
   .topbar { background: #fff; border-bottom: 1px solid #E8E6E0; padding: 14px 16px 10px; position: sticky; top: 0; z-index: 9; }
   .topbar-row { display: flex; align-items: center; gap: 10px; }
   .bni-pill { background: #CC1F1F; color: white; font-family: 'Roboto', sans-serif; font-weight: 600; font-size: 13px; padding: 4px 10px; border-radius: 6px; letter-spacing: 0.5px; }
+  
+    .bni-pills {    padding: 4px 10px; width :  41px  }
+
   .topbar h1 { font-family: 'Roboto', sans-serif; font-size: 17px; font-weight: 500; color: #1A1A1A; }
   .progress-bar { height: 3px; background: #EDE9E3; border-radius: 2px; margin-top: 10px; overflow: hidden; }
   .progress-fill { height: 100%; background: #CC1F1F; border-radius: 2px; transition: width 0.3s ease; }
@@ -746,6 +749,7 @@ async function downloadPDF() {
 <svelte:head>
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;600;700;800;900&display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&display=swap" rel="stylesheet" />
   <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 </svelte:head>
@@ -754,10 +758,63 @@ async function downloadPDF() {
 
   <!-- TOP BAR -->
   <div class="topbar">
-    <div class="topbar-row">
-      <div class="bni-pill">BNI</div>
-      <h1>Member Bio Builder</h1>
+
+
+
+
+    <div style="display:flex;justify-content:space-between; "> 
+
+      
+
+      <div class="topbar-row">
+        <div class="bni-pill">BNI</div>
+        <h1>Member Bio Builder</h1>
+      </div>
+      
     </div>
+
+    <div   class="topbar-row" style="margin-top: -4px;"> 
+ 
+        <p style="font-size:12px; color:#555; margin-top:8px; font-family:'Inter', sans-serif; font-weight:400; letter-spacing:0.2px;">
+          Created by 
+          <span style="font-weight:700; color:#000; font-family:'Inter', sans-serif;">Yosuwa Raja</span>
+          <span style="font-weight:400; color:#555;"> (App Developer)</span>
+        </p>  
+
+        <div style="margin-left: auto; margin-top: 4px; " >
+          <div style="display:flex; align-items:right; gap:10px;"> 
+      
+            <a href="https://wa.me/919677362634"
+              target="_blank"
+              rel="noopener noreferrer" 
+              title="WhatsApp"
+              style="margin-top: 2px;"
+            >
+              <svg width="18" height="18" stroke-width="2" viewBox="0 0 25 25" fill="red" xmlns="http://www.w3.org/1000/svg">
+                <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347z"/>
+                <path d="M12 0C5.373 0 0 5.373 0 12c0 2.123.554 4.118 1.528 5.855L.057 23.429a.75.75 0 00.914.914l5.574-1.471A11.943 11.943 0 0012 24c6.627 0 12-5.373 12-12S18.627 0 12 0zm0 21.75a9.693 9.693 0 01-4.964-1.365l-.356-.211-3.683.972.987-3.586-.232-.37A9.694 9.694 0 012.25 12C2.25 6.615 6.615 2.25 12 2.25S21.75 6.615 21.75 12 17.385 21.75 12 21.75z"/>
+              </svg>
+            </a>
+
+            
+              <a href="mailto:yosuwa@wenoxo.in"
+              target="_blank"
+              rel="noopener noreferrer" 
+              title="Email"
+            >
+              <svg width="22" height="22" viewBox="0 0 24 24 " fill="none" stroke="red" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" 
+              xmlns="http://www.w3.org/2000/svg">
+                <rect x="2" y="4" width="20" height="16" rx="2"/>
+                <path d="M2 7l10 7 10-7"/>
+              </svg>
+            </a>
+          </div>
+        </div>
+
+    </div>
+
+
+
     <div class="progress-bar">
       <div class="progress-fill" style="width: {progressPercentage}%" />
     </div>
